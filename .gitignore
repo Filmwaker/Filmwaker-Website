@@ -1,0 +1,14 @@
+FileToIgnore/*
+
+# Admin console — non committare in produzione
+# (tienila in locale o in un branch separato)
+# admin/
+
+# File di sistema
+.DS_Store
+Thumbs.db
+*.log
+
+# Editor
+.vscode/
+*.swp

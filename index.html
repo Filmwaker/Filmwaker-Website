@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Meta Tags -->
+  <title>Filmwaker - Produzione Video, CGI e Animazione 3D | Studio Creativo</title>
+  <meta name="description" content="Filmwaker è uno studio creativo specializzato in produzione video, CGI e animazione 3D. Diamo vita alle tue idee con contenuti visivi di impatto per brand, aziende e artisti.">
+  <meta name="keywords" content="produzione video, CGI, animazione 3D, virtual production, spot pubblicitari, video aziendali, effetti visivi, Filmwaker, Unreal Engine, motion design, produzione cinematografica">
+  <meta name="author" content="Filmwaker Studio">
+  <link rel="canonical" href="https://www.filmwaker.it/">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Filmwaker - Produzione Video, CGI e Animazione 3D">
+  <meta property="og:description" content="Trasformiamo le tue idee in esperienze visive uniche: video, CGI e animazioni 3D di alta qualità.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.filmwaker.it/">
+  <meta property="og:image" content="https://www.filmwaker.it/logo.webp">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Filmwaker - Produzione Video, CGI e Animazione 3D">
+  <meta name="twitter:description" content="Video e CGI di alta qualità per brand e aziende. Scopri Filmwaker, lo studio che trasforma la tua immagine.">
+  <meta name="twitter:image" content="https://www.filmwaker.it/logo.webp">
+
+  <!-- Permissions Policy -->
+  <meta http-equiv="Permissions-Policy" content="autoplay=*, encrypted-media=*, accelerometer=*, gyroscope=*, picture-in-picture=*, clipboard-write=*">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" sizes="16x16" href="favicons/favicon16x16.ico">
+  <link rel="icon" type="image/x-icon" sizes="32x32" href="favicons/favicon32x32.ico">
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Filmwaker",
+    "url": "https://www.filmwaker.it",
+    "logo": "https://www.filmwaker.it/logo.webp",
+    "sameAs": [
+      "https://www.instagram.com/filmwaker",
+      "https://www.linkedin.com/company/filmwaker",
+      "https://www.youtube.com/@filmwaker"
+    ],
+    "founder": [
+      {
+        "@type": "Person",
+        "name": "Alessandro",
+        "jobTitle": "3D Artist & Animator"
+      },
+      {
+        "@type": "Person",
+        "name": "Edoardo Disavina",
+        "jobTitle": "CGI Artist"
+      },
+      {
+        "@type": "Person",
+        "name": "Giorgio",
+        "jobTitle": "Video Maker"
+      }
+    ],
+    "description": "Filmwaker è uno studio creativo specializzato in produzione video, CGI e animazione 3D. Creiamo contenuti visivi di alto impatto per aziende, brand e artisti.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "IT"
+    },
+    "knowsAbout": [
+      "Produzione Video",
+      "CGI",
+      "Animazione 3D",
+      "Virtual Production",
+      "Post-produzione",
+      "VFX",
+      "Storytelling visivo"
+    ]
+  }
+  </script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+     <a href="#top" class="logo">
+        <img src="logo.webp" alt="Filmwaker Logo">
+    </a>
+    
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <!-- Navigation Menu -->
+    <ul class="nav-menu" id="navMenu">
+        <li><a href="#services" data-i18n="nav.services">Servizi</a></li>
+        <li><a href="portfoliopage/portfolio.html" data-i18n="nav.portfolio">Portfolio</a></li>
+        <li><a href="academypage/academy.html" data-i18n="nav.academy">Academy</a></li>
+        <li><a href="teampage/team.html" data-i18n="nav.team">Team</a></li>
+        <li><a href="#contact" class="btn-primary" data-i18n="nav.contact">Contattaci</a></li>
+    </ul>
+    <div class="fw-lang-switcher" aria-label="Seleziona lingua">
+        <button class="fw-lang-btn active" data-lang="it" onclick="FW_I18N.switchTo('it')">IT</button>
+        <button class="fw-lang-btn" data-lang="en" onclick="FW_I18N.switchTo('en')">EN</button>
+    </div>
+</nav>
+
+    <!-- Video Hero Section -->
+    <section class="video-hero">
+        <video class="video-background" autoplay muted loop playsinline>
+            <source src="fIlmwaker-produzione-video2.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        <div class="video-hero-content">
+            <h1><span class="hashtag">#</span> RIVOLUZIONA<br>LA TUA IMMAGINE<br>CON <span class="highlight">FILMWAKER</span></h1>
+            <p data-i18n="hero.sub">Produciamo contenuti video e animazioni di altissima qualità che catturano l'essenza del tuo brand e la raccontano al mondo.</p>
+            <div class="hero-cta">
+                <a href="mailto:info@filmwaker.it" class="btn-primary" data-i18n="hero.cta_quote">Richiedi un Preventivo</a>
+                <a href="portfoliopage/portfolio.html" class="btn-secondary" data-i18n="hero.cta_portfolio">Guarda i Nostri Lavori</a>
+            </div>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <section id="services" class="services">
+        <h2 class="section-title" data-i18n="services.title">I Nostri Servizi</h2>
+        <div class="services-grid">
+            <a href="portfoliopage/portfolio.html#commercial" class="service-card-link">
+                <div class="service-card">
+                    <h3 data-i18n="services.video.h">Produzione Video</h3>
+                    <p data-i18n="services.video.p">Dalla pre-produzione alla post-produzione, realizziamo ogni tipo di contenuto video professionale.</p>
+                </div>
+            </a>
+            <a href="portfoliopage/portfolio.html#cgi" class="service-card-link">
+                <div class="service-card">
+                    <h3 data-i18n="services.cgi.h">CGI & Animazione 3D</h3>
+                    <p data-i18n="services.cgi.p">Modellazione 3D, animazioni fluide e rendering fotorealistico per ogni esigenza creativa.</p>
+                </div>
+            </a>
+            <a href="portfoliopage/portfolio.html#commercial" class="service-card-link">
+                <div class="service-card">
+                    <h3 data-i18n="services.ads.h">Spot Pubblicitari</h3>
+                    <p data-i18n="services.ads.p">Creazioni pubblicitarie ad alto impatto visivo che parlano al tuo pubblico e convertono.</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section id="clients" class="clients">
+        <h2 class="section-title" data-i18n="clients.title">I Nostri Clienti</h2>
+        <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack"></div>
+        </div>
+    </section>
+    <section id="portfolio" class="portfolio">
+        <h2 class="section-title" data-i18n="portfolio.title">Le Nostre Ultime Opere</h2>
+        <div class="portfolio-grid">
+            <a href="https://www.youtube.com/watch?v=MpuCteZkey4" target="_blank" rel="noopener noreferrer" class="portfolio-item">
+                <img src="https://img.youtube.com/vi/MpuCteZkey4/maxresdefault.jpg" 
+                     onerror="this.src='https://img.youtube.com/vi/MpuCteZkey4/hqdefault.jpg'" 
+                     alt="Portfolio Filmwaker: Virtual Production" 
+                     style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="portfolio-play">▶</div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=x8jp9q4_BBo&t" target="_blank" rel="noopener noreferrer" class="portfolio-item">
+                <img src="https://img.youtube.com/vi/x8jp9q4_BBo/maxresdefault.jpg" 
+                     onerror="this.src='https://img.youtube.com/vi/x8jp9q4_BBo/hqdefault.jpg'" 
+                     alt="Portfolio Filmwaker: Interview" 
+                     style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="portfolio-play">▶</div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=EGciy4S_5Zk&t" target="_blank" rel="noopener noreferrer" class="portfolio-item">
+                <img src="https://img.youtube.com/vi/EGciy4S_5Zk/maxresdefault.jpg" 
+                     onerror="this.src='https://img.youtube.com/vi/EGciy4S_5Zk/hqdefault.jpg'" 
+                     alt="Portfolio Filmwaker: CGI e Unreal Engine" 
+                     style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="portfolio-play">▶</div>
+            </a>
+        </div>
+    </section>
+    
+    <!-- Video Modal -->
+    <div id="videoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; align-items: center; justify-content: center;">
+        <span onclick="closeVideo()" style="position: absolute; top: 30px; right: 50px; font-size: 50px; color: var(--cyan); cursor: pointer; z-index: 10000;">&times;</span>
+        <iframe id="videoFrame" width="80%" height="80%" frameborder="0" allow="autoplay; encrypted-media; accelerometer; gyroscope; picture-in-picture; clipboard-write" allowfullscreen></iframe>
+    </div>
+
+    <section class="mission">
+        <div class="mission-content">
+            <h2 data-i18n="mission.title">La Nostra Missione</h2>
+            <p data-i18n="mission.p1">Trasformiamo la tua visione in realtà con video e CGI di impatto. Scopri come possiamo aiutarti a distinguerti nel mercato digitale.</p>
+            <p><strong data-i18n="mission.q1">Qual è il processo di produzione di un video?</strong></p>
+            <p data-i18n="mission.a1">Seguiamo un flusso di lavoro professionale che va dalla concept creation alla post-produzione, garantendo qualità e tempi di consegna rapidi.</p>
+            <p><strong data-i18n="mission.q2">Offrite servizi di animazione 3D?</strong></p>
+            <p data-i18n="mission.a2">Sì, realizziamo soluzioni complete di animazione 3D per qualunque esigenza creativa, dalla modellazione al rendering finale.</p>
+        </div>
+        <div class="mission-image">
+            <img src="mission-image.webp" alt="La Nostra Missione">
+        </div>
+    </section>
+
+    <section id="courses" class="courses">
+        <h2 class="section-title" data-i18n="courses_home.title">I Nostri Corsi</h2>
+        <div class="courses-grid">
+            <a href="coursepage/courses.html#game-development" class="course-card-link">
+                <div class="course-card">
+                    <div class="course-image"><img src="courseimages/coursegame.webp" alt="Game Development Course" onerror="this.style.display='none'"></div>
+                    <div class="course-content">
+                        <h3 data-i18n="courses_home.game.h">Game Development Fundamentals</h3>
+                        <p data-i18n="courses_home.game.p">Impara a creare giochi professionali usando i motori più avanzati.</p>
+                        <div class="course-meta">
+                            <span data-i18n="courses_home.game.level">Livello: Base</span>
+                            <span data-i18n="courses_home.game.price">€99</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="coursepage/courses.html#visual-effects" class="course-card-link">
+                <div class="course-card">
+                    <div class="course-image"><img src="courseimages/coursevfx.webp" alt="VFX Course" onerror="this.style.display='none'"></div>
+                    <div class="course-content">
+                        <h3 data-i18n="courses_home.vfx.h">Visual Effects Mastery</h3>
+                        <p data-i18n="courses_home.vfx.p">Domina le tecniche avanzate di visual effects e color grading.</p>
+                        <div class="course-meta">
+                            <span data-i18n="courses_home.vfx.level">Livello: Intermedio</span>
+                            <span data-i18n="courses_home.vfx.price">€149</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="coursepage/courses.html#virtual-production" class="course-card-link">
+                <div class="course-card">
+                    <div class="course-image"><img src="courseimages/coursevirtualproduction.webp" alt="Virtual Production Course" onerror="this.style.display='none'"></div>
+                    <div class="course-content">
+                        <h3 data-i18n="courses_home.vp.h">Virtual Production Pro</h3>
+                        <p data-i18n="courses_home.vp.p">Esplora il futuro della produzione con realtà virtuale e LED wall.</p>
+                        <div class="course-meta">
+                            <span data-i18n="courses_home.vp.level">Livello: Avanzato</span>
+                            <span data-i18n="courses_home.vp.price">€199</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="faq">
+        <h2 class="section-title" data-i18n="faq.title">Domande Frequenti</h2>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <h4 data-i18n="faq.q1">Come iniziare un progetto con voi?</h4>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer"><p data-i18n="faq.a1">Contattaci tramite il form, raccontaci la tua visione e organizziamo una call per capire nel dettaglio i tuoi bisogni.</p></div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <h4 data-i18n="faq.q2">Quali sono i tempi di consegna?</h4>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer"><p data-i18n="faq.a2">I tempi variano in base alla complessità del progetto. Forniamo un preventivo dettagliato con cronoprogramma.</p></div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <h4 data-i18n="faq.q3">Offrite revisioni durante il processo?</h4>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer"><p data-i18n="faq.a3">Assolutamente sì. Includere revisioni e feedback nel nostro processo è fondamentale per ottenere il risultato perfetto.</p></div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <h4 data-i18n="faq.q4">Come posso saperne di più sui vostri prezzi?</h4>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer"><p data-i18n="faq.a4">Contattaci per una consulenza gratuita e un preventivo personalizzato.</p></div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="contact-content">
+            <h2 class="section-title" data-i18n="contact.title">Contattaci</h2>
+            <p style="color: var(--text-light); margin-bottom: 2rem; font-size: 1.1rem;" data-i18n="contact.sub">Trasforma la tua visione in realtà. Parliamo del tuo progetto.</p>
+            <a href="mailto:info@filmwaker.it" class="btn-primary" style="display: inline-block; font-size: 1.2rem; padding: 1.2rem 2.5rem;" data-i18n="contact.btn">Invia una Email</a>
+            <p style="color: var(--text-light); margin-top: 2rem; font-size: 1rem;">📧 info@filmwaker.it</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-section">
+            <h4 data-i18n="footer.services">Servizi</h4>
+            <ul>
+                <li><a href="portfoliopage/portfolio.html#commercial" data-i18n="footer.video_prod">Produzione Video</a></li>
+                <li><a href="portfoliopage/portfolio.html#cgi" data-i18n="footer.cgi">CGI & Animazione</a></li>
+                <li><a href="portfoliopage/portfolio.html#commercial" data-i18n="footer.ads">Spot Pubblicitari</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4 data-i18n="footer.resources">Risorse</h4>
+            <ul><li><a href="teampage/team.html" data-i18n="footer.team_link">Conosci Il Team</a></li></ul>
+        </div>
+        <div class="footer-section">
+            <h4 data-i18n="footer.social">Social</h4>
+            <ul>
+                <li><a href="https://www.instagram.com/filmwaker" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                <li><a href="https://www.linkedin.com/company/filmwaker" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="https://www.youtube.com/@filmwaker" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+            </ul>
+        </div>
+    </footer>
+    <div class="credit-info">
+        <p><small id="copyright-year">© 2025 Filmwaker Studio. <span data-i18n="footer.rights">Tutti i diritti riservati.</span> Website designed &amp; developed by </small>
+        <a href="https://mrfabry.github.io" target="_blank" rel="noopener noreferrer">MrFabry</a></p>
+    </div>
+
+	
+	<button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fa fa-arrow-up"></i>
+</button>
+
+    <script src="i18n/i18n.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

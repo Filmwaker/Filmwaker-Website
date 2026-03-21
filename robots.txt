@@ -1,0 +1,49 @@
+# Filmwaker Studio - robots.txt
+# Allows all search engines to crawl the website
+
+User-agent: *
+Allow: /
+Allow: /root/
+Allow: /coursepage/
+Allow: /favicons/
+
+# Disallow private or duplicate content
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /*.json$
+Disallow: /*.php$
+
+# Crawl delay (in seconds) - allows servers to rest between requests
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://www.filmwaker.it/sitemap.xml
+
+# Specific search engine rules
+
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Apple Siri
+User-agent: Applebot
+Allow: /
+
+# Facebook
+User-agent: facebookexternalhit
+Allow: /
+
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+
+# Twitter
+User-agent: Twitterbot
+Allow: /

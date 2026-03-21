@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Team | Filmwaker Studio</title>
+    <meta name="description" content="Conosci i creativi dietro Filmwaker. Esperti di CGI, Animazione 3D e Produzione Video.">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="team-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="../favicons/favicon16x16.ico">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="../favicons/favicon32x32.ico">
+    <style>
+        .team-grid-section { width:100%; display:flex; justify-content:center; }
+        .team-container { display:flex; flex-direction:row; justify-content:center; gap:3rem; width:100%; max-width:1600px; margin:0 auto; flex-wrap:nowrap; }
+        @media(max-width:1100px){ .team-container{ flex-wrap:wrap; } }
+        .handle { display:block; margin-top:0.2rem; font-size:0.95rem; opacity:0.85; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="../index.html" class="logo"><img src="../Logo.webp" alt="Filmwaker Logo"></a>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="../index.html#services" data-i18n="nav.services">Servizi</a></li>
+            <li><a href="../portfoliopage/portfolio.html" data-i18n="nav.portfolio">Portfolio</a></li>
+            <li><a href="../academypage/academy.html" data-i18n="nav.academy">Academy</a></li>
+            <li><a href="#top" class="active" data-i18n="nav.team">Team</a></li>
+            <li><a href="../index.html#contact" class="btn-primary" data-i18n="nav.contact">Contattaci</a></li>
+        </ul>
+        <div class="fw-lang-switcher">
+            <button class="fw-lang-btn active" data-lang="it" onclick="FW_I18N.switchTo('it')">IT</button>
+            <button class="fw-lang-btn" data-lang="en" onclick="FW_I18N.switchTo('en')">EN</button>
+        </div>
+    </nav>
+
+    <section class="team-hero" id="top">
+        <h1><span data-i18n="team.hero_h1">Conosci i</span> <span class="highlight" data-i18n="team.hero_h1_span">Creators</span></h1>
+        <p data-i18n="team.hero_p">Siamo artisti, tecnici e storyteller. Uniamo creatività e tecnologia per plasmare il futuro della produzione digitale.</p>
+    </section>
+
+    <section class="team-grid-section">
+        <div class="team-container">
+            <!-- Alessandro -->
+            <div class="team-card">
+                <div class="card-image-wrapper">
+                    <img src="teamimages/Alessandro-Caccavale.webp" alt="Alessandro Caccavale">
+                    <div class="social-overlay">
+                        <a href="https://www.linkedin.com/in/alessandro-caccavale-graphic-designer/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/thefilmwaker/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@The_Filmwaker" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Alessandro Caccavale</h3>
+                    <span class="handle">@thefilmwaker</span>
+                    <span class="role">3D Supervisor &amp; Animator</span>
+                    <div class="divider-small"></div>
+                    <p data-i18n="team.ale_bio">Artista 3D e Animatore dedicato a trasformare idee in storie visive potenti.</p>
+                </div>
+            </div>
+            <!-- Edoardo -->
+            <div class="team-card">
+                <div class="card-image-wrapper">
+                    <img src="teamimages/Edoardo-di-Savina.webp" alt="Edoardo Di Savina">
+                    <div class="social-overlay">
+                        <a href="https://www.linkedin.com/in/disavinaedoardo/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/jackthelightning/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@JacktheLightning" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Edoardo Di Savina</h3>
+                    <span class="handle">@jackthelightning</span>
+                    <span class="role">Tech Artist &amp; Unreal Specialist</span>
+                    <div class="divider-small"></div>
+                    <p data-i18n="team.edo_bio">Tech Artist e Unreal Engine Specialist che unisce creatività e precisione tecnica.</p>
+                </div>
+            </div>
+            <!-- Giorgio -->
+            <div class="team-card">
+                <div class="card-image-wrapper">
+                    <img src="teamimages/Giorgio-Castagnetta.webp" alt="Giorgio Castagnetta">
+                    <div class="social-overlay">
+                        <a href="https://www.linkedin.com/in/giorgio-castagnetta-7a38a017a/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/master.cast/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@MastercastPresident" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Giorgio Castagnetta</h3>
+                    <span class="handle">@master.cast</span>
+                    <span class="role">VFX Supervisor &amp; Compositor</span>
+                    <div class="divider-small"></div>
+                    <p data-i18n="team.gio_bio">VFX Supervisor e Compositor con occhio preciso per dettaglio e coerenza visiva.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-section">
+            <h4 data-i18n="footer.services">Servizi</h4>
+            <ul>
+                <li><a href="../portfoliopage/portfolio.html#commercial" data-i18n="footer.video_prod">Produzione Video</a></li>
+                <li><a href="../portfoliopage/portfolio.html#cgi" data-i18n="footer.cgi">CGI & Animazione</a></li>
+                <li><a href="../portfoliopage/portfolio.html#commercial" data-i18n="footer.ads">Spot Pubblicitari</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4 data-i18n="footer.resources">Risorse</h4>
+            <ul><li><a href="../teampage/team.html" data-i18n="footer.team_link">Conosci Il Team</a></li></ul>
+        </div>
+        <div class="footer-section">
+            <h4 data-i18n="footer.social">Social</h4>
+            <ul>
+                <li><a href="https://www.instagram.com/filmwaker" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                <li><a href="https://www.linkedin.com/company/filmwaker" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="https://www.youtube.com/@filmwaker" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+            </ul>
+        </div>
+    </footer>
+    <div class="credit-info">
+        <p><small id="copyright-year">© 2025 Filmwaker Studio. <span data-i18n="footer.rights">Tutti i diritti riservati.</span> Website designed & developed by </small>
+        <a href="https://mrfabry.github.io" target="_blank" rel="noopener noreferrer">MrFabry</a></p>
+    </div>
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top"><i class="fa fa-arrow-up"></i></button>
+    <script src="../i18n/i18n.js"></script>
+    <script src="../script.js"></script>
+    <script src="team-script.js"></script>
+</body>
+</html>

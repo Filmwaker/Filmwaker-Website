@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filmwaker Admin Console</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cyan:#00D9FF;--navy:#0A1628;--dark:#0F1E2E;--panel:#1a2f42;
+  --border:rgba(0,217,255,0.15);--text:#e0eaf5;--muted:#7a9ab5;
+  --green:#00e676;--red:#ff5252;--orange:#ffa500;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--dark);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+/* ── HEADER ── */
+header{background:var(--navy);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:58px;position:sticky;top:0;z-index:100}
+header h1{font-size:1rem;font-weight:700;color:var(--cyan);letter-spacing:.05em;white-space:nowrap}
+header h1 span{color:var(--text);font-weight:400}
+.hdr-spacer{flex:1}
+#statusDot{width:9px;height:9px;border-radius:50%;background:var(--muted);transition:background .3s;flex-shrink:0}
+#statusDot.ok{background:var(--green)}
+#statusDot.err{background:var(--red)}
+#statusMsg{font-size:.78rem;color:var(--muted);white-space:nowrap}
+/* ── LAYOUT ── */
+.layout{display:flex;flex:1;overflow:hidden}
+aside{width:220px;background:var(--navy);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+aside nav a{display:flex;align-items:center;gap:.7rem;padding:.85rem 1.2rem;font-size:.88rem;color:var(--muted);text-decoration:none;border-left:3px solid transparent;transition:all .2s;cursor:pointer}
+aside nav a:hover{color:var(--text);background:rgba(0,217,255,.05)}
+aside nav a.active{color:var(--cyan);border-left-color:var(--cyan);background:rgba(0,217,255,.07)}
+aside nav a svg{width:16px;height:16px;flex-shrink:0}
+.aside-sep{height:1px;background:var(--border);margin:.5rem 1rem}
+main{flex:1;overflow-y:auto;padding:2rem}
+/* ── PANELS ── */
+.panel{display:none}.panel.active{display:block}
+/* ── CARDS ── */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem}
+.card h2{font-size:1rem;color:var(--cyan);margin-bottom:1.2rem;padding-bottom:.7rem;border-bottom:1px solid var(--border)}
+/* ── FORM ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-grid.cols1{grid-template-columns:1fr}
+.field{display:flex;flex-direction:column;gap:.4rem}
+.field label{font-size:.75rem;font-weight:600;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.field input,.field textarea,.field select{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;padding:.6rem .85rem;font-family:inherit;transition:border-color .2s;width:100%}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--cyan)}
+.field textarea{resize:vertical;min-height:90px}
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.3rem;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:inherit}
+.btn-cyan{background:var(--cyan);color:var(--navy)}
+.btn-cyan:hover{background:#33e5ff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-red{background:rgba(255,82,82,.15);border:1px solid rgba(255,82,82,.4);color:var(--red)}
+.btn-red:hover{background:rgba(255,82,82,.25)}
+.btn-green{background:rgba(0,230,118,.15);border:1px solid rgba(0,230,118,.4);color:var(--green)}
+.btn-green:hover{background:rgba(0,230,118,.25)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+/* ── COURSE TABS ── */
+.course-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.ctab{padding:.5rem 1.1rem;border-radius:20px;border:1px solid var(--border);background:none;color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+.ctab:hover{color:var(--text);border-color:var(--cyan)}
+.ctab.active{background:rgba(0,217,255,.12);color:var(--cyan);border-color:var(--cyan)}
+/* ── CURRICULUM LIST ── */
+.curr-list{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+.curr-row{display:grid;grid-template-columns:1fr 90px 32px;gap:.5rem;align-items:center}
+.curr-row input{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:.45rem .7rem;font-size:.85rem;width:100%}
+.curr-row input:focus{outline:none;border-color:var(--cyan)}
+.del-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;opacity:.6;transition:opacity .2s}
+.del-btn:hover{opacity:1}
+/* ── DEPLOY LOG ── */
+#deployLog{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:'Cascadia Code','Courier New',monospace;font-size:.8rem;line-height:1.7;height:260px;overflow-y:auto;color:#7fc8d8}
+.log-ok{color:var(--green)}.log-err{color:var(--red)}.log-warn{color:var(--orange)}.log-dim{color:var(--muted)}
+/* ── GITHUB CONFIG ── */
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+/* ── TOAST ── */
+#toast{position:fixed;bottom:2rem;right:2rem;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.4rem;font-size:.88rem;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;z-index:999}
+#toast.show{opacity:1;transform:translateY(0)}
+#toast.toast-ok{border-color:var(--green);color:var(--green)}
+#toast.toast-err{border-color:var(--red);color:var(--red)}
+/* ── BADGE ── */
+.badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.2rem .6rem;border-radius:12px;letter-spacing:.04em}
+.badge-base{background:rgba(0,217,255,.15);color:var(--cyan)}
+.badge-mid{background:rgba(255,165,0,.15);color:var(--orange)}
+.badge-adv{background:rgba(255,82,82,.15);color:var(--red)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎬 Filmwaker <span>Admin Console</span></h1>
+  <div class="hdr-spacer"></div>
+  <span id="statusMsg">Non connesso a GitHub</span>
+  <div id="statusDot"></div>
+</header>
+
+<div class="layout">
+<aside>
+  <nav>
+    <a class="active" onclick="showPanel('courses')" data-panel="courses">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Corsi
+    </a>
+    <a onclick="showPanel('i18n')" data-panel="i18n">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+      Lingue (i18n)
+    </a>
+    <div class="aside-sep"></div>
+    <a onclick="showPanel('deploy')" data-panel="deploy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Deploy GitHub
+    </a>
+    <a onclick="showPanel('settings')" data-panel="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Impostazioni
+    </a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- ══════════ PANEL: CORSI ══════════ -->
+<div id="panel-courses" class="panel active">
+  <div class="course-tabs">
+    <button class="ctab active" onclick="selectCourse(0)">🎮 Game Dev</button>
+    <button class="ctab" onclick="selectCourse(1)">🎨 VFX Mastery</button>
+    <button class="ctab" onclick="selectCourse(2)">🌐 Virtual Production</button>
+  </div>
+
+  <!-- Basic info card -->
+  <div class="card">
+    <h2>Informazioni di Base</h2>
+    <div class="form-grid">
+      <div class="field"><label>Titolo (IT)</label><input type="text" id="c_title_it"></div>
+      <div class="field"><label>Titolo (EN)</label><input type="text" id="c_title_en"></div>
+      <div class="field"><label>Tag / Etichetta (IT)</label><input type="text" id="c_tag_it"></div>
+      <div class="field"><label>Tag / Etichetta (EN)</label><input type="text" id="c_tag_en"></div>
+    </div>
+    <div class="form-grid cols1" style="margin-top:1rem">
+      <div class="field"><label>Descrizione breve (IT)</label><textarea id="c_lead_it"></textarea></div>
+      <div class="field"><label>Descrizione breve (EN)</label><textarea id="c_lead_en"></textarea></div>
+    </div>
+  </div>
+
+  <!-- Meta card -->
+  <div class="card">
+    <h2>Metadati</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Livello</label>
+        <select id="c_level">
+          <option value="base">Base</option>
+          <option value="mid">Intermedio</option>
+          <option value="adv">Avanzato</option>
+        </select>
+      </div>
+      <div class="field"><label>Prezzo (es. €99)</label><input type="text" id="c_price"></div>
+      <div class="field"><label>N° Lezioni</label><input type="number" id="c_lessons"></div>
+      <div class="field"><label>Durata (es. 6h 05m)</label><input type="text" id="c_duration"></div>
+    </div>
+  </div>
+
+  <!-- What you learn -->
+  <div class="card">
+    <h2>Cosa Imparerai (IT)</h2>
+    <div id="learn_it_list" class="curr-list"></div>
+    <button class="btn btn-ghost" style="margin-top:.8rem" onclick="addLearnItem('it')">+ Aggiungi punto</button>
+  </div>
+  <div class="card">
+    <h2>What You Will Learn (EN)</h2>
+    <div id="learn_en_list" class="curr-list"></div>
+    <button class="btn btn-ghost" style="margin-top:.8rem" onclick="addLearnItem('en')">+ Add item</button>
+  </div>
+
+  <!-- Curriculum -->
+  <div class="card">
+    <h2>Programma del Corso</h2>
+    <div id="curr_list" class="curr-list"></div>
+    <button class="btn btn-ghost" style="margin-top:.8rem" onclick="addCurrChapter()">+ Aggiungi capitolo</button>
+  </div>
+
+  <div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:.5rem">
+    <button class="btn btn-ghost" onclick="loadCourseData()">↺ Ricarica</button>
+    <button class="btn btn-cyan" onclick="saveCourseData()">💾 Salva modifiche</button>
+  </div>
+</div>
+
+<!-- ══════════ PANEL: i18n ══════════ -->
+<div id="panel-i18n" class="panel">
+  <div class="card">
+    <h2>Editor Stringhe IT</h2>
+    <div class="field"><label>Percorso file</label><input type="text" id="i18n_it_path" value="" placeholder="Es. C:\...\i18n\it.json"></div>
+    <div class="field" style="margin-top:1rem"><label>Contenuto JSON</label><textarea id="i18n_it_content" style="min-height:320px;font-family:monospace;font-size:.82rem"></textarea></div>
+    <div style="display:flex;gap:.8rem;margin-top:1rem">
+      <button class="btn btn-ghost" onclick="loadI18nFile('it')">📂 Carica</button>
+      <button class="btn btn-cyan" onclick="saveI18nFile('it')">💾 Salva IT</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Editor Stringhe EN</h2>
+    <div class="field"><label>Percorso file</label><input type="text" id="i18n_en_path" value="" placeholder="Es. C:\...\i18n\en.json"></div>
+    <div class="field" style="margin-top:1rem"><label>Contenuto JSON</label><textarea id="i18n_en_content" style="min-height:320px;font-family:monospace;font-size:.82rem"></textarea></div>
+    <div style="display:flex;gap:.8rem;margin-top:1rem">
+      <button class="btn btn-ghost" onclick="loadI18nFile('en')">📂 Carica</button>
+      <button class="btn btn-cyan" onclick="saveI18nFile('en')">💾 Salva EN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PANEL: DEPLOY ══════════ -->
+<div id="panel-deploy" class="panel">
+  <div class="card">
+    <h2>📡 Deploy su GitHub</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.2rem">Carica automaticamente tutti i file modificati nel repository GitHub configurato.</p>
+    <div class="form-grid" style="margin-bottom:1.2rem">
+      <div class="field"><label>Branch target</label><input type="text" id="dep_branch" value="main"></div>
+      <div class="field"><label>Commit message</label><input type="text" id="dep_msg" value="chore: update site content via admin console"></div>
+    </div>
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="testGitHubConnection()">🔌 Testa connessione</button>
+      <button class="btn btn-green" id="deployBtn" onclick="deployToGitHub()">🚀 Avvia Deploy</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Log Deploy</h2>
+    <div id="deployLog"><span class="log-dim">Pronto. Configura le impostazioni GitHub e avvia il deploy.</span></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:.8rem">
+      <button class="btn btn-ghost" onclick="clearLog()">🗑 Pulisci log</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PANEL: SETTINGS ══════════ -->
+<div id="panel-settings" class="panel">
+  <div class="card">
+    <h2>⚙️ Configurazione GitHub</h2>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:1.2rem">Le credenziali vengono salvate solo in localStorage — non vengono mai inviate a server di terze parti.</p>
+    <div class="cfg-grid">
+      <div class="field"><label>GitHub Token (Personal Access Token)</label><input type="password" id="cfg_token" placeholder="ghp_..."></div>
+      <div class="field"><label>Owner / Username</label><input type="text" id="cfg_owner" placeholder="es. filmwaker"></div>
+      <div class="field"><label>Repository name</label><input type="text" id="cfg_repo" placeholder="es. filmwaker-website"></div>
+      <div class="field"><label>Percorso base sito (locale)</label><input type="text" id="cfg_basepath" placeholder="C:\Users\FilmWaker\Desktop\SitoFilmWaker"></div>
+    </div>
+    <div style="display:flex;gap:.8rem;margin-top:1.2rem">
+      <button class="btn btn-cyan" onclick="saveSettings()">💾 Salva impostazioni</button>
+      <button class="btn btn-ghost" onclick="loadSettings()">↺ Ricarica</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📁 File da includere nel deploy</h2>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Lista dei percorsi relativi alla radice del sito che verranno caricati su GitHub.</p>
+    <div class="field"><textarea id="cfg_files" style="min-height:180px;font-family:monospace;font-size:.82rem">index.html
+styles.css
+script.js
+i18n/i18n.js
+academypage/academy.html
+academypage/academy-styles.css
+coursepage/courses.html
+coursepage/courses-styles.css
+teampage/team.html
+portfoliopage/portfolio.html</textarea></div>
+    <div style="margin-top:.8rem">
+      <button class="btn btn-cyan" onclick="saveFileList()">💾 Salva lista file</button>
+    </div>
+  </div>
+
+  <!-- TEST PANEL -->
+  <div class="card">
+    <h2>🧪 Test i18n in locale</h2>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">
+      Apri il sito in locale per testare lo switch IT/EN senza problemi di fetch.<br>
+      Richiede <code style="background:rgba(0,217,255,.1);padding:2px 6px;border-radius:4px">npx serve</code> installato globalmente.
+    </p>
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="openSiteLocal('index.html')">🏠 Home</button>
+      <button class="btn btn-ghost" onclick="openSiteLocal('academypage/academy.html')">🎓 Academy</button>
+      <button class="btn btn-ghost" onclick="openSiteLocal('coursepage/courses.html')">📚 Corsi</button>
+      <button class="btn btn-ghost" onclick="openSiteLocal('teampage/team.html')">👥 Team</button>
+      <button class="btn btn-ghost" onclick="openSiteLocal('portfoliopage/portfolio.html')">🎬 Portfolio</button>
+    </div>
+    <div id="testNote" style="margin-top:1rem;font-size:.8rem;color:var(--muted);display:none">
+      ⚠️ Se la pagina mostra chiavi (es. "nav.services") invece del testo, avvia prima il server locale:<br>
+      <code style="background:rgba(0,0,0,.3);padding:4px 8px;border-radius:4px;display:inline-block;margin-top:.4rem">npx serve C:\Users\FilmWaker\Desktop\SitoFilmWaker</code><br>
+      poi apri <a href="http://localhost:3000" target="_blank" style="color:var(--cyan)">http://localhost:3000</a>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   FILMWAKER ADMIN CONSOLE — Logic
+   ═══════════════════════════════════════════ */
+
+// ── State ──────────────────────────────────
+let currentCourse = 0;
+let settings = {};
+let courseData = [];   // array of course objects loaded from JSON
+
+const COURSE_KEYS = ['game', 'vfx', 'vp'];
+const COURSE_LABELS = ['Game Development', 'VFX Mastery', 'Virtual Production'];
+
+// ── Panel navigation ───────────────────────
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('aside nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelector(`[data-panel="${name}"]`).classList.add('active');
+}
+
+// ── Toast ──────────────────────────────────
+function toast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show toast-' + type;
+  setTimeout(() => t.className = '', 2800);
+}
+
+// ── Settings ───────────────────────────────
+function saveSettings() {
+  settings = {
+    token:    document.getElementById('cfg_token').value.trim(),
+    owner:    document.getElementById('cfg_owner').value.trim(),
+    repo:     document.getElementById('cfg_repo').value.trim(),
+    basepath: document.getElementById('cfg_basepath').value.trim(),
+  };
+  localStorage.setItem('fw_admin_settings', JSON.stringify(settings));
+  updateStatus();
+  toast('Impostazioni salvate ✓');
+}
+
+function saveFileList() {
+  const files = document.getElementById('cfg_files').value;
+  localStorage.setItem('fw_admin_files', files);
+  toast('Lista file salvata ✓');
+}
+
+function loadSettings() {
+  const raw = localStorage.getItem('fw_admin_settings');
+  if (raw) {
+    settings = JSON.parse(raw);
+    document.getElementById('cfg_token').value    = settings.token    || '';
+    document.getElementById('cfg_owner').value    = settings.owner    || '';
+    document.getElementById('cfg_repo').value     = settings.repo     || '';
+    document.getElementById('cfg_basepath').value = settings.basepath || '';
+  }
+  const files = localStorage.getItem('fw_admin_files');
+  if (files) document.getElementById('cfg_files').value = files;
+  // pre-fill i18n paths if basepath set
+  if (settings.basepath) {
+    const bp = settings.basepath.replace(/[\/\\]$/, '');
+    document.getElementById('i18n_it_path').value = bp + '\\i18n\\it.json';
+    document.getElementById('i18n_en_path').value = bp + '\\i18n\\en.json';
+  }
+  updateStatus();
+}
+
+function updateStatus() {
+  const dot = document.getElementById('statusDot');
+  const msg = document.getElementById('statusMsg');
+  if (settings.token && settings.owner && settings.repo) {
+    dot.className = 'ok';
+    msg.textContent = settings.owner + '/' + settings.repo;
+  } else {
+    dot.className = 'err';
+    msg.textContent = 'GitHub non configurato';
+  }
+}
+
+// ── Courses ────────────────────────────────
+// We keep course data as in-memory JSON mirroring the i18n files
+// structure: courseData[i] = { title_it, title_en, tag_it, tag_en, lead_it, lead_en,
+//                              level, price, lessons, duration, learn_it:[], learn_en:[], curriculum:[] }
+function buildDefaultCourseData() {
+  return [
+    { title_it:'Game Development Fundamentals', title_en:'Game Development Fundamentals',
+      tag_it:'GAME DEVELOPMENT', tag_en:'GAME DEVELOPMENT',
+      lead_it:'Apprendi Unreal Engine e tutte le competenze necessarie a sviluppare il tuo videogioco, anche partendo da zero.',
+      lead_en:'Learn Unreal Engine and all the skills needed to build your own game — even starting from absolute zero.',
+      level:'base', price:'€99', lessons:36, duration:'6h 05m',
+      learn_it:['Workflow e creazione di un gioco completo in Unreal Engine','Programmazione Blueprint + introduzione a C++','Best practice Blueprint: ottimizzazione, memoria, struttura','Integrazione ed uso degli effetti Niagara','Game optimization & testing','Debugging e build dell\'applicazione finale'],
+      learn_en:['Workflow and complete game creation in Unreal Engine','Blueprint programming + intro to C++','Blueprint best practices: optimisation, memory, structure','Integrating and using Niagara effects','Game optimisation & testing','Debugging and building the final application'],
+      curriculum:[{title:'Capitolo 1 – Interfaccia di Unreal Engine',lessons:8},{title:'Capitolo 2 – Strumenti e modalità dell\'Engine',lessons:7},{title:'Capitolo 3 – Creazione di ambientazioni',lessons:8},{title:'Capitolo 4 – Programmazione Blueprint',lessons:8},{title:'Capitolo 5 – Build & Deploy',lessons:5}]
+    },
+    { title_it:'Visual Effects Mastery', title_en:'Visual Effects Mastery',
+      tag_it:'VISUAL EFFECTS', tag_en:'VISUAL EFFECTS',
+      lead_it:'Domina le tecniche avanzate di VFX. Dal compositing al color grading, crea effetti cinematografici che trasformano le tue scene.',
+      lead_en:'Master advanced VFX techniques. From compositing to colour grading, create cinematic effects that transform your scenes.',
+      level:'mid', price:'€149', lessons:48, duration:'8h 30m',
+      learn_it:['Teoria del colore e psicologia visiva','Compositing avanzato con After Effects & Nuke','Motion tracking & rotoscoping professionale','Particle effects & simulazioni fisiche','Color grading cinematografico con DaVinci Resolve','Correzioni primarie e secondarie','Workflow di export e consegna in vari formati'],
+      learn_en:['Colour theory and visual psychology','Advanced compositing with After Effects & Nuke','Professional motion tracking & rotoscoping','Particle effects & physical simulations','Cinematic colour grading with DaVinci Resolve','Primary and secondary corrections','Export and delivery workflow in various formats'],
+      curriculum:[{title:'Capitolo 1 – Fondamenta del VFX',lessons:10},{title:'Capitolo 2 – Compositing Avanzato',lessons:12},{title:'Capitolo 3 – Tracking e Rotoscoping',lessons:10},{title:'Capitolo 4 – Color Grading',lessons:10},{title:'Capitolo 5 – Delivery & Export',lessons:6}]
+    },
+    { title_it:'Virtual Production Pro', title_en:'Virtual Production Pro',
+      tag_it:'VIRTUAL PRODUCTION', tag_en:'VIRTUAL PRODUCTION',
+      lead_it:'Esplora il futuro della produzione con ambienti virtuali e LED wall. Gestisci set virtuali, real-time rendering e tecnologie immersive.',
+      lead_en:'Explore the future of production with virtual environments and LED walls. Manage virtual sets, real-time rendering and immersive technologies.',
+      level:'adv', price:'€199', lessons:60, duration:'12h 00m',
+      learn_it:['Tecnologie LED wall e setup hardware professionale','Real-time rendering con Unreal Engine','Motion capture & performance capture','Virtual camera & virtual cinematography','Integrazione con pipeline di produzione tradizionale','Virtual lighting & tecniche di illuminazione avanzate','Case study da produzioni cinematografiche high-end','Workflow completo dalla pre-produzione alla consegna finale'],
+      learn_en:['LED wall technologies and professional hardware setup','Real-time rendering with Unreal Engine','Motion capture & performance capture','Virtual camera & virtual cinematography','Integration with traditional production pipelines','Virtual lighting & advanced illumination techniques','Case studies from high-end film productions','Full workflow from pre-production to final delivery'],
+      curriculum:[{title:'Capitolo 1 – Fondamenta Virtual Production',lessons:10},{title:'Capitolo 2 – LED Wall & Hardware',lessons:12},{title:'Capitolo 3 – Unreal Engine per VP',lessons:14},{title:'Capitolo 4 – Motion Capture',lessons:12},{title:'Capitolo 5 – Produzione & Post',lessons:12}]
+    }
+  ];
+}
+
+function selectCourse(idx) {
+  // save current before switching
+  if (courseData.length) storeCurrentEdits();
+  currentCourse = idx;
+  document.querySelectorAll('.ctab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  renderCourseForm();
+}
+
+function storeCurrentEdits() {
+  const c = courseData[currentCourse];
+  if (!c) return;
+  c.title_it  = document.getElementById('c_title_it').value;
+  c.title_en  = document.getElementById('c_title_en').value;
+  c.tag_it    = document.getElementById('c_tag_it').value;
+  c.tag_en    = document.getElementById('c_tag_en').value;
+  c.lead_it   = document.getElementById('c_lead_it').value;
+  c.lead_en   = document.getElementById('c_lead_en').value;
+  c.level     = document.getElementById('c_level').value;
+  c.price     = document.getElementById('c_price').value;
+  c.lessons   = parseInt(document.getElementById('c_lessons').value)||0;
+  c.duration  = document.getElementById('c_duration').value;
+  // learn lists
+  c.learn_it  = [...document.querySelectorAll('#learn_it_list input')].map(i=>i.value).filter(Boolean);
+  c.learn_en  = [...document.querySelectorAll('#learn_en_list input')].map(i=>i.value).filter(Boolean);
+  // curriculum
+  const titles  = [...document.querySelectorAll('.curr-title')].map(i=>i.value);
+  const counts  = [...document.querySelectorAll('.curr-count')].map(i=>parseInt(i.value)||0);
+  c.curriculum  = titles.map((t,i)=>({title:t, lessons:counts[i]}));
+}
+
+function renderCourseForm() {
+  const c = courseData[currentCourse];
+  document.getElementById('c_title_it').value = c.title_it;
+  document.getElementById('c_title_en').value = c.title_en;
+  document.getElementById('c_tag_it').value   = c.tag_it;
+  document.getElementById('c_tag_en').value   = c.tag_en;
+  document.getElementById('c_lead_it').value  = c.lead_it;
+  document.getElementById('c_lead_en').value  = c.lead_en;
+  document.getElementById('c_level').value    = c.level;
+  document.getElementById('c_price').value    = c.price;
+  document.getElementById('c_lessons').value  = c.lessons;
+  document.getElementById('c_duration').value = c.duration;
+  renderLearnList('it', c.learn_it);
+  renderLearnList('en', c.learn_en);
+  renderCurriculum(c.curriculum);
+}
+
+function renderLearnList(lang, items) {
+  const el = document.getElementById(`learn_${lang}_list`);
+  el.innerHTML = '';
+  (items||[]).forEach((item,i) => {
+    const row = document.createElement('div');
+    row.className = 'curr-row';
+    row.style.gridTemplateColumns = '1fr 32px';
+    row.innerHTML = `<input type="text" value="${escHtml(item)}"><button class="del-btn" onclick="removeLearnItem('${lang}',${i})">×</button>`;
+    el.appendChild(row);
+  });
+}
+
+function renderCurriculum(chapters) {
+  const el = document.getElementById('curr_list');
+  el.innerHTML = '';
+  (chapters||[]).forEach((ch,i) => {
+    const row = document.createElement('div');
+    row.className = 'curr-row';
+    row.innerHTML = `<input class="curr-title" type="text" value="${escHtml(ch.title)}" placeholder="Titolo capitolo"><input class="curr-count" type="number" value="${ch.lessons}" min="1" placeholder="Lez."><button class="del-btn" onclick="removeCurrChapter(${i})">×</button>`;
+    el.appendChild(row);
+  });
+}
+
+function addLearnItem(lang) {
+  storeCurrentEdits();
+  courseData[currentCourse]['learn_'+lang].push('');
+  renderLearnList(lang, courseData[currentCourse]['learn_'+lang]);
+}
+function removeLearnItem(lang, idx) {
+  storeCurrentEdits();
+  courseData[currentCourse]['learn_'+lang].splice(idx,1);
+  renderLearnList(lang, courseData[currentCourse]['learn_'+lang]);
+}
+function addCurrChapter() {
+  storeCurrentEdits();
+  courseData[currentCourse].curriculum.push({title:'Nuovo capitolo',lessons:1});
+  renderCurriculum(courseData[currentCourse].curriculum);
+}
+function removeCurrChapter(idx) {
+  storeCurrentEdits();
+  courseData[currentCourse].curriculum.splice(idx,1);
+  renderCurriculum(courseData[currentCourse].curriculum);
+}
+
+function loadCourseData() {
+  const raw = localStorage.getItem('fw_courseData');
+  courseData = raw ? JSON.parse(raw) : buildDefaultCourseData();
+  renderCourseForm();
+  toast('Dati corso caricati');
+}
+
+function saveCourseData() {
+  storeCurrentEdits();
+  localStorage.setItem('fw_courseData', JSON.stringify(courseData));
+  toast('Modifiche salvate localmente ✓ — ricorda di fare il Deploy per pubblicare.');
+}
+
+// ── i18n editor ────────────────────────────
+async function loadI18nFile(lang) {
+  // Since we can't read local files from browser directly without a server,
+  // we load from the saved courseData and reconstruct the relevant keys.
+  // For a full round-trip load, user pastes/edits directly in the textarea.
+  const path = document.getElementById(`i18n_${lang}_path`).value;
+  if (!path) { toast('Inserisci il percorso del file', 'err'); return; }
+  // Try to fetch via file:// — works only when page is served locally
+  try {
+    const res = await fetch(pathToFileURL(path));
+    if (!res.ok) throw new Error(res.status);
+    const text = await res.text();
+    document.getElementById(`i18n_${lang}_content`).value = text;
+    toast(`File ${lang.toUpperCase()} caricato ✓`);
+  } catch(e) {
+    toast('Impossibile caricare il file direttamente. Incolla il JSON manualmente.', 'err');
+  }
+}
+
+function pathToFileURL(p) {
+  return 'file:///' + p.replace(/\\/g, '/');
+}
+
+async function saveI18nFile(lang) {
+  const content = document.getElementById(`i18n_${lang}_content`).value;
+  try { JSON.parse(content); } catch(e) { toast('JSON non valido: ' + e.message, 'err'); return; }
+  // Save to localStorage for deploy pipeline
+  localStorage.setItem(`fw_i18n_${lang}`, content);
+  toast(`Stringhe ${lang.toUpperCase()} salvate — avvia il Deploy per pubblicare ✓`);
+}
+
+// ── GitHub Deploy ──────────────────────────
+function log(msg, cls='') {
+  const el = document.getElementById('deployLog');
+  const line = document.createElement('div');
+  if (cls) line.className = cls;
+  line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+function clearLog() {
+  document.getElementById('deployLog').innerHTML = '<span class="log-dim">Log pulito.</span>';
+}
+
+async function testGitHubConnection() {
+  const {token, owner, repo} = settings;
+  if (!token||!owner||!repo) { toast('Configura prima le impostazioni GitHub', 'err'); return; }
+  log('Test connessione GitHub...', 'log-dim');
+  try {
+    const res = await ghFetch(`repos/${owner}/${repo}`);
+    if (res.ok) {
+      const data = await res.json();
+      log(`✓ Connesso a ${data.full_name} (${data.default_branch})`, 'log-ok');
+      document.getElementById('statusDot').className = 'ok';
+      toast('Connessione GitHub OK ✓');
+    } else {
+      const err = await res.json();
+      log(`✗ Errore ${res.status}: ${err.message}`, 'log-err');
+      toast('Errore GitHub: ' + err.message, 'err');
+    }
+  } catch(e) { log('✗ Errore di rete: ' + e.message, 'log-err'); }
+}
+
+function ghFetch(endpoint, options={}) {
+  return fetch(`https://api.github.com/${endpoint}`, {
+    ...options,
+    headers: {
+      'Authorization': `token ${settings.token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+      ...(options.headers||{})
+    }
+  });
+}
+
+async function deployToGitHub() {
+  const {token, owner, repo, basepath} = settings;
+  if (!token||!owner||!repo) { toast('Configura prima le impostazioni GitHub', 'err'); showPanel('settings'); return; }
+
+  const branch  = document.getElementById('dep_branch').value || 'main';
+  const message = document.getElementById('dep_msg').value || 'chore: update site content';
+  const fileList = (localStorage.getItem('fw_admin_files') || document.getElementById('cfg_files').value)
+                    .split('\n').map(f=>f.trim()).filter(Boolean);
+
+  const btn = document.getElementById('deployBtn');
+  btn.disabled = true;
+  log(`🚀 Deploy avviato su ${owner}/${repo} (branch: ${branch})`, 'log-dim');
+  log(`📋 File da caricare: ${fileList.length}`, 'log-dim');
+
+  let ok = 0, fail = 0;
+
+  for (const relPath of fileList) {
+    // Determine content: for i18n files use saved textarea content if available
+    let content = null;
+
+    if (relPath === 'i18n/it.json') content = localStorage.getItem('fw_i18n_it');
+    else if (relPath === 'i18n/en.json') content = localStorage.getItem('fw_i18n_en');
+
+    if (!content && courseData.length && (relPath.includes('courses.html') || relPath.includes('it.json') || relPath.includes('en.json'))) {
+      // regenerate i18n from courseData if content not explicitly saved
+    }
+
+    if (!content) {
+      // Fetch from local file:// URL
+      const fileUrl = 'file:///' + (basepath||'').replace(/\\/g,'/').replace(/\/$/,'') + '/' + relPath.replace(/\\/g,'/');
+      try {
+        const r = await fetch(fileUrl);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        content = await r.text();
+      } catch(e) {
+        log(`⚠ Impossibile leggere ${relPath}: ${e.message} — skip`, 'log-warn');
+        fail++;
+        continue;
+      }
+    }
+
+    // Get current SHA (needed to update existing file)
+    let sha = null;
+    try {
+      const existing = await ghFetch(`repos/${owner}/${repo}/contents/${relPath}?ref=${branch}`);
+      if (existing.ok) { const d = await existing.json(); sha = d.sha; }
+    } catch(_) {}
+
+    // Upload
+    const body = {
+      message: `${message} — ${relPath}`,
+      content: btoa(unescape(encodeURIComponent(content))),
+      branch
+    };
+    if (sha) body.sha = sha;
+
+    try {
+      const up = await ghFetch(`repos/${owner}/${repo}/contents/${relPath}`, {
+        method: 'PUT',
+        body: JSON.stringify(body)
+      });
+      if (up.ok) {
+        log(`✓ ${relPath}`, 'log-ok');
+        ok++;
+      } else {
+        const err = await up.json();
+        log(`✗ ${relPath}: ${err.message}`, 'log-err');
+        fail++;
+      }
+    } catch(e) {
+      log(`✗ ${relPath}: ${e.message}`, 'log-err');
+      fail++;
+    }
+  }
+
+  log(`── Deploy completato: ${ok} OK, ${fail} errori ──`, fail > 0 ? 'log-warn' : 'log-ok');
+  btn.disabled = false;
+  toast(fail === 0 ? `Deploy completato ✓ (${ok} file)` : `Deploy con ${fail} errori`, fail > 0 ? 'err' : 'ok');
+}
+
+// ── Utils ──────────────────────────────────
+function escHtml(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openSiteLocal(page) {
+  document.getElementById('testNote').style.display = 'block';
+  // Try localhost:3000 first (npx serve), fallback to file://
+  const base = window.location.protocol === 'http:' || window.location.protocol === 'https:'
+    ? window.location.origin + '/'
+    : 'http://localhost:3000/';
+  window.open(base + page, '_blank');
+}
+
+// ── Init ───────────────────────────────────
+loadSettings();
+loadCourseData();
+</script>
+</body>
+</html>

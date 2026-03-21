@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corsi di Game Dev, VFX & Virtual Production | Filmwaker Academy</title>
+  <meta name="description" content="Filmwaker Academy offre corsi professionali di Game Development, VFX e Virtual Production.">
+  <link rel="canonical" href="https://www.filmwaker.it/coursepage/courses.html">
+  <meta property="og:title" content="Corsi | Filmwaker Academy">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.filmwaker.it/coursepage/courses.html">
+  <meta property="og:image" content="https://www.filmwaker.it/logo.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="courses-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/x-icon" sizes="16x16" href="../favicons/favicon16x16.ico">
+  <link rel="icon" type="image/x-icon" sizes="32x32" href="../favicons/favicon32x32.ico">
+</head>
+<body>
+  <nav>
+    <a href="../index.html" class="logo"><img src="../Logo.webp" alt="Filmwaker Logo"></a>
+    <button class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="../index.html#services" data-i18n="nav.services">Servizi</a></li>
+      <li><a href="../portfoliopage/portfolio.html" data-i18n="nav.portfolio">Portfolio</a></li>
+      <li><a href="../academypage/academy.html" data-i18n="nav.academy">Academy</a></li>
+      <li><a href="../teampage/team.html" data-i18n="nav.team">Team</a></li>
+      <li><a href="../index.html#contact" class="btn-primary" data-i18n="nav.contact">Contattaci</a></li>
+    </ul>
+    <div class="fw-lang-switcher">
+      <button class="fw-lang-btn active" data-lang="it" onclick="FW_I18N.switchTo('it')">IT</button>
+      <button class="fw-lang-btn" data-lang="en" onclick="FW_I18N.switchTo('en')">EN</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="academy-hero" id="top">
+    <div class="academy-hero-inner">
+      <span class="academy-badge" data-i18n="academy.badge">FILMWAKER ACADEMY</span>
+      <h1 data-i18n="courses.hero_title">Formazione per tutti i livelli</h1>
+      <p data-i18n="courses.hero_sub">I nostri corsi sono guidati da professionisti del settore.</p>
+      <a href="#courses-list" class="btn-primary academy-cta" data-i18n="courses.discover">Scopri i Corsi</a>
+    </div>
+  </section>
+
+  <!-- CARDS OVERVIEW -->
+  <section class="courses-overview" id="courses-list">
+    <h2 class="section-title" data-i18n="courses.overview_title">I Nostri Corsi</h2>
+    <div class="courses-card-grid">
+
+      <a href="#game-development" class="course-overview-card">
+        <div class="coc-img">
+          <img src="../courseimages/coursegame.webp" alt="Game Development">
+          <span class="coc-level" data-i18n="courses.badge_base">Base</span>
+        </div>
+        <div class="coc-body">
+          <h3 data-i18n="courses.game_title">Game Development Fundamentals</h3>
+          <p data-i18n="courses.game_card_p">Dal game design alla programmazione, scopri tutti i segreti dello sviluppo ludico moderno.</p>
+          <div class="coc-meta">
+            <span><i class="fa fa-clock"></i> 6h 05m</span>
+            <span><i class="fa fa-play-circle"></i> 36 <span data-i18n="courses.lessons_label">Lezioni</span></span>
+            <span class="coc-price"><span data-i18n="courses.da_label">da</span> €99</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#visual-effects" class="course-overview-card">
+        <div class="coc-img">
+          <img src="../courseimages/coursevfx.webp" alt="Visual Effects">
+          <span class="coc-level level-mid" data-i18n="courses.badge_mid">Intermedio</span>
+        </div>
+        <div class="coc-body">
+          <h3 data-i18n="courses.vfx_title">Visual Effects Mastery</h3>
+          <p data-i18n="courses.vfx_card_p">Compositing, color grading, particle effects. Domina le tecniche avanzate di VFX.</p>
+          <div class="coc-meta">
+            <span><i class="fa fa-clock"></i> 8h 30m</span>
+            <span><i class="fa fa-play-circle"></i> 48 <span data-i18n="courses.lessons_label">Lezioni</span></span>
+            <span class="coc-price"><span data-i18n="courses.da_label">da</span> €149</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#virtual-production" class="course-overview-card">
+        <div class="coc-img">
+          <img src="../courseimages/coursevirtualproduction.webp" alt="Virtual Production">
+          <span class="coc-level level-adv" data-i18n="courses.badge_adv">Avanzato</span>
+        </div>
+        <div class="coc-body">
+          <h3 data-i18n="courses.vp_title">Virtual Production Pro</h3>
+          <p data-i18n="courses.vp_card_p">LED wall, real-time rendering, motion capture. Esplora il futuro della produzione.</p>
+          <div class="coc-meta">
+            <span><i class="fa fa-clock"></i> 12h 00m</span>
+            <span><i class="fa fa-play-circle"></i> 60 <span data-i18n="courses.lessons_label">Lezioni</span></span>
+            <span class="coc-price"><span data-i18n="courses.da_label">da</span> €199</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== COURSE 1: GAME DEVELOPMENT ===== -->
+  <section class="course-detail-block" id="game-development">
+    <div class="cdb-hero">
+      <div class="cdb-hero-text">
+        <span class="cdb-tag" data-i18n="courses.game_tag">GAME DEVELOPMENT</span>
+        <h2 data-i18n="courses.game_title">Game Development Fundamentals</h2>
+        <p class="cdb-lead" data-i18n="courses.game_lead">Apprendi Unreal Engine e tutte le competenze necessarie a sviluppare il tuo videogioco, anche partendo da zero.</p>
+        <div class="cdb-stats-row">
+          <div class="cdb-stat"><span class="stat-val" data-i18n="courses.badge_base">Base</span><span class="stat-lab" data-i18n="courses.stat_level">Livello</span></div>
+          <div class="cdb-stat"><span class="stat-val">36</span><span class="stat-lab" data-i18n="courses.stat_lessons">Lezioni</span></div>
+          <div class="cdb-stat"><span class="stat-val">6h 05m</span><span class="stat-lab" data-i18n="courses.stat_duration">Durata</span></div>
+          <div class="cdb-stat"><span class="stat-val">€99</span><span class="stat-lab" data-i18n="courses.stat_from">Da</span></div>
+        </div>
+        <a href="mailto:info@filmwaker.it?subject=Info%20Game%20Development" class="btn-primary cdb-cta" data-i18n="courses.request_info">Richiedi Informazioni</a>
+      </div>
+      <div class="cdb-hero-img"><img src="../courseimages/coursegame.webp" alt="Game Development Course"></div>
+    </div>
+    <div class="cdb-body">
+      <div class="cdb-left">
+        <h3 class="cdb-section-title" data-i18n="courses.learn_title">Cosa imparerai</h3>
+        <ul class="learn-list">
+          <li><i class="fa fa-check"></i><span data-i18n="courses.game_li1">Workflow e creazione di un gioco completo in Unreal Engine</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.game_li2">Programmazione Blueprint + introduzione a C++</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.game_li3">Best practice Blueprint: ottimizzazione, memoria, struttura</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.game_li4">Integrazione ed uso degli effetti Niagara</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.game_li5">Game optimization & testing</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.game_li6">Debugging e build dell'applicazione finale</span></li>
+        </ul>
+        <h3 class="cdb-section-title" style="margin-top:2.5rem" data-i18n="courses.curriculum_title">Programma del corso</h3>
+        <div class="curriculum-accordion">
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.game_ch1">Capitolo 1 – Interfaccia</span><span class="curr-meta">8 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.game_ch1_p">Panoramica dell'interfaccia, content browser e prime impostazioni.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.game_ch2">Capitolo 2 – Strumenti</span><span class="curr-meta">7 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.game_ch2_p">Landscape tools, foliage, geometry brushes.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.game_ch3">Capitolo 3 – Ambientazioni</span><span class="curr-meta">8 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.game_ch3_p">Ambienti realistici con Megascans, Nanite e Lumen.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.game_ch4">Capitolo 4 – Blueprint</span><span class="curr-meta">8 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.game_ch4_p">Logica di gioco, input management, Blueprint communication.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.game_ch5">Capitolo 5 – Build & Deploy</span><span class="curr-meta">5 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.game_ch5_p">Ottimizzazione finale, packaging e distribuzione.</p></div></div>
+        </div>
+      </div>
+      <div class="cdb-right">
+        <div class="included-box">
+          <h3 class="cdb-section-title" data-i18n="courses.included_title">Cosa è incluso</h3>
+          <ul class="included-list">
+            <li><i class="fa fa-certificate"></i><div><strong data-i18n="courses.inc_cert">Attestato finale</strong><p data-i18n="courses.inc_cert_p">Richiedibile su LinkedIn o nel tuo CV.</p></div></li>
+            <li><i class="fa fa-clock"></i><div><strong data-i18n="courses.inc_pace">Studia ai tuoi ritmi</strong><p data-i18n="courses.inc_pace_p">Lezioni on-demand, visibili quando vuoi.</p></div></li>
+            <li><i class="fa fa-comments"></i><div><strong data-i18n="courses.inc_support">Supporto del docente</strong><p data-i18n="courses.inc_support_p">Assistenza per ogni domanda.</p></div></li>
+            <li><i class="fa fa-download"></i><div><strong data-i18n="courses.inc_assets">Materiali scaricabili</strong><p data-i18n="courses.inc_assets_p">Asset, progetti finiti e risorse.</p></div></li>
+          </ul>
+          <a href="mailto:info@filmwaker.it?subject=Info%20Game%20Development" class="btn-primary" style="width:100%;text-align:center;margin-top:1.5rem;display:block"><span data-i18n="courses.enroll_from">Inizia Ora — da</span> €99</a>
+        </div>
+        <div class="instructor-box">
+          <h3 class="cdb-section-title" data-i18n="courses.instructor_title">Il Tuo Docente</h3>
+          <div class="instructor-card">
+            <div class="instr-avatar"><i class="fa fa-user"></i></div>
+            <div><strong data-i18n="courses.instr_name">Team Filmwaker</strong><span data-i18n="courses.instr_role_game">Game Developer & 3D Artist</span></div>
+          </div>
+          <p class="instr-bio" data-i18n="courses.instr_bio_game">Professionisti con anni di esperienza su titoli indie e produzioni commerciali.</p>
+          <div class="instr-skills"><span>Unreal Engine 5</span><span>Blueprint</span><span>C++</span><span>Level Design</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COURSE 2: VISUAL EFFECTS ===== -->
+  <section class="course-detail-block alt-bg" id="visual-effects">
+    <div class="cdb-hero">
+      <div class="cdb-hero-text">
+        <span class="cdb-tag tag-mid" data-i18n="courses.vfx_tag">VISUAL EFFECTS</span>
+        <h2 data-i18n="courses.vfx_title">Visual Effects Mastery</h2>
+        <p class="cdb-lead" data-i18n="courses.vfx_lead">Domina le tecniche avanzate di VFX. Dal compositing al color grading, crea effetti cinematografici.</p>
+        <div class="cdb-stats-row">
+          <div class="cdb-stat"><span class="stat-val" data-i18n="courses.badge_mid">Intermedio</span><span class="stat-lab" data-i18n="courses.stat_level">Livello</span></div>
+          <div class="cdb-stat"><span class="stat-val">48</span><span class="stat-lab" data-i18n="courses.stat_lessons">Lezioni</span></div>
+          <div class="cdb-stat"><span class="stat-val">8h 30m</span><span class="stat-lab" data-i18n="courses.stat_duration">Durata</span></div>
+          <div class="cdb-stat"><span class="stat-val">€149</span><span class="stat-lab" data-i18n="courses.stat_from">Da</span></div>
+        </div>
+        <a href="mailto:info@filmwaker.it?subject=Info%20VFX%20Mastery" class="btn-primary cdb-cta" data-i18n="courses.request_info">Richiedi Informazioni</a>
+      </div>
+      <div class="cdb-hero-img"><img src="../courseimages/coursevfx.webp" alt="VFX Course"></div>
+    </div>
+    <div class="cdb-body">
+      <div class="cdb-left">
+        <h3 class="cdb-section-title" data-i18n="courses.learn_title">Cosa imparerai</h3>
+        <ul class="learn-list">
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vfx_li1">Teoria del colore e psicologia visiva</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vfx_li2">Compositing avanzato con After Effects & Nuke</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vfx_li3">Motion tracking & rotoscoping professionale</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vfx_li4">Particle effects & simulazioni fisiche</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vfx_li5">Color grading cinematografico con DaVinci Resolve</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vfx_li6">Correzioni primarie e secondarie</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vfx_li7">Workflow di export e consegna in vari formati</span></li>
+        </ul>
+        <h3 class="cdb-section-title" style="margin-top:2.5rem" data-i18n="courses.curriculum_title">Programma del corso</h3>
+        <div class="curriculum-accordion">
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vfx_ch1">Capitolo 1 – Fondamenta VFX</span><span class="curr-meta">10 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vfx_ch1_p">Teoria del colore, psicologia visiva e panoramica software VFX.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vfx_ch2">Capitolo 2 – Compositing</span><span class="curr-meta">12 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vfx_ch2_p">Layering, masking, keying in After Effects e Nuke.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vfx_ch3">Capitolo 3 – Tracking & Rotoscoping</span><span class="curr-meta">10 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vfx_ch3_p">Camera tracking, object tracking e rotoscoping.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vfx_ch4">Capitolo 4 – Color Grading</span><span class="curr-meta">10 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vfx_ch4_p">DaVinci Resolve, LUTs e look cinematografici.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vfx_ch5">Capitolo 5 – Delivery & Export</span><span class="curr-meta">6 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vfx_ch5_p">Codecs, formati broadcast, pipeline di consegna.</p></div></div>
+        </div>
+      </div>
+      <div class="cdb-right">
+        <div class="included-box">
+          <h3 class="cdb-section-title" data-i18n="courses.included_title">Cosa è incluso</h3>
+          <ul class="included-list">
+            <li><i class="fa fa-certificate"></i><div><strong data-i18n="courses.inc_cert">Attestato finale</strong><p data-i18n="courses.inc_cert_p">Richiedibile su LinkedIn o nel tuo CV.</p></div></li>
+            <li><i class="fa fa-clock"></i><div><strong data-i18n="courses.inc_pace">Studia ai tuoi ritmi</strong><p data-i18n="courses.inc_pace_p">Lezioni on-demand, visibili quando vuoi.</p></div></li>
+            <li><i class="fa fa-comments"></i><div><strong data-i18n="courses.inc_support">Supporto del docente</strong><p data-i18n="courses.inc_support_p">Assistenza per ogni domanda.</p></div></li>
+            <li><i class="fa fa-film"></i><div><strong data-i18n="courses.inc_realwork">Progetti reali</strong><p data-i18n="courses.inc_realwork_p">Esercizi su footage reale da set professionali.</p></div></li>
+          </ul>
+          <a href="mailto:info@filmwaker.it?subject=Info%20VFX%20Mastery" class="btn-primary" style="width:100%;text-align:center;margin-top:1.5rem;display:block"><span data-i18n="courses.enroll_from">Inizia Ora — da</span> €149</a>
+        </div>
+        <div class="instructor-box">
+          <h3 class="cdb-section-title" data-i18n="courses.instructor_title">Il Tuo Docente</h3>
+          <div class="instructor-card">
+            <div class="instr-avatar"><i class="fa fa-user"></i></div>
+            <div><strong data-i18n="courses.instr_name">Team Filmwaker</strong><span data-i18n="courses.instr_role_vfx">VFX Artist & Compositor</span></div>
+          </div>
+          <p class="instr-bio" data-i18n="courses.instr_bio_vfx">Esperti di post-produzione con background in pubblicità e cinema.</p>
+          <div class="instr-skills"><span>After Effects</span><span>Nuke</span><span>DaVinci</span><span>Color Grading</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COURSE 3: VIRTUAL PRODUCTION ===== -->
+  <section class="course-detail-block" id="virtual-production">
+    <div class="cdb-hero">
+      <div class="cdb-hero-text">
+        <span class="cdb-tag tag-adv" data-i18n="courses.vp_tag">VIRTUAL PRODUCTION</span>
+        <h2 data-i18n="courses.vp_title">Virtual Production Pro</h2>
+        <p class="cdb-lead" data-i18n="courses.vp_lead">Esplora il futuro della produzione con ambienti virtuali e LED wall.</p>
+        <div class="cdb-stats-row">
+          <div class="cdb-stat"><span class="stat-val" data-i18n="courses.badge_adv">Avanzato</span><span class="stat-lab" data-i18n="courses.stat_level">Livello</span></div>
+          <div class="cdb-stat"><span class="stat-val">60</span><span class="stat-lab" data-i18n="courses.stat_lessons">Lezioni</span></div>
+          <div class="cdb-stat"><span class="stat-val">12h 00m</span><span class="stat-lab" data-i18n="courses.stat_duration">Durata</span></div>
+          <div class="cdb-stat"><span class="stat-val">€199</span><span class="stat-lab" data-i18n="courses.stat_from">Da</span></div>
+        </div>
+        <a href="mailto:info@filmwaker.it?subject=Info%20Virtual%20Production" class="btn-primary cdb-cta" data-i18n="courses.request_info">Richiedi Informazioni</a>
+      </div>
+      <div class="cdb-hero-img"><img src="../courseimages/coursevirtualproduction.webp" alt="Virtual Production Course"></div>
+    </div>
+    <div class="cdb-body">
+      <div class="cdb-left">
+        <h3 class="cdb-section-title" data-i18n="courses.learn_title">Cosa imparerai</h3>
+        <ul class="learn-list">
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vp_li1">Tecnologie LED wall e setup hardware professionale</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vp_li2">Real-time rendering con Unreal Engine</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vp_li3">Motion capture & performance capture</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vp_li4">Virtual camera & virtual cinematography</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vp_li5">Integrazione con pipeline di produzione tradizionale</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vp_li6">Virtual lighting & tecniche di illuminazione avanzate</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vp_li7">Case study da produzioni cinematografiche high-end</span></li>
+          <li><i class="fa fa-check"></i><span data-i18n="courses.vp_li8">Workflow completo dalla pre-produzione alla consegna finale</span></li>
+        </ul>
+        <h3 class="cdb-section-title" style="margin-top:2.5rem" data-i18n="courses.curriculum_title">Programma del corso</h3>
+        <div class="curriculum-accordion">
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vp_ch1">Capitolo 1 – Fondamenta VP</span><span class="curr-meta">10 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vp_ch1_p">Storia, tecnologie attuali, in-camera vs post VFX.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vp_ch2">Capitolo 2 – LED Wall & Hardware</span><span class="curr-meta">12 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vp_ch2_p">Setup hardware, calibrazione display, gestione del colore.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vp_ch3">Capitolo 3 – Unreal Engine per VP</span><span class="curr-meta">14 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vp_ch3_p">nDisplay, rendering in tempo reale, pipeline Perforce.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vp_ch4">Capitolo 4 – Motion Capture</span><span class="curr-meta">12 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vp_ch4_p">Optical mocap, live link, retargeting.</p></div></div>
+          <div class="curr-item"><button class="curr-q"><span data-i18n="courses.vp_ch5">Capitolo 5 – Produzione & Post</span><span class="curr-meta">12 <span data-i18n="courses.lessons_label">lezioni</span></span><i class="fa fa-chevron-down"></i></button>
+            <div class="curr-a"><p data-i18n="courses.vp_ch5_p">Coordinamento set virtuale, tracking camera, consegna.</p></div></div>
+        </div>
+      </div>
+      <div class="cdb-right">
+        <div class="included-box">
+          <h3 class="cdb-section-title" data-i18n="courses.included_title">Cosa è incluso</h3>
+          <ul class="included-list">
+            <li><i class="fa fa-certificate"></i><div><strong data-i18n="courses.inc_cert">Attestato finale</strong><p data-i18n="courses.inc_cert_p">Richiedibile su LinkedIn o nel tuo CV.</p></div></li>
+            <li><i class="fa fa-clock"></i><div><strong data-i18n="courses.inc_pace">Studia ai tuoi ritmi</strong><p data-i18n="courses.inc_pace_p">Lezioni on-demand, visibili quando vuoi.</p></div></li>
+            <li><i class="fa fa-comments"></i><div><strong data-i18n="courses.inc_support">Supporto del docente</strong><p data-i18n="courses.inc_support_p">Assistenza per ogni domanda.</p></div></li>
+            <li><i class="fa fa-vr-cardboard"></i><div><strong data-i18n="courses.inc_studio">Accesso al set Filmwaker</strong><p data-i18n="courses.inc_studio_p">Sessioni pratiche opzionali presso il nostro studio.</p></div></li>
+          </ul>
+          <a href="mailto:info@filmwaker.it?subject=Info%20Virtual%20Production" class="btn-primary" style="width:100%;text-align:center;margin-top:1.5rem;display:block"><span data-i18n="courses.enroll_from">Inizia Ora — da</span> €199</a>
+        </div>
+        <div class="instructor-box">
+          <h3 class="cdb-section-title" data-i18n="courses.instructor_title">Il Tuo Docente</h3>
+          <div class="instructor-card">
+            <div class="instr-avatar"><i class="fa fa-user"></i></div>
+            <div><strong data-i18n="courses.instr_name">Team Filmwaker</strong><span data-i18n="courses.instr_role_vp">Virtual Production Supervisor</span></div>
+          </div>
+          <p class="instr-bio" data-i18n="courses.instr_bio_vp">Supervisori con esperienza diretta su set con LED wall e pipeline Unreal Engine.</p>
+          <div class="instr-skills"><span>Unreal Engine</span><span>nDisplay</span><span>Motion Capture</span><span>LED Wall</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-section">
+      <h4 data-i18n="footer.services">Servizi</h4>
+      <ul>
+        <li><a href="../portfoliopage/portfolio.html#commercial" data-i18n="footer.video_prod">Produzione Video</a></li>
+        <li><a href="../portfoliopage/portfolio.html#cgi" data-i18n="footer.cgi">CGI & Animazione</a></li>
+        <li><a href="../portfoliopage/portfolio.html#commercial" data-i18n="footer.ads">Spot Pubblicitari</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4 data-i18n="footer.resources">Risorse</h4>
+      <ul><li><a href="../teampage/team.html" data-i18n="footer.team_link">Conosci Il Team</a></li></ul>
+    </div>
+    <div class="footer-section">
+      <h4 data-i18n="footer.social">Social</h4>
+      <ul>
+        <li><a href="https://www.instagram.com/filmwaker" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.linkedin.com/company/filmwaker" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://www.youtube.com/@filmwaker" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+      </ul>
+    </div>
+  </footer>
+  <div class="credit-info">
+    <p><small id="copyright-year">© 2025 Filmwaker Studio. <span data-i18n="footer.rights">Tutti i diritti riservati.</span> Website designed & developed by </small>
+    <a href="https://mrfabry.github.io" target="_blank" rel="noopener noreferrer">MrFabry</a></p>
+  </div>
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top"><i class="fa fa-arrow-up"></i></button>
+
+  <script src="../i18n/i18n.js"></script>
+  <script src="../script.js"></script>
+  <script>
+    // Curriculum accordion
+    document.querySelectorAll('.curr-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.curr-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.curr-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.course-detail-block, .course-overview-card').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+/* Team Page Specific Styles */
+
+/* Hero Section */
+.team-hero {
+    padding-top: 160px;
+    padding-bottom: 60px;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--dark-bg) 100%);
+    text-align: center;
+}
+
+.team-hero h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--text-white);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards 0.2s;
+}
+
+.team-hero .highlight {
+    color: var(--cyan);
+    text-shadow: 0 0 25px rgba(0, 217, 255, 0.5);
+}
+
+.team-hero p {
+    color: var(--text-light);
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards 0.4s;
+}
+
+/* Team Grid Section */
+.team-grid-section {
+    padding: 2rem 5% 8rem 5%;
+    background-color: var(--dark-bg);
+}
+
+/* GRID LAYOUT: 4 Cards in a Row */
+.team-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Team Card */
+.team-card {
+    background: var(--accent-dark);
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+    border: 1px solid rgba(0, 217, 255, 0.1);
+    transition: all 0.4s ease, opacity 0.8s ease, transform 0.8s ease; /* Added transition for fade in */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    
+    /* FIX: Start hidden, but removed the CSS animation conflict */
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* FIX: The class JS will add to reveal the card */
+.team-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.team-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--cyan);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Image Wrapper - Square Ratio */
+.card-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    overflow: hidden;
+}
+
+.card-image-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.team-card:hover .card-image-wrapper img {
+    transform: scale(1.1);
+    filter: brightness(0.7);
+}
+
+/* Social Overlay */
+.social-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(10, 22, 40, 0.7);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    backdrop-filter: blur(3px);
+}
+
+.team-card:hover .social-overlay {
+    opacity: 1;
+}
+
+/* Custom Social Icons */
+.social-overlay a {
+    color: var(--cyan);
+    font-size: 2rem;
+    margin: 0 10px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: translateY(20px);
+    display: inline-block;
+}
+
+.team-card:hover .social-overlay a {
+    transform: translateY(0);
+}
+
+.social-overlay a:hover {
+    color: #fff;
+    text-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan);
+    transform: translateY(0) scale(1.2);
+}
+
+/* Card Content */
+.card-content {
+    padding: 2rem;
+    flex-grow: 1;
+}
+
+.card-content h3 {
+    font-size: 1.8rem;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+}
+
+.card-content .role {
+    display: block;
+    color: var(--cyan);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+}
+
+.divider-small {
+    width: 40px;
+    height: 2px;
+    background: var(--cyan);
+    margin: 0 auto 1.5rem auto;
+    opacity: 0.5;
+}
+
+.card-content p {
+    color: var(--text-light);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Join Us Section */
+.join-us {
+    padding: 4rem 5%;
+    text-align: center;
+    background: linear-gradient(135deg, var(--accent-dark) 0%, var(--navy) 100%);
+    border-top: 1px solid rgba(0, 217, 255, 0.1);
+}
+
+.join-content h2 {
+    font-size: 2rem;
+    color: var(--text-white);
+    margin-bottom: 1rem;
+}
+
+.join-content p {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .team-container {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .team-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation Definition */
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(30px); }
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio – I Nostri Lavori | Filmwaker Studio</title>
+    <meta name="description" content="Esplora i lavori di Filmwaker. Scopri il processo creativo dietro i nostri spot, progetti CGI e produzioni virtuali.">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="portfolio-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="../favicons/favicon16x16.ico">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="../favicons/favicon32x32.ico">
+</head>
+<body>
+    <nav>
+        <a href="../index.html" class="logo"><img src="../Logo.webp" alt="Filmwaker Logo"></a>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="../index.html#services" data-i18n="nav.services">Servizi</a></li>
+            <li><a href="#top" class="active" data-i18n="nav.portfolio">Portfolio</a></li>
+            <li><a href="../academypage/academy.html" data-i18n="nav.academy">Academy</a></li>
+            <li><a href="../teampage/team.html" data-i18n="nav.team">Team</a></li>
+            <li><a href="../index.html#contact" class="btn-primary" data-i18n="nav.contact">Contattaci</a></li>
+        </ul>
+        <div class="fw-lang-switcher">
+            <button class="fw-lang-btn active" data-lang="it" onclick="FW_I18N.switchTo('it')">IT</button>
+            <button class="fw-lang-btn" data-lang="en" onclick="FW_I18N.switchTo('en')">EN</button>
+        </div>
+    </nav>
+
+    <section class="portfolio-hero" id="top">
+        <h1><span data-i18n="portfolio.hero_h1">I Nostri</span> <span class="highlight" data-i18n="portfolio.hero_h1_span">Lavori</span></h1>
+        <p data-i18n="portfolio.hero_p">Non produciamo solo video. Risolviamo problemi creativi. Ecco come lavoriamo.</p>
+    </section>
+
+    <section class="portfolio-controls">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all" data-i18n="portfolio.filter_all">Tutto</button>
+            <button class="filter-btn" data-filter="commercial" data-i18n="portfolio.filter_commercial">Commerciale</button>
+            <button class="filter-btn" data-filter="cgi" data-i18n="portfolio.filter_cgi">CGI & Unreal</button>
+            <button class="filter-btn" data-filter="vfx" data-i18n="portfolio.filter_vfx">VFX & Virtual</button>
+        </div>
+    </section>
+
+    <div class="projects-container">
+        <!-- Progetto 1: Virtual Production -->
+        <section class="project-section" data-category="vfx">
+            <div class="project-media" onclick="openVideo('MpuCteZkey4')">
+                <img src="https://img.youtube.com/vi/MpuCteZkey4/maxresdefault.jpg" alt="Virtual Production Project">
+                <div class="media-overlay">
+                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                    <span data-i18n="portfolio.watch_yt">Guarda su YouTube</span>
+                </div>
+            </div>
+            <div class="project-details">
+                <div class="project-header">
+                    <span class="project-tag" data-i18n="portfolio.p1_tag">Virtual Production</span>
+                    <h2 data-i18n="portfolio.p1_h2">Sci-Fi Environment Integration</h2>
+                </div>
+                <div class="project-description">
+                    <h3 data-i18n="portfolio.p1_h3a">Il Progetto</h3>
+                    <p data-i18n="portfolio.p1_p1">L'obiettivo era creare un ambiente sci-fi realistico senza costruire un set fisico costoso.</p>
+                    <h3 data-i18n="portfolio.p1_h3b">Cosa Abbiamo Fatto</h3>
+                    <p data-i18n="portfolio.p1_p2">Abbiamo sviluppato l'ambiente 3D in Unreal Engine 5, ottimizzandolo per il rendering in tempo reale.</p>
+                </div>
+                <div class="tech-stack">
+                    <span>Unreal Engine 5</span><span>LED Wall</span><span>Camera Tracking</span><span>Real-time Rendering</span>
+                </div>
+            </div>
+        </section>
+
+        <hr class="project-divider">
+
+        <!-- Progetto 2: Commercial -->
+        <section class="project-section" data-category="commercial">
+            <div class="project-media" onclick="openVideo('x8jp9q4_BBo')">
+                <img src="https://img.youtube.com/vi/x8jp9q4_BBo/maxresdefault.jpg" alt="Commercial Interview">
+                <div class="media-overlay">
+                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                    <span data-i18n="portfolio.watch_yt">Guarda su YouTube</span>
+                </div>
+            </div>
+            <div class="project-details">
+                <div class="project-header">
+                    <span class="project-tag" data-i18n="portfolio.p2_tag">Commercial & Storytelling</span>
+                    <h2 data-i18n="portfolio.p2_h2">Corporate Brand Story</h2>
+                </div>
+                <div class="project-description">
+                    <h3 data-i18n="portfolio.p2_h3a">Il Progetto</h3>
+                    <p data-i18n="portfolio.p2_p1">Il cliente aveva bisogno di comunicare i valori aziendali attraverso un'intervista cinematografica.</p>
+                    <h3 data-i18n="portfolio.p2_h3b">Cosa Abbiamo Fatto</h3>
+                    <p data-i18n="portfolio.p2_p2">Ci siamo concentrati su cinematografia e regia con lighting morbido e color grading cinematografico.</p>
+                </div>
+                <div class="tech-stack">
+                    <span>Cinematography</span><span>Color Grading</span><span>Sound Design</span><span>Directing</span>
+                </div>
+            </div>
+        </section>
+
+        <hr class="project-divider">
+
+        <!-- Progetto 3: CGI -->
+        <section class="project-section" data-category="cgi">
+            <div class="project-media" onclick="openVideo('EGciy4S_5Zk')">
+                <img src="https://img.youtube.com/vi/EGciy4S_5Zk/maxresdefault.jpg" alt="CGI Animation">
+                <div class="media-overlay">
+                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                    <span data-i18n="portfolio.watch_yt">Guarda su YouTube</span>
+                </div>
+            </div>
+            <div class="project-details">
+                <div class="project-header">
+                    <span class="project-tag" data-i18n="portfolio.p3_tag">CGI & Animazione 3D</span>
+                    <h2 data-i18n="portfolio.p3_h2">Automotive & Product Reveal</h2>
+                </div>
+                <div class="project-description">
+                    <h3 data-i18n="portfolio.p3_h3a">Il Progetto</h3>
+                    <p data-i18n="portfolio.p3_p1">L'obiettivo era creare un video reveal dove la cinematografia tradizionale non poteva arrivare.</p>
+                    <h3 data-i18n="portfolio.p3_h3b">Cosa Abbiamo Fatto</h3>
+                    <p data-i18n="portfolio.p3_p2">Modelli fotorealistici, animazioni meccaniche sincronizzate con la musica e illuminazione virtuale.</p>
+                </div>
+                <div class="tech-stack">
+                    <span>Blender / Maya</span><span>Texturing</span><span>Animation</span><span>Compositing</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-section">
+            <h4 data-i18n="footer.services">Servizi</h4>
+            <ul>
+                <li><a href="#" data-i18n="footer.video_prod">Produzione Video</a></li>
+                <li><a href="#" data-i18n="footer.cgi">CGI & Animazione</a></li>
+                <li><a href="#" data-i18n="footer.ads">Spot Pubblicitari</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4 data-i18n="footer.resources">Risorse</h4>
+            <ul><li><a href="../teampage/team.html" data-i18n="footer.team_link">Conosci Il Team</a></li></ul>
+        </div>
+        <div class="footer-section">
+            <h4 data-i18n="footer.social">Social</h4>
+            <ul>
+                <li><a href="https://www.instagram.com/filmwaker" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                <li><a href="https://www.linkedin.com/company/filmwaker" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="https://www.youtube.com/@filmwaker" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+            </ul>
+        </div>
+    </footer>
+    <div class="credit-info">
+        <p><small id="copyright-year">© 2025 Filmwaker Studio. <span data-i18n="footer.rights">Tutti i diritti riservati.</span> Website designed &amp; developed by </small>
+        <a href="https://mrfabry.github.io" target="_blank" rel="noopener noreferrer">MrFabry</a></p>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="videoModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:9999;align-items:center;justify-content:center;">
+        <span onclick="closeVideo()" style="position:absolute;top:30px;right:50px;font-size:50px;color:var(--cyan);cursor:pointer;z-index:10000;">&times;</span>
+        <iframe id="videoFrame" width="80%" height="80%" frameborder="0" allow="autoplay;encrypted-media;accelerometer;gyroscope;picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top"><i class="fa fa-arrow-up"></i></button>
+    <script src="../i18n/i18n.js"></script>
+    <script src="../script.js"></script>
+    <script src="portfolio-script.js"></script>
+</body>
+</html>
