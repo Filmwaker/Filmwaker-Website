@@ -225,10 +225,10 @@ document.addEventListener('DOMContentLoaded', function() {
         { file: 'LOGO ITALPOL.webp',     name: 'Italpol',           url: 'https://www.italpol.it' },
         { file: 'medical.webp',          name: 'Medical',           url: '#' },
         { file: 'muschioselvaggio.webp', name: 'Muschio Selvaggio',  url: 'https://www.youtube.com/@MuschioSelvaggio' },
-        { file: 'pulppodcast.webp',      name: 'Pulp Podcast',      url: 'https://www.youtube.com/@PulpPodcast' },
+        { file: 'pulppodcast.webp',      name: 'Pulp Podcast',      url: 'https://www.youtube.com/@Pulp_podcast' },
         { file: 'ringo.webp',            name: 'Ringo',             url: 'https://www.ringo.it' },
         { file: 'streamicon.webp',       name: 'Streamicon',        url: '#' },
-        { file: 'webstarchannel.webp',   name: 'WebStar Channel',   url: 'https://www.youtube.com/@webstarchannel' },
+        { file: 'webstarchannel.webp',   name: 'WebStar Channel',   url: 'https://www.linkedin.com/company/web-stars-channel/' },
     ];
 
     const basePath = 'brandimages/';
