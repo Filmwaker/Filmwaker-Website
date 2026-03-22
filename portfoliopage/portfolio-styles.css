@@ -300,3 +300,15 @@
     .portfolio-hero h1 { font-size: 1.7rem; }
     .filter-buttons { justify-content: center; }
 }
+
+/* Link inline nel testo portfolio */
+.project-description a {
+    color: var(--cyan);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,217,255,0.4);
+    transition: border-color 0.2s, color 0.2s;
+}
+.project-description a:hover {
+    color: #fff;
+    border-bottom-color: #fff;
+}
