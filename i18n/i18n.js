@@ -1,7 +1,5 @@
 /**
  * FILMWAKER i18n ENGINE v3 — Dizionari inline, zero fetch
- * Funziona con file://, http://, qualsiasi server.
- * Nessuna dipendenza esterna.
  */
 const FW_I18N = (() => {
   const STORAGE_KEY  = 'fw_lang';
@@ -9,12 +7,9 @@ const FW_I18N = (() => {
   const SUPPORTED    = ['it', 'en'];
   let _lang = DEFAULT_LANG;
 
-  /* ═══════════════════════════════════════════════════════════════════
-     DIZIONARI INLINE — tutto il testo del sito in un unico posto
-     ═══════════════════════════════════════════════════════════════════ */
   const _dict = {
 
-    /* ── ITALIANO (default) ─────────────────────────────────────────── */
+    /* ── ITALIANO ── */
     it: {
       nav: {
         services:"Servizi", portfolio:"Portfolio", courses:"Corsi",
@@ -22,7 +17,7 @@ const FW_I18N = (() => {
       },
       hero: {
         tagline:"RIVOLUZIONA LA TUA IMMAGINE CON",
-        sub:"Produciamo contenuti video e animazioni di altissima qualità che catturano l'essenza del tuo brand e la raccontano al mondo.",
+        sub:"Produciamo contenuti video e animazioni di altissima qualit\u00e0 che catturano l'essenza del tuo brand e la raccontano al mondo.",
         cta_quote:"Richiedi un Preventivo", cta_portfolio:"Guarda i Nostri Lavori"
       },
       services: {
@@ -38,44 +33,41 @@ const FW_I18N = (() => {
         hero_p:"Non produciamo solo video. Risolviamo problemi creativi. Ecco come lavoriamo.",
         filter_all:"Tutto", filter_vfx:"VFX & Virtual", filter_cgi:"CGI & Unreal", filter_doc:"Documentary",
         watch_yt:"Guarda su YouTube",
-        p1_tag:"VFX & Virtual Production", p1_h2:"Death Stranding 2: On The Beach — Fan Film",
+        p1_tag:"VFX & Virtual Production", p1_h2:"Death Stranding 2: On The Beach \u2014 Fan Film",
         p1_h3a:"Il Progetto",
-        p1_p1:"Un fan film ambientato nell'universo di <strong>Death Stranding 2: On The Beach</strong>, con <a href='https://www.instagram.com/misshatred/' target='_blank' rel='noopener noreferrer'><strong>Jessica Armanetti</strong></a> nel ruolo di Higgs e <a href='https://www.instagram.com/droid.rust/' target='_blank' rel='noopener noreferrer'><strong>Fabio Meschini</strong></a> nel ruolo di Sam. L'obiettivo era restituire l'atmosfera e l'estetica del videogioco con un livello di qualit\u00e0 visiva da produzione professionale — il tutto in soli <strong>10 giorni di produzione totale</strong>. Il video ha raggiunto <a href='https://www.instagram.com/hidekojima_en/' target='_blank' rel='noopener noreferrer'><strong>Hideo Kojima</strong></a> in persona, che lo ha guardato e ricondiviso pubblicamente, riconoscendo la qualit\u00e0 del lavoro.",
+        p1_p1:"Un fan film ambientato nell'universo di <strong>Death Stranding 2: On The Beach</strong>, con <a href='https://www.instagram.com/misshatred/' target='_blank' rel='noopener noreferrer'><strong>Jessica Armanetti</strong></a> nel ruolo di Higgs e <a href='https://www.instagram.com/droid.rust/' target='_blank' rel='noopener noreferrer'><strong>Fabio Meschini</strong></a> nel ruolo di Sam. L'obiettivo era restituire l'atmosfera e l'estetica del videogioco con un livello di qualit\u00e0 visiva da produzione professionale \u2014 il tutto in soli <strong>10 giorni di produzione totale</strong>. Il video ha raggiunto <a href='https://www.instagram.com/hidekojima_en/' target='_blank' rel='noopener noreferrer'><strong>Hideo Kojima</strong></a> in persona, che lo ha guardato e ricondiviso pubblicamente, riconoscendo la qualit\u00e0 del lavoro.",
         p1_h3b:"Cosa Abbiamo Fatto",
         p1_p2:"Le riprese sono state realizzate su <strong>green screen</strong>, con gli attori impegnati su un set minimale ma accuratamente pianificato. In parallelo abbiamo costruito l'intero ambiente sci-fi in <strong>Unreal Engine 5</strong>, con un livello di dettaglio e una cura artistica in grado di reggere il confronto con la direzione visiva del gioco originale. Il cuore della produzione \u00e8 stato il <strong>sistema di camera tracking</strong>: i movimenti fisici della camera sul set sono stati catturati e replicati fedelmente all'interno della scena virtuale, garantendo una coerenza prospettica perfetta tra attori e mondo digitale. La fase di <strong>compositing</strong> ha poi unito tutti gli elementi in un risultato finale sorprendente, considerando la brevit\u00e0 del periodo di produzione.",
-        p2_tag:"CGI & Unreal Engine 5", p2_h2:"Metal Gear Solid 2 — Opening Remake",
+        p2_tag:"CGI & Unreal Engine 5", p2_h2:"Metal Gear Solid 2 \u2014 Opening Remake",
         p2_h3a:"Il Progetto",
         p2_p1:"Una ricostruzione fedele e shot-per-shot della <strong>sequenza d'apertura di Metal Gear Solid 2: Sons of Liberty</strong> di <strong>Hideo Kojima</strong>, realizzata interamente in <strong>Unreal Engine 5</strong>. L'obiettivo era dimostrare fino a dove pu\u00f2 arrivare la produzione in real-time quando viene applicata con rigore artistico e tecnico a un materiale iconico, restituendo la stessa tensione cinematografica del gioco originale con un livello visivo contemporaneo, capace di reggere il confronto con produzioni di tutt'altra scala e budget.",
         p2_h3b:"Cosa Abbiamo Fatto",
-        p2_p2:"Il personaggio di <strong>Snake</strong> \u00e8 stato costruito interamente da zero come un <strong>Metahuman personalizzato</strong>, modellato, rifinito e animato nei dettagli per rispecchiare fedelmente il design originale del personaggio nella sua versione pi\u00f9 iconica. Ogni inquadratura \u00e8 stata ricreata manualmente all'interno di Unreal Engine 5, rispettando con precisione la composizione, il timing e l'atmosfera della sequenza originale. L'ambiente — il ponte della <strong>USS Discovery</strong> battuto dalla pioggia notturna — \u00e8 stato costruito pezzo per pezzo, con particolare attenzione all'illuminazione drammatica, alla simulazione volumetrica delle particelle atmosferiche, alla qualit\u00e0 dei materiali bagnati e ai riflessi in tempo reale. Il risultato \u00e8 una sequenza che rende omaggio a uno dei momenti pi\u00f9 iconici della storia del videogioco con una fedelt\u00e0 e una coerenza visiva che hanno colpito profondamente la community internazionale dei fan.",
-        p3_tag:"Documentary & BTS", p3_h2:"Metal Gear Solid 2 — Behind The Scenes",
+        p2_p2:"Il personaggio di <strong>Snake</strong> \u00e8 stato costruito interamente da zero come un <strong>Metahuman personalizzato</strong>, modellato, rifinito e animato nei dettagli per rispecchiare fedelmente il design originale nella sua versione pi\u00f9 iconica. Ogni inquadratura \u00e8 stata ricreata manualmente all'interno di Unreal Engine 5, rispettando composizione, timing e atmosfera della sequenza originale. L'ambiente \u2014 il ponte della <strong>USS Discovery</strong> battuto dalla pioggia notturna \u2014 \u00e8 stato costruito pezzo per pezzo con particolare attenzione all'illuminazione drammatica, alla simulazione volumetrica, alla qualit\u00e0 dei materiali bagnati e ai riflessi in tempo reale.",
+        p3_tag:"Documentary & BTS", p3_h2:"Metal Gear Solid 2 \u2014 Behind The Scenes",
         p3_h3a:"Il Progetto",
         p3_p1:"Un documentario dietro le quinte che racconta dall'interno il processo creativo e tecnico dietro la realizzazione del remake di <strong>Metal Gear Solid 2: Opening Remake</strong>. Ideato e realizzato da <a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a>, questo video nasce dalla volont\u00e0 di aprire le porte dello studio e mostrare con trasparenza cosa significa costruire una produzione di questo livello con strumenti accessibili, competenza tecnica e una visione artistica precisa.",
         p3_h3b:"Cosa Abbiamo Fatto",
-        p3_p2:"<a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a> ha curato interamente l'ideazione, la struttura narrativa e la realizzazione del documentario, guidando lo spettatore attraverso ogni fase del processo: dalla costruzione del <strong>Metahuman di Snake</strong>, alla ricostruzione dell'ambiente della <strong>USS Discovery</strong>, fino alle complessit\u00e0 del lighting in tempo reale e del compositing finale. Il video alterna riprese del lavoro in corso, spiegazioni tecniche dettagliate e momenti di confronto diretto con la sequenza originale, offrendo un racconto autentico e appassionato di cosa significa portare avanti un progetto ambizioso con dedizione e metodo."
+        p3_p2:"<a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a> ha curato interamente l'ideazione, la struttura narrativa e la realizzazione del documentario, guidando lo spettatore attraverso ogni fase del processo: dalla costruzione del <strong>Metahuman di Snake</strong>, alla ricostruzione dell'ambiente della <strong>USS Discovery</strong>, fino alle complessit\u00e0 del lighting in tempo reale e del compositing finale."
       },
       mission: {
         title:"La Nostra Missione",
-        p1:"Trasformiamo la tua visione in realtà con video e CGI di impatto.",
-        q1:"Qual è il processo di produzione di un video?",
-        a1:"Seguiamo un flusso di lavoro professionale dalla concept creation alla post-produzione.",
-        q2:"Offrite servizi di animazione 3D?",
-        a2:"Sì, realizziamo soluzioni complete di animazione 3D per qualunque esigenza creativa."
+        p1:"Trasformiamo la tua visione in realt\u00e0 con video e CGI di impatto.",
+        q1:"Qual \u00e8 il processo di produzione di un video?", a1:"Seguiamo un flusso di lavoro professionale dalla concept creation alla post-produzione.",
+        q2:"Offrite servizi di animazione 3D?", a2:"S\u00ec, realizziamo soluzioni complete di animazione 3D per qualunque esigenza creativa."
       },
       courses_home: {
         title:"I Nostri Corsi",
-        game:{ h:"Game Development Fundamentals", p:"Impara a creare giochi professionali usando i motori più avanzati.", level:"Livello: Base", price:"€99" },
-        vfx:{ h:"Visual Effects Mastery", p:"Domina le tecniche avanzate di visual effects e color grading.", level:"Livello: Intermedio", price:"€149" },
-        vp:{ h:"Virtual Production Pro", p:"Esplora il futuro della produzione con realtà virtuale e LED wall.", level:"Livello: Avanzato", price:"€199" }
+        game:{ h:"Game Development Fundamentals", p:"Programmazione Blueprint e C++ in Unreal Engine 5, partendo da zero.", level:"Livello: Base", price:"\u20ac99" },
+        vfx:{ h:"Unreal Engine 5 \u2014 Fondamenta", p:"Dall'editor alla tua prima cinematica: ambienti, Metahuman e animazione.", level:"Livello: Base", price:"\u20ac149" }
       },
       faq: {
         title:"Domande Frequenti",
         q1:"Come iniziare un progetto con voi?", a1:"Contattaci, raccontaci la tua visione e organizziamo una call.",
-        q2:"Quali sono i tempi di consegna?", a2:"I tempi variano in base alla complessità. Forniamo un preventivo con cronoprogramma.",
-        q3:"Offrite revisioni durante il processo?", a3:"Assolutamente sì. Le revisioni sono fondamentali per il risultato perfetto.",
-        q4:"Come posso saperne di più sui prezzi?", a4:"Contattaci per una consulenza gratuita e un preventivo personalizzato."
+        q2:"Quali sono i tempi di consegna?", a2:"I tempi variano in base alla complessit\u00e0. Forniamo un preventivo con cronoprogramma.",
+        q3:"Offrite revisioni durante il processo?", a3:"Assolutamente s\u00ec. Le revisioni sono fondamentali per il risultato perfetto.",
+        q4:"Come posso saperne di pi\u00f9 sui prezzi?", a4:"Contattaci per una consulenza gratuita e un preventivo personalizzato."
       },
-      contact: { title:"Contattaci", sub:"Trasforma la tua visione in realtà. Parliamo del tuo progetto.", btn:"Invia una Email" },
+      contact: { title:"Contattaci", sub:"Trasforma la tua visione in realt\u00e0. Parliamo del tuo progetto.", btn:"Invia una Email" },
       footer: {
         services:"Servizi", resources:"Risorse", social:"Social",
         team_link:"Conosci Il Team", video_prod:"Produzione Video",
@@ -83,9 +75,9 @@ const FW_I18N = (() => {
       },
       team: {
         hero_h1:"Conosci i", hero_h1_span:"Creators",
-        hero_p:"Siamo artisti, tecnici e storyteller. Uniamo creatività e tecnologia per plasmare il futuro della produzione digitale.",
+        hero_p:"Siamo artisti, tecnici e storyteller. Uniamo creativit\u00e0 e tecnologia per plasmare il futuro della produzione digitale.",
         ale_bio:"Artista 3D e Animatore dedicato a trasformare idee in storie visive potenti. Specializzato in CGI, motion e storytelling digitale, con passione per la creazione di mondi cinematografici.",
-        edo_bio:"Tech Artist e Unreal Engine Specialist che unisce creatività e precisione tecnica. Focalizzato su virtual production, ambienti real-time e visual di alto impatto.",
+        edo_bio:"Tech Artist e Unreal Engine Specialist che unisce creativit\u00e0 e precisione tecnica. Focalizzato su virtual production, ambienti real-time e visual di alto impatto.",
         gio_bio:"VFX Supervisor e Compositor con occhio preciso per dettaglio e coerenza visiva. Esperto nella creazione di effetti seamless, supervisione di pipeline e compositing avanzato.",
         amati_role:"Filmmaker & Director",
         amati_bio:"Filmmaker e regista diplomato in regia, montaggio e direzione della fotografia. Porta sul set una visione cinematografica solida, costruita tra cortometraggi, spot e produzioni video di carattere.",
@@ -97,7 +89,7 @@ const FW_I18N = (() => {
       academy: {
         badge:"FILMWAKER ACADEMY",
         hero_title:"Impara a creare.\nPasso dopo passo.",
-        hero_sub:"Corsi pensati per chi parte da zero o vuole migliorare. Tutorial chiari, docenti disponibili, contenuti gratuiti su YouTube — e la possibilit\u00e0 di seguire dal vivo in videocall.",
+        hero_sub:"Corsi pensati per chi parte da zero o vuole migliorare. Tutorial chiari, docenti disponibili, contenuti gratuiti su YouTube \u2014 e la possibilit\u00e0 di seguire dal vivo in videocall.",
         hero_cta:"Scopri i Corsi",
         stats_courses:"Corsi disponibili", stats_live:"Videocall con i docenti", stats_free:"Contenuti gratuiti su YouTube", stats_support:"Supporto diretto",
         why_title:"Perch\u00e9 scegliere Filmwaker Academy?",
@@ -112,77 +104,62 @@ const FW_I18N = (() => {
         inc_1:"Attestato di completamento", inc_2:"Accesso a vita ai materiali", inc_3:"Sessioni in videocall",
         inc_4:"Materiali scaricabili", inc_5:"Aggiornamenti inclusi", inc_6:"Supporto diretto del docente",
         final_cta_title:"Pronto a iniziare?",
-        final_cta_sub:"Scegli il corso che fa per te e inizia a imparare, al tuo ritmo — o prenota una videocall con il docente.",
+        final_cta_sub:"Scegli il corso che fa per te e inizia a imparare, al tuo ritmo \u2014 o prenota una videocall con il docente.",
         final_cta_btn:"Vedi tutti i corsi"
       },
       courses: {
-        hero_title:"Formazione per tutti i livelli",
-        hero_sub:"I nostri corsi sono guidati da professionisti del settore.",
-        badge_base:"Base", badge_mid:"Intermedio", badge_adv:"Avanzato",
+        hero_title:"Impara a creare. Passo dopo passo.",
+        hero_sub:"Corsi accessibili tenuti da chi lavora davvero nel settore.",
+        badge_base:"Base", badge_mid:"Base", badge_adv:"Base",
         learn_title:"Cosa imparerai", curriculum_title:"Programma del corso",
-        included_title:"Cosa è incluso", instructor_title:"Il Tuo Docente",
-        inc_cert:"Attestato finale", inc_cert_p:"Richiedibile su LinkedIn o nel tuo CV.",
-        inc_pace:"Studia ai tuoi ritmi", inc_pace_p:"Lezioni on-demand, visibili quando vuoi.",
-        inc_support:"Supporto del docente", inc_support_p:"Assistenza per ogni domanda durante e dopo il corso.",
-        inc_assets:"Materiali scaricabili", inc_assets_p:"Asset, progetti finiti e risorse di supporto.",
-        inc_realwork:"Progetti reali", inc_realwork_p:"Esercizi pratici su footage reale da set professionali.",
+        included_title:"Cosa \u00e8 incluso", instructor_title:"Il Tuo Docente",
+        inc_cert:"Attestato di completamento", inc_cert_p:"Al termine del corso ricevi un attestato da aggiungere al CV.",
+        inc_pace:"Sessioni in videocall", inc_pace_p:"Puoi seguire il corso dal vivo con il docente in videocall.",
+        inc_support:"Supporto diretto", inc_support_p:"Il docente \u00e8 disponibile per domande durante e dopo il corso.",
+        inc_assets:"Materiali scaricabili", inc_assets_p:"Progetti di esempio e risorse di supporto.",
+        inc_realwork:"Progetto finale reale", inc_realwork_p:"Realizzi una cinematica completa come progetto di fine corso.",
         inc_studio:"Accesso al set Filmwaker", inc_studio_p:"Sessioni pratiche opzionali presso il nostro studio.",
-        enroll_from:"Inizia Ora — da", request_info:"Richiedi Informazioni",
+        enroll_from:"Inizia Ora \u2014 da", request_info:"Richiedi Informazioni",
         discover:"Scopri i Corsi", overview_title:"I Nostri Corsi",
         stat_level:"Livello", stat_lessons:"Lezioni", stat_duration:"Durata", stat_from:"Da",
         lessons_label:"Lezioni", da_label:"da",
         game_tag:"GAME DEVELOPMENT", game_title:"Game Development Fundamentals",
-        game_card_p:"Impara a programmare in Unreal Engine 5 con Blueprint e C++, partendo dalle basi.",
-        game_lead:"Impara a programmare dentro Unreal Engine 5 usando Blueprint e C++. Un percorso pensato per chi parte da zero, tenuto da Fabrizio Pasini con un approccio chiaro, pratico e diretto al punto.",
-        vfx_tag:"UNREAL ENGINE 5", vfx_title:"Unreal Engine 5 — Fondamenta",
-        vfx_card_p:"Dalle basi dell'editor alla tua prima cinematica: lighting, ambienti, Metahuman e animazione.",
-        vfx_lead:"Parti dalle basi dell'editor e arriva a creare la tua prima cinematica. Il corso copre navigazione nell'editor, lighting, creazione di ambienti, pipeline Metahuman e animazione. Tenuto da Edoardo Di Savina, Tech Artist con esperienza diretta su set reali.",
-        game_ch1:"Capitolo 1 – Interfaccia di Unreal Engine", game_ch1_p:"Panoramica dell'interfaccia, content browser, viewport navigation e prime impostazioni di progetto.",
-        game_ch2:"Capitolo 2 – Strumenti e modalità dell'Engine", game_ch2_p:"Landscape tools, foliage, geometry brushes e tutte le modalità di editing avanzate.",
-        game_ch3:"Capitolo 3 – Creazione di ambientazioni", game_ch3_p:"Creazione di ambienti realistici con Megascans, Nanite e Lumen per illuminazione dinamica.",
-        game_ch4:"Capitolo 4 – Programmazione Blueprint", game_ch4_p:"Logica di gioco, input management, Blueprint communication e introduzione a C++.",
-        game_ch5:"Capitolo 5 – Build & Deploy", game_ch5_p:"Ottimizzazione finale, packaging del progetto e distribuzione su piattaforme target.",
-        game_li1:"Workflow e creazione di un gioco completo in Unreal Engine",
-        game_li2:"Programmazione Blueprint + introduzione a C++",
-        game_li3:"Best practice Blueprint: ottimizzazione, memoria, struttura",
-        game_li4:"Integrazione ed uso degli effetti Niagara",
-        game_li5:"Game optimization & testing",
-        game_li6:"Debugging e build dell'applicazione finale",
-        vfx_tag:"VISUAL EFFECTS", vfx_title:"Visual Effects Mastery",
-        vfx_card_p:"Compositing, color grading, particle effects. Domina le tecniche avanzate di VFX.",
-        vfx_lead:"Domina le tecniche avanzate di VFX. Dal compositing al color grading, crea effetti cinematografici.",
-        vfx_ch1:"Capitolo 1 – Fondamenta del VFX", vfx_ch1_p:"Teoria del colore, psicologia visiva e panoramica software VFX.",
-        vfx_ch2:"Capitolo 2 – Compositing Avanzato", vfx_ch2_p:"Layering, masking, keying in After Effects e Nuke.",
-        vfx_ch3:"Capitolo 3 – Tracking e Rotoscoping", vfx_ch3_p:"Camera tracking, object tracking e rotoscoping frame-by-frame.",
-        vfx_ch4:"Capitolo 4 – Color Grading", vfx_ch4_p:"DaVinci Resolve, LUTs e look cinematografici.",
-        vfx_ch5:"Capitolo 5 – Delivery & Export", vfx_ch5_p:"Codecs, formati broadcast, pipeline di consegna.",
-        vfx_li1:"Teoria del colore e psicologia visiva", vfx_li2:"Compositing avanzato con After Effects & Nuke",
-        vfx_li3:"Motion tracking & rotoscoping professionale", vfx_li4:"Particle effects & simulazioni fisiche",
-        vfx_li5:"Color grading cinematografico con DaVinci Resolve", vfx_li6:"Correzioni primarie e secondarie",
-        vfx_li7:"Workflow di export e consegna in vari formati",
-        vp_tag:"VIRTUAL PRODUCTION", vp_title:"Virtual Production Pro",
-        vp_card_p:"LED wall, real-time rendering, motion capture. Esplora il futuro della produzione.",
-        vp_lead:"Esplora il futuro della produzione con ambienti virtuali e LED wall.",
-        vp_ch1:"Capitolo 1 – Fondamenta Virtual Production", vp_ch1_p:"Storia, tecnologie attuali, in-camera vs post VFX.",
-        vp_ch2:"Capitolo 2 – LED Wall & Hardware", vp_ch2_p:"Setup hardware, calibrazione display, gestione del colore.",
-        vp_ch3:"Capitolo 3 – Unreal Engine per VP", vp_ch3_p:"nDisplay, rendering in tempo reale, pipeline Perforce.",
-        vp_ch4:"Capitolo 4 – Motion Capture", vp_ch4_p:"Optical mocap, live link, retargeting.",
-        vp_ch5:"Capitolo 5 – Produzione & Post", vp_ch5_p:"Coordinamento set virtuale, tracking camera, consegna.",
-        vp_li1:"Tecnologie LED wall e setup hardware professionale", vp_li2:"Real-time rendering con Unreal Engine",
-        vp_li3:"Motion capture & performance capture", vp_li4:"Virtual camera & virtual cinematography",
-        vp_li5:"Integrazione con pipeline di produzione tradizionale",
-        vp_li6:"Virtual lighting & tecniche di illuminazione avanzate",
-        vp_li7:"Case study da produzioni cinematografiche high-end",
-        vp_li8:"Workflow completo dalla pre-produzione alla consegna finale",
+        game_card_p:"Impara a programmare in Unreal Engine 5 con Blueprint e C++, partendo dalle basi assolute.",
+        game_lead:"Impara a programmare in Unreal Engine 5 usando Blueprint e C++. Un corso pensato per chi parte da zero, con un approccio chiaro e pratico. Tenuto da Fabrizio Pasini.",
+        game_ch1:"Capitolo 1 \u2013 Introduzione a UE5", game_ch1_p:"Panoramica dell'interfaccia, content browser, viewport e prime impostazioni di progetto.",
+        game_ch2:"Capitolo 2 \u2013 Blueprint", game_ch2_p:"Logica visuale con Blueprint: variabili, eventi, funzioni e comunicazione tra attori.",
+        game_ch3:"Capitolo 3 \u2013 Introduzione C++", game_ch3_p:"Basi di C++ applicate a Unreal Engine: classi, componenti e integrazione con Blueprint.",
+        game_ch4:"Capitolo 4 \u2013 Gameplay & Input", game_ch4_p:"Gestione degli input, sistema di gioco, collisioni e interazioni.",
+        game_ch5:"Capitolo 5 \u2013 Build & Deploy", game_ch5_p:"Ottimizzazione, debugging, packaging e distribuzione del progetto finito.",
+        game_li1:"Come muoverti nell'editor di Unreal Engine 5",
+        game_li2:"Programmazione con Blueprint, dalla logica base alla struttura avanzata",
+        game_li3:"Introduzione a C++ per lo sviluppo di giochi",
+        game_li4:"Gestione degli input, eventi e comunicazione tra Blueprint",
+        game_li5:"Ottimizzazione, testing e debugging del progetto",
+        game_li6:"Build finale e packaging dell'applicazione",
+        vfx_tag:"UNREAL ENGINE 5", vfx_title:"Unreal Engine 5 \u2014 Fondamenta",
+        vfx_card_p:"Dall'editor alla tua prima cinematica: lighting, ambienti, Metahuman e animazione.",
+        vfx_lead:"Parti dalle basi dell'editor e arriva a creare la tua prima cinematica. Lighting, ambienti, Metahuman e animazione spiegati passo dopo passo. Tenuto da Edoardo Di Savina.",
+        vfx_ch1:"Capitolo 1 \u2013 Interfaccia e navigazione", vfx_ch1_p:"Orientarsi nell'editor, gestire il content browser e impostare il progetto.",
+        vfx_ch2:"Capitolo 2 \u2013 Ambienti e Lighting", vfx_ch2_p:"Costruire ambienti con Megascans e Nanite, illuminazione dinamica con Lumen.",
+        vfx_ch3:"Capitolo 3 \u2013 Metahuman & Animazione", vfx_ch3_p:"Creare un personaggio con Metahuman Creator, importarlo in UE5 e animarlo.",
+        vfx_ch4:"Capitolo 4 \u2013 Sequencer & Cinematica", vfx_ch4_p:"Usare il Sequencer per comporre una scena cinematica con camera movement e timing.",
+        vfx_ch5:"Capitolo 5 \u2013 Rendering & Export", vfx_ch5_p:"Impostare il Movie Render Queue e esportare il video finale in alta qualit\u00e0.",
+        vfx_li1:"Navigare nell'editor di Unreal Engine 5 con sicurezza",
+        vfx_li2:"Creare e illuminare ambienti 3D realistici con Lumen",
+        vfx_li3:"Usare Megascans e Nanite per asset ad alta qualit\u00e0",
+        vfx_li4:"Creare e animare un personaggio con la pipeline Metahuman",
+        vfx_li5:"Realizzare una cinematica completa con Sequencer",
+        vfx_li6:"Gestire camera, movimento e rendering finale",
+        vfx_li7:"Esportare il video finito in alta qualit\u00e0",
         instr_name:"Team Filmwaker",
-        instr_role_game:"Game Developer & 3D Artist", instr_role_vfx:"VFX Artist & Compositor", instr_role_vp:"Virtual Production Supervisor",
-        instr_bio_game:"Professionisti con anni di esperienza su titoli indie e produzioni commerciali. Disponibili per ogni domanda anche dopo la fine del corso.",
-        instr_bio_vfx:"Esperti di post-produzione con background in pubblicità e cinema. Supporto diretto durante tutto il percorso formativo.",
-        instr_bio_vp:"Supervisori con esperienza diretta su set con LED wall e pipeline Unreal Engine. Conoscenza pratica di ogni fase del workflow."
+        instr_role_game:"Programmatore & Docente", instr_role_vfx:"Tech Artist & Unreal Specialist",
+        instr_bio_game:"Programmatore con esperienza nello sviluppo software e nella didattica. Approccio diretto, pratico e adatto a chi parte da zero.",
+        instr_bio_vfx:"Tech Artist e Unreal Engine Specialist con esperienza diretta su produzioni reali. Insegna con un approccio pratico, partendo sempre dal concreto."
       }
     }, /* fine it */
 
-    /* ── ENGLISH ─────────────────────────────────────────────────────── */
+    /* ── ENGLISH ── */
     en: {
       nav: {
         services:"Services", portfolio:"Portfolio", courses:"Courses",
@@ -206,39 +183,36 @@ const FW_I18N = (() => {
         hero_p:"We don't just produce video. We solve creative problems. Here's how we work.",
         filter_all:"All", filter_vfx:"VFX & Virtual", filter_cgi:"CGI & Unreal", filter_doc:"Documentary",
         watch_yt:"Watch on YouTube",
-        p1_tag:"VFX & Virtual Production", p1_h2:"Death Stranding 2: On The Beach — Fan Film",
+        p1_tag:"VFX & Virtual Production", p1_h2:"Death Stranding 2: On The Beach \u2014 Fan Film",
         p1_h3a:"The Project",
-        p1_p1:"A fan film set in the universe of <strong>Death Stranding 2: On The Beach</strong>, featuring <a href='https://www.instagram.com/misshatred/' target='_blank' rel='noopener noreferrer'><strong>Jessica Armanetti</strong></a> as Higgs and <a href='https://www.instagram.com/droid.rust/' target='_blank' rel='noopener noreferrer'><strong>Fabio Meschini</strong></a> as Sam. The goal was to capture the atmosphere and aesthetic of the video game at a professional production level — all within a total production window of just <strong>10 days</strong>. The film reached <a href='https://www.instagram.com/hidekojima_en/' target='_blank' rel='noopener noreferrer'><strong>Hideo Kojima</strong></a> himself, who watched it and reshared it publicly, acknowledging the quality of the work.",
+        p1_p1:"A fan film set in the universe of <strong>Death Stranding 2: On The Beach</strong>, featuring <a href='https://www.instagram.com/misshatred/' target='_blank' rel='noopener noreferrer'><strong>Jessica Armanetti</strong></a> as Higgs and <a href='https://www.instagram.com/droid.rust/' target='_blank' rel='noopener noreferrer'><strong>Fabio Meschini</strong></a> as Sam. The goal was to capture the atmosphere and aesthetic of the video game at a professional production level \u2014 all within a total production window of just <strong>10 days</strong>. The film reached <a href='https://www.instagram.com/hidekojima_en/' target='_blank' rel='noopener noreferrer'><strong>Hideo Kojima</strong></a> himself, who watched it and reshared it publicly, acknowledging the quality of the work.",
         p1_h3b:"What We Did",
-        p1_p2:"The shoot took place on <strong>green screen</strong>, with the cast working on a minimal but carefully planned set. In parallel, we built the entire sci-fi environment in <strong>Unreal Engine 5</strong>, with a level of artistic detail designed to hold its own against the original game's direction. The heart of the production was the <strong>camera tracking system</strong>: the physical camera movements on set were captured and faithfully replicated inside the virtual scene, creating a perfect perspectival match between performers and the digital world. The <strong>compositing</strong> phase then brought everything together into a final result that surprised for its quality and coherence, especially given how short the production window was.",
-        p2_tag:"CGI & Unreal Engine 5", p2_h2:"Metal Gear Solid 2 — Opening Remake",
+        p1_p2:"The shoot took place on <strong>green screen</strong>, with the cast working on a minimal but carefully planned set. In parallel, we built the entire sci-fi environment in <strong>Unreal Engine 5</strong>. The heart of the production was the <strong>camera tracking system</strong>: physical camera movements on set were captured and faithfully replicated inside the virtual scene. The <strong>compositing</strong> phase then brought everything together into a final result that surprised for its quality, especially given the 10-day production window.",
+        p2_tag:"CGI & Unreal Engine 5", p2_h2:"Metal Gear Solid 2 \u2014 Opening Remake",
         p2_h3a:"The Project",
-        p2_p1:"A faithful, shot-for-shot reconstruction of the <strong>opening sequence of Metal Gear Solid 2: Sons of Liberty</strong> by <strong>Hideo Kojima</strong>, built entirely in <strong>Unreal Engine 5</strong>. The goal was to demonstrate how far real-time production can go when applied with artistic and technical rigour to iconic source material, delivering the same cinematic tension of the original game at a contemporary visual standard — capable of holding its own against productions of a completely different scale and budget.",
+        p2_p1:"A faithful, shot-for-shot reconstruction of the <strong>opening sequence of Metal Gear Solid 2: Sons of Liberty</strong> by <strong>Hideo Kojima</strong>, built entirely in <strong>Unreal Engine 5</strong>. The goal was to demonstrate how far real-time production can go when applied with artistic and technical rigour to iconic source material.",
         p2_h3b:"What We Did",
-        p2_p2:"The character of <strong>Snake</strong> was built entirely from scratch as a fully custom <strong>Metahuman</strong>, modelled, refined and animated in detail to faithfully mirror the original character design in its most iconic form. Every shot was recreated by hand inside Unreal Engine 5, matching with precision the composition, timing and atmosphere of the original sequence. The environment — the deck of the <strong>USS Discovery</strong> lashed by night rain — was constructed piece by piece, with particular attention to dramatic lighting, volumetric simulation of atmospheric particles, the quality of wet materials and real-time reflections. The result is a sequence that pays tribute to one of the most iconic moments in video game history with a visual fidelity and coherence that deeply impressed the international fan community.",
-        p3_tag:"Documentary & BTS", p3_h2:"Metal Gear Solid 2 — Behind The Scenes",
+        p2_p2:"The character of <strong>Snake</strong> was built from scratch as a fully custom <strong>Metahuman</strong>, modelled, refined and animated to faithfully mirror the original design. Every shot was recreated by hand inside Unreal Engine 5. The environment \u2014 the deck of the <strong>USS Discovery</strong> in the rain \u2014 was constructed piece by piece with dramatic lighting, volumetric particles, wet materials and real-time reflections.",
+        p3_tag:"Documentary & BTS", p3_h2:"Metal Gear Solid 2 \u2014 Behind The Scenes",
         p3_h3a:"The Project",
-        p3_p1:"A behind-the-scenes documentary that takes the viewer inside the creative and technical process behind the making of <strong>Metal Gear Solid 2: Opening Remake</strong>. Conceived and directed by <a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a>, this video was born from a desire to open the studio doors and show transparently what it means to build a production of this calibre using accessible tools, technical expertise and a precise artistic vision.",
+        p3_p1:"A behind-the-scenes documentary inside the creative and technical process behind <strong>Metal Gear Solid 2: Opening Remake</strong>. Conceived and directed by <a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a>, this film opens the studio doors to show what it really takes to build a production of this calibre.",
         p3_h3b:"What We Did",
-        p3_p2:"<a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a> took complete ownership of the concept, narrative structure and production of the documentary, guiding the viewer through every phase of the process: from building the custom <strong>Snake Metahuman</strong>, to reconstructing the <strong>USS Discovery</strong> environment, through to the complexities of real-time lighting and the final compositing. The video alternates between footage of the work in progress, detailed technical explanations and direct comparisons with the original sequence — offering an authentic and passionate account of what it means to drive an ambitious project forward with dedication and method."
+        p3_p2:"<a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a> took complete ownership of the concept, narrative and production, guiding the viewer through every phase: the <strong>Snake Metahuman</strong>, the <strong>USS Discovery</strong> environment, real-time lighting and final compositing."
       },
       mission: {
         title:"Our Mission",
         p1:"We transform your vision into reality with impactful video and CGI.",
-        q1:"What is the video production process?",
-        a1:"We follow a professional workflow from concept creation to post-production, ensuring quality and fast delivery.",
-        q2:"Do you offer 3D animation services?",
-        a2:"Yes, we deliver complete 3D animation solutions for any creative need, from modelling to final rendering."
+        q1:"What is the video production process?", a1:"We follow a professional workflow from concept creation to post-production.",
+        q2:"Do you offer 3D animation services?", a2:"Yes, we deliver complete 3D animation solutions for any creative need."
       },
       courses_home: {
         title:"Our Courses",
-        game:{ h:"Game Development Fundamentals", p:"Learn to create professional games using the most advanced engines.", level:"Level: Beginner", price:"€99" },
-        vfx:{ h:"Visual Effects Mastery", p:"Master advanced visual effects and colour grading techniques.", level:"Level: Intermediate", price:"€149" },
-        vp:{ h:"Virtual Production Pro", p:"Explore the future of production with virtual reality and LED walls.", level:"Level: Advanced", price:"€199" }
+        game:{ h:"Game Development Fundamentals", p:"Learn Blueprint and C++ programming in Unreal Engine 5, starting from scratch.", level:"Level: Beginner", price:"\u20ac99" },
+        vfx:{ h:"Unreal Engine 5 \u2014 Foundations", p:"From editor basics to your first cinematic: environments, Metahuman and animation.", level:"Level: Beginner", price:"\u20ac149" }
       },
       faq: {
         title:"Frequently Asked Questions",
-        q1:"How do I start a project with you?", a1:"Contact us, share your vision and we'll schedule a call to understand your needs.",
+        q1:"How do I start a project with you?", a1:"Contact us, share your vision and we'll schedule a call.",
         q2:"What are the delivery times?", a2:"Times vary based on complexity. We always provide a detailed quote with a timeline.",
         q3:"Do you offer revisions during the process?", a3:"Absolutely. Including revisions is key to achieving the perfect result.",
         q4:"How can I learn more about pricing?", a4:"Contact us for a free consultation and a personalised quote."
@@ -265,13 +239,13 @@ const FW_I18N = (() => {
       academy: {
         badge:"FILMWAKER ACADEMY",
         hero_title:"Learn to create.\nStep by step.",
-        hero_sub:"Courses designed for beginners and those who want to grow. Clear tutorials, available instructors, free content on YouTube — and the option to follow live via video call.",
+        hero_sub:"Courses designed for beginners and those who want to grow. Clear tutorials, available instructors, free content on YouTube \u2014 and the option to follow live via video call.",
         hero_cta:"Explore Courses",
         stats_courses:"Courses available", stats_live:"Live video calls with instructors", stats_free:"Free content on YouTube", stats_support:"Direct support",
         why_title:"Why choose Filmwaker Academy?",
-        why_1_title:"Accessible to everyone", why_1_p:"Our courses are designed for those who genuinely want to learn, with no prior experience needed. We explain everything from the beginning, in plain language with easy-to-follow tutorials.",
-        why_2_title:"Live video calls with instructors", why_2_p:"You can follow courses live via video call, ask questions in real time and get personalised feedback from people who work in the industry.",
-        why_3_title:"Free content on YouTube", why_3_p:"Before you sign up, you can already start learning. We regularly publish free tutorials on our YouTube channel so you can get a feel for our teaching style.",
+        why_1_title:"Accessible to everyone", why_1_p:"Our courses are designed for those who genuinely want to learn, with no prior experience needed. We explain everything from the beginning with easy-to-follow tutorials.",
+        why_2_title:"Live video calls with instructors", why_2_p:"You can follow courses live via video call, ask questions in real time and get personalised feedback.",
+        why_3_title:"Free content on YouTube", why_3_p:"Before you sign up, you can already start learning. We regularly publish free tutorials on our YouTube channel.",
         why_4_title:"Ongoing support", why_4_p:"Instructors are available for questions during and after the course. You are never alone in your learning journey.",
         courses_title:"Our Courses",
         free_preview:"Watch free lessons", enroll_cta:"Enroll now", info_cta:"Request info",
@@ -280,84 +254,64 @@ const FW_I18N = (() => {
         inc_1:"Completion certificate", inc_2:"Lifetime access to materials", inc_3:"Live video call sessions",
         inc_4:"Downloadable materials", inc_5:"Updates included", inc_6:"Direct instructor support",
         final_cta_title:"Ready to start?",
-        final_cta_sub:"Pick the course that suits you and start learning at your own pace — or book a video call with the instructor.",
+        final_cta_sub:"Pick the course that suits you and start learning at your own pace \u2014 or book a video call with the instructor.",
         final_cta_btn:"Browse all courses"
       },
       courses: {
-        hero_title:"Training for all skill levels",
-        hero_sub:"Our courses are led by industry professionals who guide you step by step.",
-        badge_base:"Beginner", badge_mid:"Intermediate", badge_adv:"Advanced",
+        hero_title:"Learn to create. Step by step.",
+        hero_sub:"Accessible courses taught by people who actually work in the industry.",
+        badge_base:"Beginner", badge_mid:"Beginner", badge_adv:"Beginner",
         learn_title:"What you will learn", curriculum_title:"Course curriculum",
         included_title:"What's included", instructor_title:"Your Instructor",
-        inc_cert:"Final certificate", inc_cert_p:"Add it to LinkedIn or your CV.",
-        inc_pace:"Study at your own pace", inc_pace_p:"On-demand lessons, watch whenever you want.",
-        inc_support:"Teacher support", inc_support_p:"Help with any question during and after the course.",
-        inc_assets:"Downloadable materials", inc_assets_p:"Assets, finished projects and support resources.",
-        inc_realwork:"Real projects", inc_realwork_p:"Hands-on exercises using real footage from professional sets.",
+        inc_cert:"Completion certificate", inc_cert_p:"At the end of the course you receive a certificate to add to your CV.",
+        inc_pace:"Live video call sessions", inc_pace_p:"You can follow the course live with the instructor via video call.",
+        inc_support:"Direct support", inc_support_p:"The instructor is available for questions during and after the course.",
+        inc_assets:"Downloadable materials", inc_assets_p:"Sample projects and support resources.",
+        inc_realwork:"Real final project", inc_realwork_p:"You will create a complete cinematic as your end-of-course project.",
         inc_studio:"Filmwaker studio access", inc_studio_p:"Optional practical sessions at our studio.",
-        enroll_from:"Enroll Now — from", request_info:"Request Information",
+        enroll_from:"Enroll Now \u2014 from", request_info:"Request Information",
         discover:"Explore Courses", overview_title:"Our Courses",
         stat_level:"Level", stat_lessons:"Lessons", stat_duration:"Duration", stat_from:"From",
         lessons_label:"Lessons", da_label:"from",
         game_tag:"GAME DEVELOPMENT", game_title:"Game Development Fundamentals",
         game_card_p:"Learn to program in Unreal Engine 5 with Blueprint and C++, starting from scratch.",
         game_lead:"Learn to program inside Unreal Engine 5 using Blueprint and C++. A course designed for complete beginners, taught by Fabrizio Pasini with a clear, practical and straightforward approach.",
-        vfx_tag:"UNREAL ENGINE 5", vfx_title:"Unreal Engine 5 — Foundations",
+        game_ch1:"Chapter 1 \u2013 Intro to UE5", game_ch1_p:"Interface overview, content browser, viewport and initial project settings.",
+        game_ch2:"Chapter 2 \u2013 Blueprint", game_ch2_p:"Visual scripting with Blueprint: variables, events, functions and actor communication.",
+        game_ch3:"Chapter 3 \u2013 Intro to C++", game_ch3_p:"C++ basics applied to Unreal Engine: classes, components and Blueprint integration.",
+        game_ch4:"Chapter 4 \u2013 Gameplay & Input", game_ch4_p:"Input management, game systems, collisions and interactions.",
+        game_ch5:"Chapter 5 \u2013 Build & Deploy", game_ch5_p:"Optimisation, debugging, packaging and distribution of the finished project.",
+        game_li1:"Navigating the Unreal Engine 5 editor with confidence",
+        game_li2:"Blueprint programming from basic logic to advanced structure",
+        game_li3:"Introduction to C++ for game development",
+        game_li4:"Input management, events and Blueprint communication",
+        game_li5:"Project optimisation, testing and debugging",
+        game_li6:"Final build and application packaging",
+        vfx_tag:"UNREAL ENGINE 5", vfx_title:"Unreal Engine 5 \u2014 Foundations",
         vfx_card_p:"From editor basics to your first cinematic: lighting, environments, Metahuman and animation.",
-        vfx_lead:"Start from the editor basics and work your way up to creating your first cinematic. The course covers editor navigation, lighting, environment creation, Metahuman pipeline and animation. Taught by Edoardo Di Savina, Tech Artist with hands-on experience on real sets.",
-        game_ch1:"Chapter 1 – Unreal Engine Interface", game_ch1_p:"Interface overview, content browser, viewport navigation and initial project settings.",
-        game_ch2:"Chapter 2 – Engine Tools & Modes", game_ch2_p:"Landscape tools, foliage, geometry brushes and all advanced editing modes.",
-        game_ch3:"Chapter 3 – Environment Creation", game_ch3_p:"Creating realistic environments with Megascans, Nanite and Lumen.",
-        game_ch4:"Chapter 4 – Blueprint Programming", game_ch4_p:"Game logic, input management, Blueprint communication and introduction to C++.",
-        game_ch5:"Chapter 5 – Build & Deploy", game_ch5_p:"Final optimisation, project packaging and distribution to target platforms.",
-        game_li1:"Workflow and complete game creation in Unreal Engine",
-        game_li2:"Blueprint programming + introduction to C++",
-        game_li3:"Blueprint best practices: optimisation, memory, structure",
-        game_li4:"Integrating and using Niagara effects",
-        game_li5:"Game optimisation & testing",
-        game_li6:"Debugging and building the final application",
-        vfx_tag:"VISUAL EFFECTS", vfx_title:"Visual Effects Mastery",
-        vfx_card_p:"Compositing, colour grading, particle effects. Master advanced VFX techniques.",
-        vfx_lead:"Master advanced VFX techniques. From compositing to colour grading, create cinematic effects.",
-        vfx_ch1:"Chapter 1 – VFX Foundations", vfx_ch1_p:"Colour theory, visual psychology and overview of the main VFX software.",
-        vfx_ch2:"Chapter 2 – Advanced Compositing", vfx_ch2_p:"Layering, masking, keying in After Effects and Nuke.",
-        vfx_ch3:"Chapter 3 – Tracking & Rotoscoping", vfx_ch3_p:"Camera tracking, object tracking and frame-by-frame rotoscoping.",
-        vfx_ch4:"Chapter 4 – Colour Grading", vfx_ch4_p:"DaVinci Resolve, LUTs and cinematic looks.",
-        vfx_ch5:"Chapter 5 – Delivery & Export", vfx_ch5_p:"Codecs, broadcast formats, delivery pipelines.",
-        vfx_li1:"Colour theory and visual psychology", vfx_li2:"Advanced compositing with After Effects & Nuke",
-        vfx_li3:"Professional motion tracking & rotoscoping", vfx_li4:"Particle effects & physical simulations",
-        vfx_li5:"Cinematic colour grading with DaVinci Resolve", vfx_li6:"Primary and secondary corrections",
-        vfx_li7:"Export and delivery workflow in various formats",
-        vp_tag:"VIRTUAL PRODUCTION", vp_title:"Virtual Production Pro",
-        vp_card_p:"LED walls, real-time rendering, motion capture. Explore the future of production.",
-        vp_lead:"Explore the future of production with virtual environments and LED walls.",
-        vp_ch1:"Chapter 1 – VP Foundations", vp_ch1_p:"History, current technologies, in-camera vs post-production VFX.",
-        vp_ch2:"Chapter 2 – LED Wall & Hardware", vp_ch2_p:"Hardware setup, display calibration, colour management.",
-        vp_ch3:"Chapter 3 – Unreal Engine for VP", vp_ch3_p:"nDisplay, real-time rendering, Perforce pipeline.",
-        vp_ch4:"Chapter 4 – Motion Capture", vp_ch4_p:"Optical mocap, live link, retargeting.",
-        vp_ch5:"Chapter 5 – Production & Post", vp_ch5_p:"Virtual set coordination, camera tracking, delivery.",
-        vp_li1:"LED wall technologies and professional hardware setup", vp_li2:"Real-time rendering with Unreal Engine",
-        vp_li3:"Motion capture & performance capture", vp_li4:"Virtual camera & virtual cinematography",
-        vp_li5:"Integration with traditional production pipelines",
-        vp_li6:"Virtual lighting & advanced illumination techniques",
-        vp_li7:"Case studies from high-end film productions",
-        vp_li8:"Full workflow from pre-production to final delivery",
+        vfx_lead:"Start from the editor basics and work your way up to creating your first cinematic. Covering editor navigation, lighting, environments, Metahuman pipeline and animation. Taught by Edoardo Di Savina.",
+        vfx_ch1:"Chapter 1 \u2013 Interface & Navigation", vfx_ch1_p:"Getting around the editor, managing the content browser and setting up a project.",
+        vfx_ch2:"Chapter 2 \u2013 Environments & Lighting", vfx_ch2_p:"Building environments with Megascans and Nanite, dynamic lighting with Lumen.",
+        vfx_ch3:"Chapter 3 \u2013 Metahuman & Animation", vfx_ch3_p:"Creating a character with Metahuman Creator, importing into UE5 and animating it.",
+        vfx_ch4:"Chapter 4 \u2013 Sequencer & Cinematic", vfx_ch4_p:"Using the Sequencer to compose a cinematic scene with camera movement and timing.",
+        vfx_ch5:"Chapter 5 \u2013 Rendering & Export", vfx_ch5_p:"Setting up the Movie Render Queue and exporting the final video in high quality.",
+        vfx_li1:"Navigating the Unreal Engine 5 editor with confidence",
+        vfx_li2:"Creating and lighting realistic 3D environments with Lumen",
+        vfx_li3:"Using Megascans and Nanite for high-quality assets",
+        vfx_li4:"Creating and animating a character with the Metahuman pipeline",
+        vfx_li5:"Producing a complete cinematic with Sequencer",
+        vfx_li6:"Managing camera, movement and final rendering",
+        vfx_li7:"Exporting the finished video in high quality",
         instr_name:"Filmwaker Team",
-        instr_role_game:"Game Developer & 3D Artist", instr_role_vfx:"VFX Artist & Compositor", instr_role_vp:"Virtual Production Supervisor",
-        instr_bio_game:"Professionals with years of experience on indie titles and commercial productions. Available for questions even after the course ends.",
-        instr_bio_vfx:"Post-production experts with backgrounds in advertising and cinema. Direct support throughout your entire learning journey.",
-        instr_bio_vp:"Supervisors with hands-on experience on LED wall sets and Unreal Engine pipelines. Practical knowledge of every workflow stage."
+        instr_role_game:"Programmer & Instructor", instr_role_vfx:"Tech Artist & Unreal Specialist",
+        instr_bio_game:"Software developer with experience in programming and teaching. Direct, practical approach suited to complete beginners.",
+        instr_bio_vfx:"Tech Artist and Unreal Engine Specialist with hands-on experience on real productions. Teaches with a practical approach, always starting from the concrete."
       }
     } /* fine en */
 
   }; /* fine _dict */
 
 
-  /* ═══════════════════════════════════════════════════════════════════
-     MOTORE — legge dalla chiave dotted, applica al DOM
-     ═══════════════════════════════════════════════════════════════════ */
-
-  /** Risolve "nav.services" → valore nel dizionario corrente */
   function _t(key) {
     const parts = key.split('.');
     let node = _dict[_lang];
@@ -368,36 +322,29 @@ const FW_I18N = (() => {
     return (node != null && typeof node === 'string') ? node : null;
   }
 
-  /** Applica tutte le traduzioni al DOM senza sovrascrivere se la chiave manca */
   function _applyDOM() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const val = _t(el.dataset.i18n);
-      if (val == null) return; /* chiave mancante — lascia il testo originale */
+      if (val == null) return;
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
         el.placeholder = val;
       } else {
         el.textContent = val;
       }
     });
-
     document.querySelectorAll('[data-i18n-html]').forEach(el => {
       const val = _t(el.dataset.i18nHtml);
       if (val != null) el.innerHTML = val;
     });
-
-    /* Aggiorna bottoni switcher */
     document.querySelectorAll('.fw-lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === _lang);
     });
-
     document.documentElement.lang = _lang;
   }
 
-  /** Init — legge la scelta salvata, default IT */
   function init() {
     const stored = localStorage.getItem(STORAGE_KEY);
     _lang = (stored && SUPPORTED.includes(stored)) ? stored : DEFAULT_LANG;
-    /* Applica dopo che il DOM è pronto */
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', _applyDOM);
     } else {
@@ -405,7 +352,6 @@ const FW_I18N = (() => {
     }
   }
 
-  /** Cambia lingua e riapplica */
   function switchTo(lang) {
     if (!SUPPORTED.includes(lang)) return;
     _lang = lang;
@@ -414,11 +360,10 @@ const FW_I18N = (() => {
   }
 
   function current() { return _lang; }
-  function t(key)    { const v = _t(key); return v != null ? v : key; }
+  function t(key) { const v = _t(key); return v != null ? v : key; }
 
   return { init, switchTo, current, t };
 
 })();
 
-/* Auto-init */
 FW_I18N.init();
