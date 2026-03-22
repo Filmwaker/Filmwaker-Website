@@ -219,9 +219,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!carouselTrack) return;
 
     const brands = [
-        { file: 'doom.webp',             name: 'DOOM',              url: 'https://www.doom.com' },
+        { file: 'doom.webp',             name: 'DOOM',              url: 'https://www.doom-entertainment.com' },
         { file: 'flixbus.webp',          name: 'FlixBus',           url: 'https://www.flixbus.it' },
-        { file: 'ivgo.webp',             name: 'IVGO',              url: 'https://www.ivgo.it' },
+        { file: 'ivgo.webp',             name: 'IVGO',              url: 'https://www.italianvideogameorchestra.com' },
         { file: 'LOGO ITALPOL.webp',     name: 'Italpol',           url: 'https://www.italpol.it' },
         { file: 'medical.webp',          name: 'Medical',           url: '#' },
         { file: 'muschioselvaggio.webp', name: 'Muschio Selvaggio',  url: 'https://www.youtube.com/@MuschioSelvaggio' },
