@@ -1,0 +1,37 @@
+# Filmwaker — .htaccess
+# Disabilita WordPress routing, serve file statici normalmente
+
+# Forza HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Rimuovi www (opzionale — commenta se preferisci tenere www)
+# RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+# RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+# Servi index.html come pagina principale
+DirectoryIndex index.html
+
+# Blocca accesso a file sensibili
+<FilesMatch "\.(json|js|md)$">
+  <If "%{REQUEST_URI} =~ /admin/">
+    Require all denied
+  </If>
+</FilesMatch>
+
+# Compressione gzip per performance
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>
+
+# Cache browser per file statici
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType video/mp4 "access plus 1 year"
+</IfModule>
