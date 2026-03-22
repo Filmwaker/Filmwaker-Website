@@ -7,28 +7,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // 1. Handle Button Active State
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
             const filterValue = btn.getAttribute('data-filter');
 
-            // 2. Filter Projects
+            // Mostra/nascondi sezioni
             projectSections.forEach(section => {
-                section.style.animation = 'none'; // Reset animation
-                section.offsetHeight; // Trigger reflow
-                section.style.animation = 'fadeInUp 0.8s ease forwards'; // Re-apply
-
                 if (filterValue === 'all' || section.getAttribute('data-category') === filterValue) {
                     section.classList.remove('hide');
-                    section.style.display = 'flex'; // Restore flex layout
+                    section.style.display = 'flex';
                 } else {
                     section.classList.add('hide');
-                    section.style.display = 'none'; // Hard hide to fix layout gaps
+                    section.style.display = 'none';
                 }
             });
 
-            // 3. Handle Dividers (Hide all if filtering, show only if 'all')
+            // Ricalcola zig-zag sui progetti visibili
+            const visible = Array.from(projectSections).filter(s => !s.classList.contains('hide'));
+            visible.forEach((section, index) => {
+                section.style.animation = 'none';
+                section.offsetHeight;
+                section.style.animation = 'fadeInUp 0.8s ease forwards';
+                // pari = row-reverse, dispari = normale
+                if (index % 2 === 1) {
+                    section.classList.add('row-reverse');
+                } else {
+                    section.classList.remove('row-reverse');
+                }
+            });
+
+            // Divider
             if (filterValue === 'all') {
                 dividers.forEach(hr => hr.style.display = 'block');
             } else {

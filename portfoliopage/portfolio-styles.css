@@ -75,14 +75,15 @@
     animation: fadeInUp 0.8s ease forwards;
 }
 
-/* Zig-Zag Layout: Reverse direction for even children */
-.project-section:nth-of-type(even) {
+/* Zig-Zag Layout: classe esplicita invece di nth-of-type */
+.project-section.row-reverse {
     flex-direction: row-reverse;
 }
 
 /* Media Side (Image/Video) */
 .project-media {
-    flex: 1;
+    flex: 0 0 48%;
+    max-width: 48%;
     position: relative;
     border-radius: 15px;
     overflow: hidden;
@@ -159,7 +160,8 @@
 
 /* Text Side */
 .project-details {
-    flex: 1;
+    flex: 0 0 48%;
+    max-width: 48%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -259,8 +261,14 @@
         padding: 3rem 0;
     }
 
-    .project-section:nth-of-type(even) {
+    .project-section.row-reverse {
         flex-direction: column;
+    }
+
+    .project-media,
+    .project-details {
+        flex: 0 0 100%;
+        max-width: 100%;
     }
 
     .project-header h2 {
