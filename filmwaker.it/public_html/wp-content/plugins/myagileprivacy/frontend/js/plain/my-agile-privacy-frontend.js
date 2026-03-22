@@ -1,0 +1,5640 @@
+/*!
+* MyAgilePrivacy (https://www.myagileprivacy.com/)
+* plain js version
+*/
+
+var MAP_SYS = {
+	'plugin_version' 					: null,
+	'parse_config_version_number' 		: null,
+	'js_internal_version' 				: "3.0003",
+	'cookie_shield_version' 			: null,
+	'js_technology' 					: "plain",
+	'maplog' 							: "\x1b[40m\x1b[97m[MyAgilePrivacy]\x1b[0m ",
+	'map_initted' 						: false,
+	'map_document_load' 				: false,
+	'map_debug' 						: false,
+	'map_cookie_expire' 				: 180,
+	'map_skip_regexp' 					: [/.*oxygen_iframe=true.*$/, /.*ct_builder=true.*$/],
+	'map_missing_cookie_shield' 		: null,
+	'map_detectableKeys' 				: null,
+	'map_detectedKeys' 					: null,
+	'map_notify_title'					: false,
+	'map_first_layer_branded'			: false,
+	'enforce_youtube_privacy_v2'		: false,
+	'in_iab_context' 					: false,
+	'dependencies' 						: [],
+	'microsoft_cmode' 					: null,
+	'clarity_cmode' 					: null,
+	'clarity_cmp_id' 					: "150",
+	'cmode_v2' 							: null,
+	'cmode_v2_implementation_type' 		: null,
+	'cmode_v2_forced_off_ga4_advanced' 	: null,
+	'cmode_v2_js_on_error'				: null,
+	'starting_gconsent' 				: [],
+	'current_gconsent'					: [],
+	'starting_mconsent' 				: [],
+	'current_mconsent'					: [],
+	'starting_cconsent' 				: [],
+	'current_cconsent'					: [],
+	'map_accept_all_button'				: null,
+	'map_reject_all_button'				: null,
+	'user_uuid'							: null,
+	'last_consent_modify_date'			: null,
+	'some_positive_consent_given'		: false,
+	'early_gcmode'						: false,
+	'frontend_regulation'				: null,
+	'send_ga4_event_on_consent_change'	: null,
+	'allow_js_fast_callback'			: null,
+	'cookie_domain_path'				: null,
+};
+
+// bof MapLogger
+(function (global) {
+    // Define only if not already defined
+    if (typeof global.MapLogger !== 'undefined' && global.MapLogger) {
+        return;
+    }
+
+    function noop() {}
+
+    function makeNoopLogger() {
+        return {
+            log: noop,
+            info: noop,
+            warn: noop,
+            error: noop,
+            debug: noop,
+            group: noop,
+            trace: noop,
+            clear: noop,
+            dir: noop,
+            dirxml: noop,
+            table: noop,
+            assert: noop,
+            count: noop,
+            countReset: noop,
+            time: noop,
+            timeLog: noop,
+            profile: noop,
+            profileEnd: noop,
+            timeStamp: noop,
+            groupCollapsed: noop,
+            groupEnd: noop
+        };
+    }
+
+    // Check verbose flag (defined and true)
+    function isVerboseEnabled() {
+        return (typeof global.MAP_VERBOSE_LOG !== 'undefined' && global.MAP_VERBOSE_LOG === true);
+    }
+
+    // If verbose is enabled, expose the native console (keeps correct caller line)
+    if (isVerboseEnabled()) {
+        global.MapLogger = global.console || makeNoopLogger();
+        return;
+    }
+
+    // If verbose is disabled, expose a no-op logger (no output, no errors)
+    global.MapLogger = makeNoopLogger();
+
+})(window);
+// eof MapLogger
+
+if( !( typeof MAP_JSCOOKIE_SHIELD !== 'undefined' && MAP_JSCOOKIE_SHIELD ) )
+{
+	MAP_POSTFIX = '';
+	MAP_ACCEPTED_ALL_COOKIE_NAME = 'map_accepted_all_cookie_policy';
+	MAP_ACCEPTED_SOMETHING_COOKIE_NAME = 'map_accepted_something_cookie_policy';
+	MAP_CONSENT_STATUS = 'map_consent_status';
+	MAP_MICROSOFT_CONSENT_STATUS = 'map_microsoft_consent_status';
+	MAP_CLARITY_CONSENT_STATUS = 'map_clarity_consent_status';
+	MAP_USER_UUID = 'map_user_uuid';
+	MAP_LAST_CONSENT_MODIFY_DATE = 'map_last_c_m_date';
+
+	MapLogger.debug( MAP_SYS.maplog + 'MAP_POSTFIX=' + MAP_POSTFIX );
+}
+
+if( typeof MAP_Cookie === 'undefined' )
+{
+	if( typeof MAP_UA_NO_COOKIE_SET === 'undefined' )
+	{
+		var MAP_UA_NO_COOKIE_SET = ["Cookiebot", "cookiebot.com", "CookieHubVerify", "TermlyBot"];
+	}
+
+	var MAP_Cookie = {
+		_isNoSetResult: null,
+		_isUserAgentNoCookieSet: function () {
+			if (this._isNoSetResult !== null) return this._isNoSetResult;
+			var userAgent = navigator?.userAgent || '';
+			this._isNoSetResult = MAP_UA_NO_COOKIE_SET.some(function(f){
+				return userAgent.includes(f);
+			});
+			return this._isNoSetResult;
+		},
+		_cookie_cache: {},
+		set: function(name, value, days, domain ) {
+
+			if( this._isUserAgentNoCookieSet() )
+			{
+				return null;
+			}
+
+			try {
+				if (days) {
+					var date = new Date();
+					date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+					var expires = "; expires=" + date.toGMTString();
+				} else
+					var expires = "";
+		        var domainStr = "";
+		        if( domain )
+		        {
+		            var d = domain.charAt(0) === '.' ? domain : '.' + domain;
+		            domainStr = "; domain=" + d;
+		        }
+	    		document.cookie = name + "=" + value + expires + "; path=/" + domainStr;
+	    		if( this._cookie_cache ) delete this._cookie_cache[name];
+			}
+			catch( e )
+			{
+				MapLogger.debug( e );
+				return null;
+			}
+		},
+		setGMTString: function( name, value, GMTString, domain ) {
+
+			if( this._isUserAgentNoCookieSet() )
+			{
+				return null;
+			}
+
+			try {
+
+				var expires = "; expires=" + GMTString;
+
+		        var domainStr = "";
+		        if( domain )
+		        {
+		            var d = domain.charAt(0) === '.' ? domain : '.' + domain;
+		            domainStr = "; domain=" + d;
+		        }
+	    		document.cookie = name + "=" + value + expires + "; path=/" + domainStr;
+	    		if( this._cookie_cache ) delete this._cookie_cache[name];
+
+			}
+			catch( e )
+			{
+				MapLogger.debug( e );
+				return null;
+			}
+		},
+		read: function (name) {
+			if( this._cookie_cache && name in this._cookie_cache ) return this._cookie_cache[name];
+			try {
+				var nameEQ = name + "=";
+				var ca = document.cookie.split(';');
+				for (var i = 0; i < ca.length; i++) {
+					var c = ca[i];
+					while (c.charAt(0) == ' ') {
+						c = c.substring(1, c.length);
+					}
+					if (c.indexOf(nameEQ) === 0) {
+						var val = c.substring(nameEQ.length, c.length);
+						if( this._cookie_cache ) this._cookie_cache[name] = val;
+						return val;
+					}
+				}
+				if( this._cookie_cache ) this._cookie_cache[name] = null;
+				return null;
+			}
+			catch( e )
+			{
+				MapLogger.debug( e );
+				return null;
+			}
+		},
+		exists: function (name) {
+			return (this.read(name) !== null);
+		}
+	};
+}
+
+var MAP =
+{
+	set: function( args )
+	{
+		try
+		{
+			if( this.initted )
+			{
+				MapLogger.debug( MAP_SYS.maplog + 'MAP already initted: exiting' );
+				return;
+			}
+
+			var current_url = window.location.href;
+
+			var isMatch = MAP_SYS.map_skip_regexp.some( function( rx ) {
+				return rx.test( current_url );
+			});
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'calling MAP set function' );
+
+			if( typeof JSON.parse !== "function" )
+			{
+				console.error( MAP_SYS.maplog + 'Error: My Agile Privacy requires JSON.parse but your browser lacks this support' );
+				return;
+			}
+			if( typeof args.settings !== 'object' )
+			{
+				this.settings = JSON.parse( args.settings );
+			}
+			else
+			{
+				this.settings = args.settings;
+			}
+
+			if( !!this?.settings?.plugin_version )
+			{
+				MAP_SYS.plugin_version = this?.settings?.plugin_version;
+			}
+
+			if( !!this?.settings?.parse_config_version_number )
+			{
+				MAP_SYS.parse_config_version_number = this?.settings?.parse_config_version_number;
+			}
+
+			if( !!this?.settings?.map_notify_title )
+			{
+				MAP_SYS.map_notify_title = this?.settings?.map_notify_title;
+			}
+
+			if( !!this?.settings?.map_first_layer_branded )
+			{
+				MAP_SYS.map_first_layer_branded = this?.settings?.map_first_layer_branded;
+			}
+
+			if( typeof map_full_config !== 'undefined' &&
+				typeof map_full_config.frontend_regulation !== 'undefined'
+			)
+			{
+				MAP_SYS.frontend_regulation = map_full_config.frontend_regulation;
+			}
+
+			if( typeof map_full_config !== 'undefined' &&
+				typeof map_full_config.send_ga4_event_on_consent_change !== 'undefined'
+			)
+			{
+				MAP_SYS.send_ga4_event_on_consent_change = map_full_config.send_ga4_event_on_consent_change;
+			}
+
+			if( typeof map_full_config !== 'undefined' &&
+				typeof map_full_config.allow_js_fast_callback !== 'undefined'
+			)
+			{
+				MAP_SYS.allow_js_fast_callback = map_full_config.allow_js_fast_callback;
+			}
+
+			if( typeof map_full_config !== 'undefined' &&
+				typeof map_full_config.cookie_domain_path !== 'undefined'
+			)
+			{
+				MAP_SYS.cookie_domain_path = map_full_config.cookie_domain_path;
+			}
+
+			if( typeof map_full_config !== 'undefined' &&
+				typeof map_full_config.enforce_youtube_privacy_v2 !== 'undefined'
+			)
+			{
+				MAP_SYS.enforce_youtube_privacy_v2 = map_full_config.enforce_youtube_privacy_v2;
+			}
+
+			if( typeof CookieShield !== 'undefined' &&
+				CookieShield
+			)
+			{
+				MAP_SYS.cookie_shield_version = CookieShield.getVersion();
+			}
+
+			if( ( !!this?.settings?.scan_mode &&
+				this.settings.scan_mode == 'learning_mode' ) ||
+				( !!this?.settings?.verbose_remote_log &&
+				this.settings.verbose_remote_log )
+			)
+			{
+				MAP_SYS.map_debug = true;
+			}
+
+			if( !!this?.settings?.cookie_reset_timestamp &&
+				this.settings.cookie_reset_timestamp )
+			{
+				if(!( typeof MAP_JSCOOKIE_SHIELD !== 'undefined' && MAP_JSCOOKIE_SHIELD ) )
+				{
+					MAP_POSTFIX = '_' + this.settings.cookie_reset_timestamp;
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'MAP_POSTFIX=' + MAP_POSTFIX );
+				}
+			}
+
+			if(!( typeof MAP_JSCOOKIE_SHIELD !== 'undefined' && MAP_JSCOOKIE_SHIELD ) )
+			{
+				MAP_ACCEPTED_ALL_COOKIE_NAME = MAP_ACCEPTED_ALL_COOKIE_NAME + MAP_POSTFIX;
+				MAP_ACCEPTED_SOMETHING_COOKIE_NAME = MAP_ACCEPTED_SOMETHING_COOKIE_NAME + MAP_POSTFIX;
+
+				MAP_USER_UUID = MAP_USER_UUID + MAP_POSTFIX;
+				MAP_LAST_CONSENT_MODIFY_DATE = MAP_LAST_CONSENT_MODIFY_DATE + MAP_POSTFIX;
+			}
+
+			if( MAP_SYS?.map_debug && !!this?.settings.cookie_reset_timestamp &&
+				this.settings.cookie_reset_timestamp )
+			{
+				MapLogger.debug( MAP_SYS.maplog + 'using alt_accepted_all_cookie_name=' + MAP_ACCEPTED_ALL_COOKIE_NAME );
+				MapLogger.debug( MAP_SYS.maplog + 'using alt_accepted_something_cookie_name=' + MAP_ACCEPTED_SOMETHING_COOKIE_NAME );
+				MapLogger.debug( MAP_SYS.maplog + 'using alt_user_uuid_cookie_name=' + MAP_USER_UUID );
+				MapLogger.debug( MAP_SYS.maplog + 'using alt_last_consent_modify_date_cookie_name=' + MAP_LAST_CONSENT_MODIFY_DATE );
+			}
+
+			this.blocked_friendly_name_string = null;
+
+			this.blocked_content_notification_shown = false;
+
+			this.bar_open = false;
+
+			this.settings = args.settings;
+
+			this.bar_elm = document.querySelector( this.settings.notify_div_id );
+			this.showagain_elm = document.querySelector( "#" + this.settings.showagain_div_id );
+			this.settingsModal = document.querySelector( '#mapSettingsPopup' );
+			this.blocked_content_notification = document.querySelector( '#map-blocked-content-notification-area' );
+
+			if( this.blocked_content_notification )
+			{
+				this.map_blocked_elems_desc = this.blocked_content_notification.querySelector('.map_blocked_elems_desc');
+			}
+
+			this.map_notification_message = this.bar_elm.querySelector( '.map_notification-message' );
+
+			/* buttons */
+			this.accept_button = this.bar_elm.querySelector( '.map-accept-button' );
+			this.reject_button = this.bar_elm.querySelectorAll( '.map-reject-button' );
+			this.customize_button = this.bar_elm.querySelector( '.map-customize-button' );
+			this.show_consent_elems = document.querySelectorAll( '.showConsent, .showConsentAgain' );
+
+			MAP_SYS.map_accept_all_button = this.accept_button;
+			MAP_SYS.map_reject_all_button = this.reject_button[0];
+
+			if( MAP_SYS?.map_debug )
+			{
+				MapLogger.groupCollapsed( MAP_SYS.maplog + 'settings:' );
+				MapLogger.debug( this.settings );
+				MapLogger.groupEnd();
+			}
+
+			this.retrieveLastConsentDate();
+			this.retrieveLastConsentUUID();
+			this.loadDependencies();
+			this.toggleBar();
+			this.createInlineNotify();
+			this.attachEvents();
+
+			this.attachAnimations();
+
+			this.initted = true;
+
+			this.optimizeMobile();
+
+			//for preserving scope
+			var that = this;
+
+			window.addEventListener( 'resize', function() {
+				that.optimizeMobile();
+			});
+
+			this.setupIabTCF();
+			this.updateSomeConsentGivenStatus();
+
+			this.usabilityEvents();
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+    //normalize spaces for safe comparisons
+    normalizeCssValue: function( value )
+    {
+        value = (value === undefined || value === null) ? '' : (value + '');
+        return value.replace(/\s+/g, ' ').trim();
+    },
+
+    //create a hidden test node for computed style checks
+    createCssTestNode: function( testClassName )
+    {
+        var el = document.createElement('div');
+        el.className = testClassName;
+
+        //keep it out of view and out of layout impact
+        el.style.position = 'absolute';
+        el.style.left = '-99999px';
+        el.style.top = '-99999px';
+        el.style.width = '1px';
+        el.style.height = '1px';
+        el.style.overflow = 'hidden';
+        el.style.visibility = 'hidden';
+
+        return el;
+    },
+
+    //check if a css rule is active by reading computed style
+    //testClassName: class that your css "signature" targets, without dot (e.g. "map-css-signature")
+    //testProperty: css property in kebab-case (e.g. "display", "font-family", "--my-var")
+    //expectedValue: expected computed value (e.g. "none", "700", "rgb(0, 0, 0)")
+    isCssSignatureActive: function( testClassName, testProperty, expectedValue )
+    {
+        try
+        {
+            if (!document.body) return false;
+            if (!testClassName || !testProperty) return false;
+
+            var el = this.createCssTestNode(testClassName);
+            document.body.appendChild(el);
+
+            var computed = window.getComputedStyle ? window.getComputedStyle( el, null ) : null;
+            var value = '';
+
+            if( computed )
+            {
+                //supports normal properties and CSS variables
+                value = computed.getPropertyValue( testProperty );
+            } else if( el.currentStyle )
+            {
+                //old IE fallback (not really needed in modern env, but harmless)
+                value = el.currentStyle[testProperty];
+            }
+
+            document.body.removeChild(el);
+
+            value = this.normalizeCssValue(value);
+            expectedValue = this.normalizeCssValue(expectedValue);
+
+            return (value === expectedValue);
+        }
+        catch( error )
+        {
+            console.error( error );
+            return false;
+        }
+    },
+
+    //inject css async (via <link>) only if signature is not active yet
+    //options = {
+    //  src: "https://...",
+    //  signatureClass: "map-css-signature",
+    //  signatureProperty: "display",
+    //  signatureValue: "none"
+    //}
+    //callback(isActiveBeforeLoad, isLoadedNow)
+    injectCssBySignature: function( options, callback )
+    {
+		//for preserving scope
+		var that = this;
+
+        try {
+            options = options || {};
+            var src = options.src || '';
+            var signatureClass = options.signatureClass || '';
+            var signatureProperty = options.signatureProperty || '';
+            var signatureValue = options.signatureValue || '';
+
+            if( !src ) return;
+
+            //if signature is already active, skip loading
+            var active = this.isCssSignatureActive( signatureClass, signatureProperty, signatureValue );
+            if( active )
+            {
+                if (MAP_SYS && MAP_SYS.map_debug)
+                {
+                    MapLogger.debug( MAP_SYS.maplog + 'css signature already active, skip load src=' + src);
+                }
+
+                if( callback ) callback( true, false );
+                return;
+            }
+
+            if( MAP_SYS && MAP_SYS.map_debug )
+            {
+                MapLogger.debug( MAP_SYS.maplog + 'injectCssBySignature src=' + src) ;
+            }
+
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = src;
+
+            link.onload = function() {
+                //double-check after load
+                var activeAfter = that.isCssSignatureActive( signatureClass, signatureProperty, signatureValue );
+
+                if( MAP_SYS && MAP_SYS.map_debug )
+                {
+                    MapLogger.debug( MAP_SYS.maplog + 'loaded css src=' + src + ' signatureActive=' + activeAfter );
+                }
+
+                MAP_SYS.dependencies.push( src );
+
+                if( callback ) callback( false, true );
+            };
+
+            link.onerror = function() {
+                if (MAP_SYS && MAP_SYS.map_debug)
+                {
+                    MapLogger.debug( MAP_SYS.maplog + 'error loading css src=' + src );
+                }
+
+                if( callback ) callback( false, false );
+            };
+
+            (document.head || document.getElementsByTagName('head')[0]).appendChild(link);
+        }
+        catch( error )
+        {
+            console.error( error );
+        }
+    },
+
+	//extract filename and map it to a signature class
+	getCssSignatureClassFromUrl: function(url)
+	{
+	    try {
+	        if (!url) return '';
+
+	        //remove query string/hash
+	        var cleanUrl = (url + '').split('#')[0].split('?')[0];
+
+	        //extract file name
+	        var parts = cleanUrl.split('/');
+	        var fileName = parts.length ? parts[parts.length - 1] : '';
+
+	        //derive a class from filename
+	        //example: "my-agile-privacy-frontend.css" => "map-css-signature-my-agile-privacy-frontend"
+	        fileName = fileName.replace(/\.min\.css$/i, '').replace(/\.css$/i, '');
+	        fileName = fileName.toLowerCase().replace(/[^a-z0-9\-]+/g, '-');
+	        return 'map-css-signature-' + fileName;
+	    }
+	    catch( error )
+	    {
+	        console.error( error );
+	        return '';
+	    }
+	},
+
+	//inject code async
+	injectCode: function( src=null, callback=null )
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function injectCode src=' + src );
+
+			if( src )
+			{
+				const script = document.createElement( 'script' );
+				script.async = true;
+				script.src = src;
+				script.onload = function() {
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'loaded script src=' + src );
+
+					if( callback )
+					{
+						callback();
+					}
+				};
+
+				document.body.append( script );
+			}
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//load frontend css (by signature check)
+	loadFrontendCss: function()
+	{
+	    //for preserving scope
+	    var that = this;
+
+	    try
+	    {
+	        if( MAP_SYS && MAP_SYS.map_debug )
+	        {
+	            MapLogger.debug( MAP_SYS.maplog + 'internal function loadFrontendCss' );
+	        }
+
+	        if( typeof map_full_config === 'undefined' || !map_full_config) return;
+	        if( !map_full_config.frontend_css || !map_full_config.frontend_css.length ) return;
+
+	        for( var i = 0; i < map_full_config.frontend_css.length; i++ )
+	        {
+	            var src = map_full_config.frontend_css[i];
+	            var signatureClass = that.getCssSignatureClassFromUrl( src );
+
+	            if( !signatureClass ) continue;
+
+	            that.injectCssBySignature({
+	                src: src,
+	                signatureClass: signatureClass,
+	                signatureProperty: 'display',
+	                signatureValue: 'none'
+	            }, function( isActiveBeforeLoad, isLoadedNow )
+	            {
+	                if( MAP_SYS && MAP_SYS.map_debug )
+	                {
+	                    MapLogger.debug(
+	                        MAP_SYS.maplog +
+	                        'css result alreadyActive=' + isActiveBeforeLoad +
+	                        ' loadedNow=' + isLoadedNow
+	                    );
+	                }
+	            });
+	        }
+	    }
+	    catch( error )
+	    {
+	        console.error(error);
+	    }
+	},
+
+	//load dependencies
+	loadDependencies: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		setTimeout(function(){
+
+			that.loadFrontendCss();
+
+		}, 500 );
+
+		try {
+
+			var something_to_do = false;
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function loadDependencies' );
+
+			//js shield
+			if( !( typeof MAP_JSCOOKIE_SHIELD !== 'undefined' && MAP_JSCOOKIE_SHIELD ) &&
+				typeof map_full_config !== 'undefined' && typeof map_full_config?.js_shield_url !== 'undefined' && map_full_config?.js_shield_url )
+			{
+				that.injectCode( map_full_config?.js_shield_url, function() {
+				} );
+
+				something_to_do = true;
+				MAP_SYS.dependencies.push( map_full_config?.js_shield_url );
+			}
+
+			//IabTCF
+			if( typeof map_full_config !== 'undefined' && typeof map_full_config?.load_iab_tcf !== 'undefined' && map_full_config?.load_iab_tcf &&
+				typeof map_full_config?.iab_tcf_script_url !== 'undefined' &&
+				typeof window?.initMyAgilePrivacyIabTCF === 'undefined' )
+			{
+				that.injectCode( map_full_config?.iab_tcf_script_url, function() {
+				} );
+
+				something_to_do = true;
+				MAP_SYS.dependencies.push( map_full_config?.iab_tcf_script_url );
+			}
+
+			if( something_to_do )
+			{
+				if( MAP_SYS?.map_debug )
+				{
+					MapLogger.groupCollapsed( MAP_SYS.maplog + ' tried to load the following dependencies:' );
+					MapLogger.log( MAP_SYS.dependencies );
+				}
+			}
+			else
+			{
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + ' no dependencies to load.' );
+			}
+
+			MapLogger.groupEnd();
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//get consent status for consent mode (Clarity)
+	getClarityConsentStatus: function( key )
+	{
+		try {
+			return MAP_SYS?.current_cconsent[ key ];
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//get consent status for consent mode (Microsoft)
+	getMicrosoftConsentStatus: function( key )
+	{
+		try {
+			return MAP_SYS?.current_mconsent[ key ];
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//get consent status for consent mode (Google)
+	getGoogleConsentStatus: function( key )
+	{
+		try {
+			return MAP_SYS?.current_gconsent[ key ];
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//f for updating given consent (Clarity)
+	updateClarityConsent: function( key, value, updateStatusCookie = false)
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.clarity_cmode )
+			{
+				var currentCConsent = {...MAP_SYS?.current_cconsent};
+				currentCConsent[key] = value;
+				MAP_SYS.current_cconsent = currentCConsent;
+
+				// Map keys: remove "clarity_" prefix and replace "_storage" with "_Storage"
+				var to_send_consent = Object.fromEntries(
+				  Object.entries(currentCConsent).map(([key, value]) => {
+				    // Remove "clarity_" prefix if present
+				    var newKey = key.startsWith('clarity_') ? key.slice('clarity_'.length) : key;
+				    // Replace all occurrences of "_storage" with "_Storage"
+				    newKey = newKey.replace(/_storage/g, '_Storage');
+				    return [newKey, value];
+				  })
+				);
+
+				//MapLogger.log( to_send_consent );
+
+				if( typeof window.clarity !== 'undefined' )
+				{
+					window.clarity( 'consentv2', {
+					  source: MAP_SYS.clarity_cmp_id,
+					  ...to_send_consent
+					});
+				}
+
+				if( updateStatusCookie )
+				{
+					that.saveClarityConsentStatusToCookie( MAP_SYS?.current_cconsent );
+				}
+
+				that.updateLastConsentRecords();
+
+				return true;
+			}
+
+			return false;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//f for updating given consent (Microsoft)
+	updateMicrosoftConsent: function( key, value, updateStatusCookie = false)
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.microsoft_cmode )
+			{
+				var newConsent = {};
+				let key_fixed = key.startsWith( 'microsoft_' ) ? key.slice( 'microsoft_'.length ) : key;
+				newConsent[ key_fixed ] = value;
+
+				if( typeof window.uetq !== 'undefined' )
+				{
+					window.uetq.push( 'consent', 'update', newConsent );
+				}
+
+				var currentMConsent = {...MAP_SYS?.current_mconsent};
+				currentMConsent[key] = value;
+				MAP_SYS.current_mconsent = currentMConsent;
+
+				if( updateStatusCookie )
+				{
+					that.saveMicrosoftConsentStatusToCookie( MAP_SYS?.current_mconsent );
+				}
+
+				that.updateLastConsentRecords();
+
+				return true;
+			}
+
+			return false;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//f. for consent events dispatch (GA4 and custom global event)
+	dispatchConsentEvents: function( eventLabel, dataKey, value )
+	{
+		try {
+			// Validate eventLabel (required)
+			if( !eventLabel )
+			{
+				if( MAP_SYS?.map_debug )
+				{
+					MapLogger.debug( MAP_SYS.maplog + 'dispatchConsentEvents - Missing eventLabel' );
+				}
+				return;
+			}
+
+			if( MAP_SYS?.map_debug )
+			{
+				MapLogger.debug( MAP_SYS.maplog + 'dispatchConsentEvents - Event name: ' + eventLabel + (value || '') );
+				MapLogger.debug( MAP_SYS.maplog + 'dispatchConsentEvents - Data key: ' + dataKey );
+				MapLogger.debug( MAP_SYS.maplog + 'dispatchConsentEvents - Value: ' + value );
+				if( dataKey && value )
+				{
+					MapLogger.debug( MAP_SYS.maplog + 'dispatchConsentEvents - Payload: ' + JSON.stringify({[dataKey]: value}) );
+				}
+			}
+
+			// Prepare event detail/payload only if both dataKey and value are present
+			var eventDetail = {};
+
+			if( dataKey && value )
+			{
+				eventDetail = { [dataKey]: value };
+			}
+
+			// Send custom global event
+			window.dispatchEvent( new CustomEvent( eventLabel + (value || ''), {
+				detail: eventDetail
+			} ) );
+
+			if( MAP_SYS?.send_ga4_event_on_consent_change )
+			{
+				if( typeof window.gtag === 'function' && window.gtag )
+				{
+					// Send GA4 event
+					gtag( 'event', eventLabel + (value || ''), eventDetail );
+				}
+			}
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//f for updating given consent by key / value (Google)
+	updateGoogleConsentbyKeyValue: function( key, value, updateStatusCookie = false)
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.cmode_v2 )
+			{
+				if( MAP_SYS?.cmode_v2_implementation_type === 'native' )
+				{
+					var newConsent = {};
+					newConsent[key] = value;
+
+					gtag( 'consent', 'update', newConsent );
+
+					//Dispatch events
+    				that.dispatchConsentEvents( 'myagileprivacy_gcmode_consent_', key + '_status', value );
+				}
+
+				if( MAP_SYS?.cmode_v2_implementation_type === 'gtm' )
+				{
+					var newConsent = {};
+					newConsent[key] = value;
+
+					gTagManagerConsentListeners.forEach( ( callback ) => {
+						callback( newConsent );
+					});
+
+					//Dispatch events
+    				that.dispatchConsentEvents( 'myagileprivacy_gcmode_consent_', key + '_status', value );
+				}
+
+				var currentGConsent = {...MAP_SYS?.current_gconsent};
+				currentGConsent[key] = value;
+				MAP_SYS.current_gconsent = currentGConsent;
+
+				if( updateStatusCookie )
+				{
+					that.saveGoogleConsentStatusToCookie( MAP_SYS?.current_gconsent );
+				}
+
+				that.updateLastConsentRecords();
+
+				return true;
+			}
+
+			return false;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+
+	//f for updating given consent by full object (Google)
+	updateGoogleConsentbyObj: function( newConsent, updateStatusCookie = false)
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.cmode_v2 )
+			{
+				if( MAP_SYS?.cmode_v2_implementation_type === 'native' )
+				{
+					gtag( 'consent', 'update', newConsent );
+				}
+
+				if( MAP_SYS?.cmode_v2_implementation_type === 'gtm' )
+				{
+					gTagManagerConsentListeners.forEach( ( callback ) => {
+						callback( newConsent );
+					});
+				}
+
+				MAP_SYS.current_gconsent = newConsent;
+
+				if( updateStatusCookie )
+				{
+					that.saveGoogleConsentStatusToCookie( MAP_SYS?.current_gconsent );
+				}
+
+				that.updateLastConsentRecords();
+
+				return true;
+			}
+
+			return false;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//from cookie value to object (Clarity)
+	parseClarityConsentStatus: function( consentStatusValue )
+	{
+		return this.parseGoogleConsentStatus( consentStatusValue );
+	},
+
+
+	//from cookie value to object (Microsoft)
+	parseMicrosoftConsentStatus: function( consentStatusValue )
+	{
+		return this.parseGoogleConsentStatus( consentStatusValue );
+	},
+
+	//from cookie value to object (Google)
+	parseGoogleConsentStatus: function( consentStatusValue )
+	{
+		try {
+
+			// Split the encoded string into individual key-value pairs
+			var keyValuePairs = consentStatusValue.split('|');
+
+			// Create an empty object to store the decoded values
+			var decodedObject = {};
+
+			// Iterate over the key-value pairs
+			keyValuePairs.forEach( function( pair ) {
+				// Split each pair into key and value
+				var parts = pair.split(':');
+
+				// Extract key and convert value to boolean
+				var key = parts[0];
+				var value = ( parts[1] === 'true' ) ? 'granted' : 'denied';
+
+				decodedObject[key] = value;
+			});
+
+			return decodedObject;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//from consent object to cookie (Clarity)
+	saveClarityConsentStatusToCookie : function( consentObject )
+	{
+		try {
+
+			// Convert object values to a string
+			var encodedString = Object.keys( consentObject )
+				.map(function( key ) {
+				return key + ':' + ( consentObject[key] === 'granted' );
+				})
+				.join('|');
+
+
+			MAP_Cookie.set( MAP_CLARITY_CONSENT_STATUS, encodedString, MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+			return true;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//from consent object to cookie (Microsoft)
+	saveMicrosoftConsentStatusToCookie : function( consentObject )
+	{
+		try {
+
+			// Convert object values to a string
+			var encodedString = Object.keys( consentObject )
+				.map(function( key ) {
+				return key + ':' + ( consentObject[key] === 'granted' );
+				})
+				.join('|');
+
+
+			MAP_Cookie.set( MAP_MICROSOFT_CONSENT_STATUS, encodedString, MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+			return true;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//from consent object to cookie (Google)
+	saveGoogleConsentStatusToCookie : function( consentObject )
+	{
+		try {
+
+			// Convert object values to a string
+			var encodedString = Object.keys( consentObject )
+				.map(function( key ) {
+				return key + ':' + ( consentObject[key] === 'granted' );
+				})
+				.join('|');
+
+
+			MAP_Cookie.set( MAP_CONSENT_STATUS, encodedString, MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+			return true;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//for google tag manager cookie parsing (gtm)
+	exportGoogleConsentObjectFromCookie: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			var cookieValue = MAP_Cookie.read( MAP_CONSENT_STATUS );
+
+			if( cookieValue )
+			{
+				var this_gconsent = that.parseGoogleConsentStatus( cookieValue );
+
+				return this_gconsent;
+			}
+
+			return null;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//set initial consent from google tag manager (gtm)
+	setFromGoogleTagManagerInitialConsent: function( gconsent )
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function setFromGoogleTagManagerInitialConsent' );
+
+			if( gconsent )
+			{
+				//save starting consent
+				MAP_SYS.starting_gconsent = {...gconsent};
+				MAP_SYS.current_gconsent = {...gconsent};
+
+				that.saveGoogleConsentStatusToCookie( gconsent );
+
+				//init only status, not events
+				that.userPreferenceInit( true );
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//consent listener for google tag manager (gtm)
+	googleTagManagerConsentListener: function( callback )
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function googleTagManagerConsentListener' );
+
+			if( typeof gTagManagerConsentListeners !== 'undefined' )
+			{
+				gTagManagerConsentListeners.push( callback );
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//init data for Google consent mode
+	setupConsentModeV2 : function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function setupConsentModeV2' );
+
+			if( typeof map_full_config === 'undefined' )
+			{
+				return false;
+			}
+
+			MAP_SYS.cmode_v2 = map_full_config?.enable_cmode_v2;
+			MAP_SYS.cmode_v2_implementation_type = map_full_config?.cmode_v2_implementation_type;
+			MAP_SYS.cmode_v2_forced_off_ga4_advanced = map_full_config?.cmode_v2_forced_off_ga4_advanced;
+			MAP_SYS.cmode_v2_js_on_error = map_full_config?.cmode_v2_js_on_error;
+
+			if( MAP_SYS.cmode_v2 && MAP_SYS.cmode_v2_implementation_type == 'gtm' )
+			{
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default value for consent mode (gtm)' );
+
+				var cookieValue = MAP_Cookie.read( MAP_CONSENT_STATUS );
+
+				if( cookieValue )
+				{
+					var this_gconsent = that.parseGoogleConsentStatus( cookieValue );
+					//setting initial current_gconsent value (deep copy using spread operator)
+					MAP_SYS.current_gconsent = {...this_gconsent};
+				}
+			}
+
+			if( MAP_SYS.cmode_v2 && MAP_SYS.cmode_v2_implementation_type == 'native' )
+			{
+				if( typeof map_full_config.early_gcmode !== 'undefined' && map_full_config.early_gcmode
+				)
+				{
+					if( typeof early_starting_gconsent !== 'undefined' && early_starting_gconsent )
+					{
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default value for consent mode (native) via early consent' );
+
+						//save starting consent
+						MAP_SYS.starting_gconsent = early_starting_gconsent;
+
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default consent (native)' );
+
+						//setting initial current_gconsent value (deep copy using spread operator)
+						MAP_SYS.current_gconsent = { ...MAP_SYS.starting_gconsent };
+
+						MAP_SYS.early_gcmode = true;
+					}
+				}
+				else
+				{
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default value for consent mode (native)' );
+
+					//save starting consent
+					MAP_SYS.starting_gconsent = map_full_config?.cmode_v2_default_consent_obj;
+
+					//setting default consent value
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default consent (native)' );
+
+					//setting initial current_gconsent value (deep copy using spread operator)
+					MAP_SYS.current_gconsent = { ...MAP_SYS.starting_gconsent };
+
+					try {
+						gtag( 'consent', 'default', { ...MAP_SYS.starting_gconsent } );
+					}
+					catch( error )
+					{
+						console.error( error );
+					}
+				}
+
+				var cookieValue = MAP_Cookie.read( MAP_CONSENT_STATUS );
+
+				if( cookieValue )
+				{
+					var this_gconsent = that.parseGoogleConsentStatus( cookieValue );
+
+					//setting initial current_gconsent value (deep copy using spread operator)
+					MAP_SYS.current_gconsent = { ...this_gconsent };
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting consent with value=' + cookieValue );
+
+					that.updateGoogleConsentbyObj( this_gconsent, false );
+				}
+				else
+				{
+					that.saveGoogleConsentStatusToCookie( MAP_SYS.current_gconsent );
+				}
+			}
+
+			return true;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//init data for Clarity consent mode
+	setupClarityConsentMode: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function setupClarityConsentMode' );
+
+			if( typeof map_full_config === 'undefined' )
+			{
+				return false;
+			}
+
+			MAP_SYS.clarity_cmode = map_full_config?.enable_clarity_cmode;
+
+			if( MAP_SYS.clarity_cmode )
+			{
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default value for consent mode (Clarity)' );
+
+				//save starting consent
+				MAP_SYS.starting_cconsent = map_full_config?.cmode_clarity_default_consent_obj;
+
+				var cookieValue = MAP_Cookie.read( MAP_CLARITY_CONSENT_STATUS );
+
+				if( cookieValue )
+				{
+					var this_cconsent = that.parseClarityConsentStatus( cookieValue );
+
+					//setting initial current_gconsent value (deep copy using spread operator)
+					MAP_SYS.current_cconsent = { ...this_cconsent };
+
+					try {
+
+						// Map keys: remove "clarity_" prefix and replace "_storage" with "_Storage"
+						var current_cconsent_fixed = Object.fromEntries(
+						  Object.entries(this_cconsent).map(([key, value]) => {
+						    // Remove "clarity_" prefix if present
+						    var newKey = key.startsWith('clarity_') ? key.slice('clarity_'.length) : key;
+						    // Replace all occurrences of "_storage" with "_Storage"
+						    newKey = newKey.replace(/_storage/g, '_Storage');
+						    return [newKey, value];
+						  })
+						);
+
+						if( typeof window.clarity !== 'undefined' )
+						{
+							window.clarity( 'consentv2', {
+							  source: MAP_SYS.clarity_cmp_id,
+							  ...current_cconsent_fixed
+							});
+						}
+					}
+					catch( error )
+					{
+						console.error( error );
+					}
+				}
+				else
+				{
+					//no cookie value case
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default consent (Clarity)' );
+
+					//setting initial current_gconsent value (deep copy using spread operator)
+					MAP_SYS.current_cconsent = { ...MAP_SYS.starting_cconsent };
+
+					try {
+
+						// Map keys: remove "clarity_" prefix and replace "_storage" with "_Storage"
+						var current_cconsent_fixed = Object.fromEntries(
+						  Object.entries( MAP_SYS.starting_cconsent ).map(([key, value]) => {
+						    // Remove "clarity_" prefix if present
+						    var newKey = key.startsWith('clarity_') ? key.slice('clarity_'.length) : key;
+						    // Replace all occurrences of "_storage" with "_Storage"
+						    newKey = newKey.replace(/_storage/g, '_Storage');
+						    return [newKey, value];
+						  })
+						);
+
+						if( typeof window.clarity !== 'undefined' )
+						{
+							window.clarity( 'consentv2', {
+							  source: MAP_SYS.clarity_cmp_id,
+							  ...current_cconsent_fixed
+							});
+						}
+					}
+					catch( error )
+					{
+						console.error( error );
+					}
+
+					that.saveClarityConsentStatusToCookie( MAP_SYS.current_cconsent );
+				}
+			}
+
+			return true;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//init data for Microsoft consent mode
+	setupMicrosoftConsentMode: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function setupMicrosoftConsentMode' );
+
+			if( typeof map_full_config === 'undefined' )
+			{
+				return false;
+			}
+
+			MAP_SYS.microsoft_cmode = map_full_config?.enable_microsoft_cmode;
+
+			if( MAP_SYS.microsoft_cmode )
+			{
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default value for consent mode (Microsoft)' );
+
+				//save starting consent
+				MAP_SYS.starting_mconsent = map_full_config?.cmode_microsoft_default_consent_obj;
+
+				var cookieValue = MAP_Cookie.read( MAP_MICROSOFT_CONSENT_STATUS );
+
+				if( cookieValue )
+				{
+					var this_mconsent = that.parseMicrosoftConsentStatus( cookieValue );
+
+					//setting initial current_gconsent value (deep copy using spread operator)
+					MAP_SYS.current_mconsent = { ...this_mconsent };
+
+					try {
+
+						var current_mconsent_fixed = Object.fromEntries(
+						  Object.entries( this_mconsent ).map( ([key, value] ) => [
+							key.startsWith( 'microsoft_' ) ? key.slice( 'microsoft_'.length) : key,
+							value
+						  ])
+						);
+
+						if( typeof window.uetq !== 'undefined' )
+						{
+							window.uetq.push( 'consent', 'default', { ...current_mconsent_fixed } );
+						}
+					}
+					catch( error )
+					{
+						console.error( error );
+					}
+				}
+				else
+				{
+					//no cookie value case
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting default consent (Microsoft)' );
+
+					//setting initial current_gconsent value (deep copy using spread operator)
+					MAP_SYS.current_mconsent = { ...MAP_SYS.starting_mconsent };
+
+					try {
+
+						var current_mconsent_fixed = Object.fromEntries(
+						  Object.entries( MAP_SYS.starting_mconsent ).map( ([key, value] ) => [
+							key.startsWith( 'microsoft_' ) ? key.slice( 'microsoft_'.length) : key,
+							value
+						  ])
+						);
+
+						if( typeof window.uetq !== 'undefined' )
+						{
+							window.uetq.push( 'consent', 'default', { ...current_mconsent_fixed } );
+						}
+
+					}
+					catch( error )
+					{
+						console.error( error );
+					}
+
+					that.saveMicrosoftConsentStatusToCookie( MAP_SYS.current_mconsent );
+				}
+			}
+
+			return true;
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//memorize last consent modification date, uuid generation eventually
+	updateLastConsentRecords : function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'updateLastConsentRecords' );
+
+			let date = new Date();
+			let dateString = date.toISOString();
+
+			MAP_SYS.last_consent_modify_date = date;
+
+			MAP_Cookie.set( MAP_LAST_CONSENT_MODIFY_DATE, dateString, MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+			if( !MAP_Cookie.exists( MAP_USER_UUID ) )
+			{
+				let uuid = that.generateUUID();
+
+				if( uuid )
+				{
+					MAP_SYS.user_uuid = uuid;
+
+					MAP_Cookie.set( MAP_USER_UUID, uuid, MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+				}
+			}
+
+			return true;
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//used on init
+	retrieveLastConsentDate : function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_Cookie.exists( MAP_LAST_CONSENT_MODIFY_DATE ) )
+			{
+				let dateStringFromCookie = MAP_Cookie.read( MAP_LAST_CONSENT_MODIFY_DATE );
+				let dateFromCookie = new Date (dateStringFromCookie );
+
+				MAP_SYS.last_consent_modify_date = dateFromCookie;
+
+				return dateFromCookie;
+			}
+
+			return null;
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//used on init
+	retrieveLastConsentUUID : function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_Cookie.exists( MAP_USER_UUID ) )
+			{
+				let value = MAP_Cookie.read( MAP_USER_UUID );
+
+				MAP_SYS.user_uuid = value;
+
+				return value;
+			}
+
+			return null;
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//uuid generation
+	generateUUID : function()
+	{
+		try {
+
+			if( window.crypto && window.crypto.getRandomValues )
+			{
+				return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+			(c ^ window.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+		);
+			}
+
+			return null;
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	toggleBar: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try
+		{
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function toggleBar' );
+
+			if( !MAP_Cookie.exists( MAP_ACCEPTED_ALL_COOKIE_NAME ) &&
+				!MAP_Cookie.exists( MAP_ACCEPTED_SOMETHING_COOKIE_NAME )
+				)
+			{
+				if( MAP_SYS.in_iab_context )
+				{
+					(async() => {
+
+						while( !MAP_SYS.map_document_load )
+						{
+							//MapLogger.log( 'not defined yet' );
+							await new Promise( resolve => setTimeout( resolve, 10 ) );
+						}
+
+						(async() => {
+							//MapLogger.log("waiting for variable");
+							while( typeof window.MAPIABTCF_brief_html_initted == 'function' &&
+								!window.MAPIABTCF_brief_html_initted() )
+							{
+								//MapLogger.log( 'not defined yet' );
+								await new Promise( resolve => setTimeout( resolve, 10 ) );
+							}
+							//MapLogger.log("variable is defined");
+							that.displayBar();
+
+							setTimeout( function() {
+								var scroll_to_top = document.querySelector( '.map_notification-message.map-iab-context' );
+								if( scroll_to_top ) {
+									scroll_to_top.scrollIntoView( { behavior: 'smooth' } );
+								}
+							}, 400);
+
+						})();
+
+					})();
+				}
+				else
+				{
+					that.displayBar();
+				}
+			}
+			else
+			{
+				that.hideBar();
+			}
+
+			this.showagain_elm.querySelectorAll( '.showConsent' ).forEach( function( $this ) {
+				$this.addEventListener( 'click', function( e ) {
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered showConsent' );
+
+					e.preventDefault();
+					e.stopImmediatePropagation();
+
+					that.dispatchConsentEvents( 'myagileprivacy_resurface' );
+
+					//animation
+					var that_animation = MAP.bar_elm.getAttribute( 'data-animation' );
+					var that_id_selector = '#' + MAP.bar_elm.getAttribute( 'id' );
+
+					var animation_params = {
+						targets: that_id_selector,
+						easing: 'easeInOutQuad',
+						duration: 1000
+					};
+
+					setTimeout( function() {
+						MAP.showagain_elm.style.display = 'none';
+						MAP.bar_elm.focus();
+					}, 150 );
+
+					anime( {
+						targets: MAP.showagain_elm,
+						easing: 'easeInOutQuad',
+						duration: 150,
+						opacity: 0,
+						complete: function( anim ) {
+							MAP.showagain_elm.style.display = 'none';
+							MAP.bar_elm.focus();
+						}
+					} );
+
+					setTimeout( function() {
+
+						try
+						{
+
+							switch( that_animation )
+							{
+								case 'slide':
+
+									var y_value = '0vh';
+									var x_value = '0vw';
+
+									if( MAP.bar_elm.classList.contains( 'map_floating_banner' ) )
+									{
+										y_value = '3vh';
+										x_value = '3vw';
+									}
+
+									var $this = MAP.bar_elm;
+
+									if( MAP.bar_elm.className.includes( 'mapPositionBottom' ) ) {
+										$this.style.bottom = '-100vh';
+										animation_params['bottom'] = y_value;
+									}
+									else if( MAP.bar_elm.className.includes( 'mapPositionTop' ) ) {
+										$this.style.top = '-100vh';
+										animation_params['top'] = y_value;
+									}
+									else if( MAP.bar_elm.className.includes( 'mapPositionCenterLeft' ) ) {
+										$this.style.left = '-100vw';
+										animation_params['left'] = x_value;
+									}
+									else if( MAP.bar_elm.className.includes( 'mapPositionCenterCenter' ) ) {
+										$this.style.top = '-100%';
+										animation_params['top'] = '50%';
+									}
+									else if( MAP.bar_elm.className.includes( 'mapPositionCenterRight' ) ) {
+										$this.style.right = '-100vw';
+										animation_params['right'] = x_value;
+									}
+
+									MAP.bar_elm.style.display = 'block';
+									anime( animation_params );
+									break;
+
+								case 'fade':
+									document.querySelector( that_id_selector ).style.opacity = '0';
+									MAP.bar_elm.style.display = 'block';
+
+									animation_params['opacity'] = '1';
+									animation_params['duration'] = '500';
+
+									anime( animation_params );
+
+									break;
+
+								case 'zoom':
+									document.querySelector( that_id_selector ).style.transform = 'scale(0)';
+									MAP.bar_elm.style.display = 'block';
+
+									animation_params['scale'] = '1';
+									anime( animation_params );
+
+									break;
+
+								default: // no animation -> value = "none"
+									MAP.bar_elm.style.display = 'block';
+									break;
+							}
+
+							that.bar_open = true;
+							that.bar_elm.focus();
+							that.optimizeMobile();
+
+						}
+						catch( error )
+						{
+							console.error( error );
+						}
+
+					},100 );
+				});
+			});
+
+			//bof user consent review trigger
+
+			that.bar_elm.addEventListener( 'triggerShowAgainDisplay', function( e ) {
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered triggerShowAgainDisplay' );
+
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				//animation
+				var that_animation = MAP.bar_elm.getAttribute('data-animation');
+				var that_id_selector = '#' + MAP.bar_elm.getAttribute('id');
+
+				var animation_params = {
+					targets: that_id_selector,
+					easing: 'easeInOutQuad',
+					duration: 1000
+				};
+
+				setTimeout( function() {
+					MAP.showagain_elm.style.display = 'none';
+				}, 150 );
+
+				anime( {
+					targets: MAP.showagain_elm,
+					easing: 'easeInOutQuad',
+					duration: 150,
+					opacity: 0,
+					complete: function(anim) {
+						MAP.showagain_elm.style.display = 'none';
+					}
+				} );
+
+				setTimeout( function() {
+
+					try {
+
+						switch( that_animation )
+						{
+							case 'slide':
+
+								var y_value = '0vh';
+								var x_value = '0vw';
+
+								if( MAP.bar_elm.classList.contains( 'map_floating_banner' ) )
+								{
+									y_value = '3vh';
+									x_value = '3vw';
+								}
+
+								var element = document.querySelector( that_id_selector );
+
+								if( MAP.bar_elm.className.includes( 'mapPositionBottom' ) ) {
+									element.style.bottom = '-100vh';
+									animation_params['bottom'] = y_value;
+								}
+								else if( MAP.bar_elm.className.includes( 'mapPositionTop' ) ) {
+									element.style.top = '-100vh';
+									animation_params['top'] = y_value;
+								}
+								else if( MAP.bar_elm.className.includes( 'mapPositionCenterLeft' ) ) {
+									element.style.left = '-100vw';
+									animation_params['left'] = x_value;
+								}
+								else if( MAP.bar_elm.className.includes( 'mapPositionCenterCenter' ) ) {
+									element.style.top = '-100%';
+									animation_params['top'] = '50%';
+								}
+								else if( MAP.bar_elm.className.includes( 'mapPositionCenterRight') ) {
+									element.style.right = '-100vw';
+									animation_params['right'] = x_value;
+								}
+
+								MAP.bar_elm.style.display = 'block';
+								anime( animation_params );
+								break;
+
+							case 'fade':
+								document.querySelector( that_id_selector ).style.opacity = '0';
+								MAP.bar_elm.style.display = 'block';
+
+								animation_params['opacity'] = '1';
+								animation_params['duration'] = '500';
+
+								anime( animation_params );
+
+								break;
+
+							case 'zoom':
+								document.querySelector( that_id_selector ).style.transform = 'scale(0)';
+								MAP.bar_elm.style.display = 'block';
+
+								animation_params['scale'] = '1';
+								anime( animation_params );
+								break;
+
+							default: // no animation -> value = "none"
+								MAP.bar_elm.style.display = 'block';
+								break;
+						}
+
+						that.bar_open = true;
+						that.bar_elm.focus();
+						that.optimizeMobile();
+					}
+					catch( error )
+					{
+						console.error( error );
+					}
+
+				}, 100 );
+			});
+
+			document.body.addEventListener( 'click', function( e ) {
+
+				var targetElement = e.target;
+				var matchFound = false;
+				var levelsToCheck = 2;
+
+				while( levelsToCheck > 0 && targetElement )
+				{
+					if( targetElement.matches( '.showConsentAgain' ) )
+					{
+						matchFound = true;
+						break;
+					}
+					targetElement = targetElement.parentElement;
+					levelsToCheck--;
+				}
+
+				if( matchFound )
+				{
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered showConsentAgain' );
+					e.preventDefault();
+					e.stopImmediatePropagation();
+
+					that.dispatchConsentEvents( 'myagileprivacy_resurface' );
+
+					var event = new CustomEvent( 'triggerShowAgainDisplay' );
+					that.bar_elm.dispatchEvent( event );
+				}
+			});
+
+			//eof user consent review trigger
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	createInlineNotify: function()
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function createInlineNotify' );
+
+			//for preserving scope
+			var that = this;
+
+			if( typeof CookieShield !== 'undefined' &&
+				CookieShield )
+			{
+				var detectedKeys = CookieShield.getDetectedKeys();
+
+				Object.keys( detectedKeys ).forEach( function( key ) {
+
+					var api_key = detectedKeys[key];
+
+					var $custom_ref = document.querySelector( '.map_custom_notify.map_api_key_' + api_key );
+
+					if( $custom_ref )
+					{
+						$custom_ref.style.display = 'block';
+						$custom_ref.classList.add( 'mapShowItem' );
+					}
+				});
+			}
+
+			var $map_blocked_content = document.querySelectorAll( '.map_blocked_content' );
+
+			$map_blocked_content.forEach( function( $this) {
+
+				var api_key = $this.getAttribute( 'data-cookie-api-key' );
+
+				var $custom_ref = document.querySelectorAll( '.map_custom_notify.map_api_key_' + api_key );
+
+				$custom_ref.forEach( function( customRef ) {
+					if( customRef )
+					{
+						customRef.style.display = 'block';
+						customRef.classList.add( 'mapShowItem' );
+					}
+				});
+
+			});
+
+			var $show_inline_notify = document.querySelectorAll( '.iframe_src_blocked.map_show_inline_notify' );
+
+			$show_inline_notify.forEach( function( $this ) {
+
+				var height = $this.offsetHeight;
+
+				var width = $this.offsetWidth;
+
+				var api_key = $this.getAttribute('data-cookie-api-key');
+
+				var the_friendly_name = '';
+				var friendly_name = $this.getAttribute('data-friendly-name');
+
+				if( friendly_name )
+				{
+					the_friendly_name = friendly_name;
+				}
+
+				$this.style.display = 'none';
+
+				var html = "<div class='map_inline_notify showConsentAgain' data-cookie-api-key='"+api_key+"'>"+that.settings.blocked_content_text+"<br>"+the_friendly_name+"</div>";
+
+				//temp div for inject via vanilla js
+				var tempDiv = document.createElement( 'div' );
+				tempDiv.innerHTML = html;
+
+				var $injected = tempDiv.firstChild;
+				$this.parentNode.insertBefore( $injected, $this.nextSibling );
+
+				if( height > 0 )
+				{
+					$injected.style.height = height + 'px';
+				}
+
+				if( width > 0 )
+				{
+					$injected.style.width = width + 'px';
+				}
+
+				if( that.settings.inline_notify_color )
+				{
+					$injected.style.color = that.settings.inline_notify_color;
+				}
+
+				if( that.settings.inline_notify_background )
+				{
+					$injected.style.backgroundColor = that.settings.inline_notify_background;
+				}
+
+			});
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	setupIabTCF: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			var $map_consent_extrawrapper = that.settingsModal.querySelector( '.map-consent-extrawrapper' );
+
+			if( !!$map_consent_extrawrapper )
+			{
+				MAP_SYS.in_iab_context = true;
+
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function setupIabTCF' );
+
+				//first layer
+				that.bar_elm.querySelectorAll( '.map-triggerGotoIABTCF' ).forEach( function( $this ) {
+					$this.addEventListener( 'click', function( e ) {
+
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-triggerGotoIABTCF click' );
+
+						e.preventDefault();
+						e.stopImmediatePropagation();
+
+						MAP.settingsModal.classList.add( 'map-show' );
+						MAP.settingsModal.style.opacity = 0;
+						MAP.settingsModal.offsetWidth; // Trigger a reflow to ensure the transition starts
+						MAP.settingsModal.style.transition = 'opacity 1s';
+						MAP.settingsModal.style.opacity = 1;
+
+						MAP.settingsModal.classList.remove( 'map-blowup', 'map-out' );
+						MAP.settingsModal.classList.add( 'map-blowup' );
+
+						MAP.settingsModal.focus();
+
+						document.body.classList.add( 'map-modal-open' );
+
+						document.querySelector( '.map-settings-overlay' ).classList.add( 'map-show' );
+
+						if( !document.querySelector( '.map-settings-mobile' ).offsetWidth )
+						{
+							MAP.settingsModal.querySelector( '.map-nav-link' ).click();
+						}
+
+						$map_consent_extrawrapper.querySelectorAll( '.map-wrappertab-navigation li a[href="#map-privacy-iab-tcf-wrapper"]' ).forEach( function( $_this ) {
+							$_this.click();
+						});
+
+					});
+				});
+
+				that.bar_elm.querySelectorAll( '.map-triggerGotoIABTCFVendors' ).forEach( function( $this ) {
+					$this.addEventListener( 'click', function( e ) {
+
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-triggerGotoIABTCFVendors click' );
+
+						e.preventDefault();
+						e.stopImmediatePropagation();
+
+						MAP.settingsModal.classList.add('map-show');
+						MAP.settingsModal.style.opacity = 0;
+
+						MAP.settingsModal.offsetWidth; // Trigger a reflow to ensure the transition starts
+						MAP.settingsModal.style.transition = 'opacity 1s';
+						MAP.settingsModal.style.opacity = 1;
+
+						MAP.settingsModal.classList.remove( 'map-blowup', 'map-out' );
+						MAP.settingsModal.classList.add( 'map-blowup' );
+
+						document.body.classList.add( 'map-modal-open' );
+
+						document.querySelector( '.map-settings-overlay' ).classList.add( 'map-show' );
+
+						var mapSettingsMobile = document.querySelector( '.map-settings-mobile' );
+						if( mapSettingsMobile && mapSettingsMobile.offsetWidth === 0 && mapSettingsMobile.offsetHeight === 0)
+						{
+							var firstNavLink = MAP.settingsModal.querySelector( '.map-nav-link' );
+							if( firstNavLink )
+							{
+								firstNavLink.click();
+							}
+						}
+
+						$map_consent_extrawrapper.querySelectorAll( '.map-wrappertab-navigation li a[href="#map-privacy-iab-tcf-wrapper"]' ).forEach( function( $_this ) {
+							$_this.click();
+						});
+
+						setTimeout( function() {
+
+							try {
+
+								var $vendor_list_button = document.querySelector( '#map-iab-tcf-vendor-list' );
+
+								if( $vendor_list_button )
+								{
+									$vendor_list_button.click();
+
+									setTimeout( function() {
+										var $vendor_list_scrollto = document.querySelector( '#map-iab-tcf-vendor-list-scroll-here' );
+
+										if( $vendor_list_scrollto )
+										{
+											$vendor_list_scrollto.scrollIntoView({ behavior: 'smooth' });
+										}
+									}, 200 );
+								}
+							}
+							catch( error )
+							{
+								console.error( error );
+							}
+
+						}, 200);
+					});
+				});
+
+				//bof nav part
+				$map_consent_extrawrapper.querySelectorAll( '.map-wrappertab-navigation li a' ).forEach( function( $this ) {
+					$this.addEventListener( 'click', function( e ) {
+
+						e.preventDefault();
+
+						var tabHref = $this.getAttribute( 'href' );
+						var lastIndex = tabHref.lastIndexOf('#');
+						if( lastIndex !== -1 )
+						{
+							tabHref = tabHref.substring( lastIndex )?.replace( '#', '' );
+						}
+						else
+						{
+							tabHref = 'map-privacy-iab-tcf-wrapper';
+						}
+
+						if( tabHref == 'map-privacy-iab-tcf-wrapper')
+						{
+							(async() => {
+
+								while( !MAP_SYS.map_document_load )
+								{
+									//MapLogger.log( 'not defined yet' );
+									await new Promise( resolve => setTimeout( resolve, 10 ) );
+								}
+
+								if( typeof window.MAPIABTCF_showCMPUI === 'function' )
+								{
+									window.MAPIABTCF_showCMPUI();
+								}
+
+							})();
+						}
+						else
+						{
+							(async() => {
+
+								while( !MAP_SYS.map_document_load )
+								{
+									//MapLogger.log( 'not defined yet' );
+									await new Promise( resolve => setTimeout( resolve, 10 ) );
+								}
+
+								if( typeof window.MAPIABTCF_hideCMPUI === 'function' )
+								{
+									window.MAPIABTCF_hideCMPUI();
+								}
+
+							})();
+
+						}
+
+						$map_consent_extrawrapper.querySelectorAll( '.map-wrappertab-navigation li a' ).forEach( function( $_this ) {
+							$_this.classList.remove( 'active-wrappertab-nav' );
+						});
+
+						$this.classList.add( 'active-wrappertab-nav' );
+
+						$map_consent_extrawrapper.querySelectorAll( '.map-wrappertab' ).forEach( function( $_this ) {
+							$_this.classList.remove( 'map-wrappertab-active' );
+						});
+
+						var activeTab = $map_consent_extrawrapper.querySelector( '.map-wrappertab.' + tabHref );
+						if( activeTab )
+						{
+							activeTab.classList.add( 'map-wrappertab-active' );
+						}
+
+					});
+				});
+
+				//eof nav part
+
+				//bof IAB TCF init and events
+				(async() => {
+
+					while( !MAP_SYS.map_document_load )
+					{
+						//MapLogger.log( 'not defined yet' );
+						await new Promise( resolve => setTimeout( resolve, 10 ) );
+					}
+
+					if( typeof window.initMyAgilePrivacyIabTCF === 'function' )
+					{
+						var this_lang_code = null;
+
+						if( typeof map_lang_code !== 'undefined' )
+						{
+							this_lang_code = map_lang_code;
+						}
+
+						if( typeof map_full_config?.map_lang_code !== 'undefined' )
+						{
+							this_lang_code = map_full_config?.map_lang_code;
+						}
+
+						window.initMyAgilePrivacyIabTCF( this_lang_code );
+					}
+
+				})();
+				//eof IAB TCF init and events
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//returns vendor list
+	returnVendorsList: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			var standard_vendors = [];
+			var other_iab_and_google_vendors = [];
+			var vendors_all = [];
+
+			for ( const [key, value] of Object.entries( map_full_config?.cookie_api_key_remote_id_map_active ) )
+			{
+				let item = {
+					name: key,
+					iabId: null
+				}
+
+				standard_vendors.push( item );
+			}
+
+			if( typeof window.MAPIABTCF_getVendorsList === 'function' )
+			{
+				other_iab_and_google_vendors = window.MAPIABTCF_getVendorsList();
+			}
+
+			vendors_all = [ ...standard_vendors, ...other_iab_and_google_vendors ];
+
+			return vendors_all;
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//updating SYS_MAP some positive consent status
+	updateSomeConsentGivenStatus: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			let acceptedAll_status = MAP_Cookie.read( MAP_ACCEPTED_ALL_COOKIE_NAME );
+			const atLeastSomeCModeV2ConsentGranted = Object.values( MAP_SYS?.current_gconsent ).some( value => value === 'granted' );
+
+			if( acceptedAll_status == '1' )
+			{
+				MAP_SYS.some_positive_consent_given = true;
+			}
+			else if( atLeastSomeCModeV2ConsentGranted )
+			{
+				MAP_SYS.some_positive_consent_given = true;
+			}
+			else
+			{
+				let counter = 0;
+
+				Object.entries( map_full_config.cookie_api_key_remote_id_map_active ).forEach( ([key, value] ) => {
+
+					if( MAP_Cookie.read( value ) == '1')
+					{
+						counter++;
+					}
+				});
+
+				if( typeof window.MAPIABTCF_getSomePositiveConsentStatus === 'function' )
+				{
+					if( window.MAPIABTCF_getSomePositiveConsentStatus() )
+					{
+						counter++;
+					}
+				}
+
+				if( counter == 0 )
+				{
+					MAP_SYS.some_positive_consent_given = false;
+				}
+				else
+				{
+					MAP_SYS.some_positive_consent_given = true;
+				}
+			}
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+
+	},
+
+	attachEvents: function()
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function attachEvents' );
+
+			//for preserving scope
+			var that = this;
+
+			//click over pseudo-label
+			that.settingsModal.addEventListener( 'click', function( e ) {
+
+				if( e.target.matches( '.map-slider' ) )
+				{
+					// Find the class that starts with "map-for-"
+					let classList = [...e.target.classList];
+					let mapForClass = classList.find( cls => cls.startsWith( 'map-for-' ) );
+					if( !mapForClass ) return;
+
+					let for_attribute = mapForClass.replace( 'map-for-', '' );
+					if( !for_attribute ) return;
+
+					const final_target = document.getElementById( for_attribute );
+
+					if( final_target )
+					{
+						final_target.checked = !final_target.checked;
+
+						//propagate event
+						final_target.dispatchEvent( new Event( 'click', { bubbles: true } ) );
+					}
+				}
+			});
+
+			that.accept_button.addEventListener( 'click', function( e ) {
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-accept-button click' );
+
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				var $this = this;
+
+				that.updateLastConsentRecords();
+
+				that.dispatchConsentEvents( 'myagileprivacy_cookie_accept' );
+
+				//check consent-mode checkbox
+				that.settingsModal.querySelectorAll( '.map-consent-mode-preference-checkbox' ).forEach( function( elem ) {
+					elem.checked = true;
+
+					var consent_key = elem.getAttribute( 'data-consent-key' );
+
+					if( elem.classList.contains( 'map-consent-clarity' ) )
+					{
+						that.updateClarityConsent( consent_key, 'granted', true );
+					}
+
+					if( elem.classList.contains( 'map-consent-microsoft' ) )
+					{
+						that.updateMicrosoftConsent( consent_key, 'granted', true );
+					}
+
+					if( elem.classList.contains( 'map-consent-google' ) )
+					{
+						that.updateGoogleConsentbyKeyValue( consent_key, 'granted', true );
+					}
+
+				});
+
+				//check user-preference checkbox
+				that.settingsModal.querySelectorAll( '.map-user-preference-checkbox' ).forEach( function( elem ) {
+
+					var cookieName = 'map_cookie_' + elem.getAttribute( 'data-cookie-baseindex' ) + MAP_POSTFIX;
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting 1 to cookieName=' + cookieName );
+
+					MAP_Cookie.set( cookieName, '1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+					elem.checked = true;
+				});
+
+				//check iab-preference checkbox
+				that.settingsModal.querySelectorAll( '.map-user-iab-preference-checkbox' ).forEach( function( elem ) {
+
+					elem.checked = true;
+				});
+
+				(async() => {
+
+					while( !MAP_SYS.map_document_load )
+					{
+						//MapLogger.log( 'not defined yet' );
+						await new Promise( resolve => setTimeout( resolve, 10 ) );
+					}
+
+					if( typeof window.MAPIABTCF_acceptAllConsent === 'function' )
+					{
+						window.MAPIABTCF_doSetUserInteraction();
+						window.MAPIABTCF_acceptAllConsent( true );
+
+						that.updateSomeConsentGivenStatus();
+					}
+
+				})();
+
+				MAP.accept_close();
+
+
+			});
+
+
+			that.reject_button.forEach( function( button ) {
+				button.addEventListener( 'click', function( e ) {
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-reject-button click' );
+
+					e.preventDefault();
+					e.stopImmediatePropagation();
+
+					var $this = this;
+
+					that.updateLastConsentRecords();
+
+					that.dispatchConsentEvents( 'myagileprivacy_cookie_reject' );
+
+					//uncheck consent-mode checkbox
+					that.settingsModal.querySelectorAll( '.map-consent-mode-preference-checkbox' ).forEach( function( elem ) {
+
+						elem.checked = false;
+
+						var consent_key = elem.getAttribute( 'data-consent-key' );
+
+						if( elem.classList.contains( 'map-consent-clarity' ) )
+						{
+							that.updateClarityConsent( consent_key, 'denied', true );
+						}
+
+						if( elem.classList.contains( 'map-consent-microsoft' ) )
+						{
+							that.updateMicrosoftConsent( consent_key, 'denied', true );
+						}
+
+						if( elem.classList.contains( 'map-consent-google' ) )
+						{
+							that.updateGoogleConsentbyKeyValue( consent_key, 'denied', true );
+						}
+
+					});
+
+					//uncheck user-preference checkbox
+					that.settingsModal.querySelectorAll( '.map-user-preference-checkbox' ).forEach( function( elem ) {
+
+						var cookieName = 'map_cookie_' + elem.getAttribute( 'data-cookie-baseindex' ) + MAP_POSTFIX;
+
+						MAP_Cookie.set( cookieName, '-1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+						elem.checked = false;
+					});
+
+					//uncheck iab-preference checkbox
+					that.settingsModal.querySelectorAll( '.map-user-iab-preference-checkbox' ).forEach( function( elem ) {
+
+						elem.checked = false;
+					});
+
+					(async() => {
+
+						while( !MAP_SYS.map_document_load )
+						{
+							//MapLogger.log( 'not defined yet' );
+							await new Promise( resolve => setTimeout( resolve, 10 ) );
+						}
+
+						if( typeof window.MAPIABTCF_denyAllConsent === 'function' )
+						{
+							window.MAPIABTCF_doSetUserInteraction();
+							window.MAPIABTCF_denyAllConsent( true );
+
+							that.updateSomeConsentGivenStatus();
+						}
+
+					})();
+
+					MAP.reject_close();
+				});
+			});
+
+
+			that.customize_button.addEventListener( 'click', function( e ) {
+
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-customize-button click' );
+
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				MAP.settingsModal.classList.add( 'map-show' );
+				MAP.settingsModal.style.opacity = 0;
+				MAP.settingsModal.offsetWidth; // Trigger a reflow to ensure the transition starts
+				MAP.settingsModal.style.transition = 'opacity 1s';
+				MAP.settingsModal.style.opacity = 1;
+
+				MAP.settingsModal.classList.remove( 'map-blowup', 'map-out' );
+				MAP.settingsModal.classList.add( 'map-blowup' );
+
+				document.body.classList.add( 'map-modal-open' );
+
+				document.querySelector( '.map-settings-overlay' ).classList.add( 'map-show' );
+
+				var mapSettingsMobile = document.querySelector( '.map-settings-mobile' );
+
+				if( mapSettingsMobile && mapSettingsMobile.offsetWidth === 0 && mapSettingsMobile.offsetHeight === 0 )
+				{
+					var firstNavLink = MAP.settingsModal.querySelector( '.map-nav-link' );
+					if( firstNavLink )
+					{
+						firstNavLink.click();
+					}
+				}
+
+				var $map_consent_extrawrapper = that.settingsModal.querySelectorAll( '.map-consent-extrawrapper' );
+
+				if( !!$map_consent_extrawrapper && $map_consent_extrawrapper?.length )
+				{
+					var triggerElement = $map_consent_extrawrapper[0].querySelector( '.map-wrappertab-navigation li a[href="#map-privacy-cookie-thirdypart-wrapper"]' );
+					if( triggerElement )
+					{
+						triggerElement.click();
+					}
+				}
+
+				that.dispatchConsentEvents( 'myagileprivacy_cookie_customize' );
+
+			});
+
+			document.querySelector( '#mapModalClose' ).addEventListener( 'click', function( e ) {
+
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered mapModalClose click' );
+
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				MAP.closeSettingsPopup();
+				MAP.hideBar();
+
+			});
+
+			that.setupAccordion();
+
+			if( typeof map_ajax !== 'undefined' &&
+				typeof map_ajax.cookie_process_delayed_mode !== 'undefined' &&
+				map_ajax.cookie_process_delayed_mode == 1
+				)
+			{
+				//wait for page load
+
+				(async() => {
+
+					while( !MAP_SYS.map_document_load )
+					{
+						//MapLogger.log( 'not defined yet' );
+						await new Promise( resolve => setTimeout( resolve, 10 ) );
+					}
+
+					that.userPreferenceInit( false );
+
+				})();
+
+			}
+			else
+			{
+				that.userPreferenceInit( false );
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	usabilityEvents: function()
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function usabilityEvents' );
+
+			//for preserving scope
+			var that = this;
+
+			//usability fix - align checkbox - label
+			document.querySelectorAll( 'input[type="checkbox"][id]' ).forEach( function( checkbox ) {
+			  var id = checkbox.id;
+			  if( !id ) return;
+			  document.querySelectorAll( `div[data-label-for="${id}"]` ).forEach( function( label ) {
+				label.setAttribute( 'aria-checked', checkbox.checked ? 'true' : 'false' );
+			  });
+			});
+
+			//usability fix - keep checkbox - label aligned
+			that.settingsModal.addEventListener( 'change', function( e ) {
+			  if( e.target.matches( 'input[type="checkbox"][id]' ) ) {
+				var id = e.target.id;
+				if( !id ) return;
+
+				document.querySelectorAll( `div[data-label-for="${id}"]` ).forEach( function( label ) {
+				  label.setAttribute( 'aria-checked', e.target.checked ? 'true' : 'false' );
+				});
+			  }
+			});
+
+			//usability fix - clickable elements with keydown
+			const usability_fix_items = [ that.accept_button,
+				that.reject_button,
+				that.customize_button,
+				that.show_consent_elems,
+				document.querySelectorAll( '.map-triggerGotoIABTCF' )
+			];
+
+			usability_fix_items.forEach( item => {
+				if( !item ) return;
+
+				// NodeList/HTMLCollection
+				if( typeof item.forEach === 'function' )
+				{
+					item.forEach( el => {
+						el.addEventListener( 'keydown', function( e ) {
+							if( e.key === 'Enter' || e.key === ' ' )
+							{
+								e.preventDefault();
+								this.click();
+							}
+						});
+					});
+				}
+
+				//single element
+				else if( item.addEventListener )
+				{
+					item.addEventListener( 'keydown', function( e ) {
+						if( e.key === 'Enter' || e.key === ' ' )
+						{
+							e.preventDefault();
+							this.click();
+						}
+					});
+				}
+			});
+
+			that.settingsModal.addEventListener( 'keydown', function( e ) {
+
+				if( e.target.matches( '.map_expandItem' ) ||
+					e.target.matches( '.map-tab-navigation' ) ||
+					e.target.matches( '.map-privacy-iab-button' )
+				)
+				{
+					if( e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter' )
+					{
+						e.preventDefault();
+						e.target.click();
+					}
+				}
+
+				//usability fix - checkbox
+				if( e.target.matches( '[role="checkbox"]' ) )
+				{
+					if( e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter' )
+					{
+						e.preventDefault();
+
+						// Find the class that starts with "map-for-"
+						let classList = [...e.target.classList];
+						let mapForClass = classList.find( cls => cls.startsWith( 'map-for-' ) );
+						if( !mapForClass ) return;
+
+						let for_attribute = mapForClass.replace( 'map-for-', '' );
+						if( !for_attribute ) return;
+
+						const final_target = document.getElementById( for_attribute );
+
+						if( final_target )
+						{
+							final_target.checked = !final_target.checked;
+
+							//propagate event
+							final_target.dispatchEvent( new Event( 'click', { bubbles: true } ) );
+						}
+					}
+				}
+			});
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	attachAnimations: function()
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function attachAnimations' );
+
+			//for preserving scope
+			var that = this;
+
+			if( that.bar_elm.querySelector( '#map-accept-button' ).getAttribute( 'data-animate' ) == 'true' )
+			{
+				var acceptButton = document.querySelector( '#map-accept-button' );
+
+				var animation = acceptButton.getAttribute( 'data-animation-effect' );
+
+				var delay = parseInt(acceptButton.getAttribute( 'data-animation-delay') ) * 1000;
+
+				var repeat = parseInt(acceptButton.getAttribute( 'data-animation-repeat' ) );
+
+				var all_animation_classes = ['animate__animated', animation] ;
+
+				var iteration_counter = 0;
+
+				var animInterval = setInterval( function() {
+					if(iteration_counter == repeat)
+					{
+						clearInterval( animInterval );
+					}
+					else
+					{
+						acceptButton.classList.add( ...all_animation_classes );
+
+						setTimeout( function() {
+
+							acceptButton.classList.remove( ...all_animation_classes );
+							iteration_counter ++;
+
+						}, 900 );
+					}
+
+				}, delay );
+
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	checkBlockedContent: function()
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function checkBlockedContent' );
+
+			//for preserving scope
+			var that = this;
+
+			var $map_blocked_content = document.querySelectorAll( '.map_blocked_content:not(._is_activated)' );
+
+			if( !!$map_blocked_content && $map_blocked_content?.length )
+			{
+				//calc data
+				var blocked_friendly_name = [];
+
+				$map_blocked_content.forEach( function( $this ) {
+
+					var this_friendly_name = $this.getAttribute('data-friendly_name');
+
+					if( this_friendly_name )
+					{
+						blocked_friendly_name.push( this_friendly_name );
+					}
+
+				});
+
+				if( typeof CookieShield !== 'undefined' &&
+					CookieShield &&
+					typeof CookieShield.getDetectedFriendlyNames !== 'undefined' )
+				{
+					var other_names = CookieShield.getDetectedFriendlyNames();
+
+					other_names.forEach( function( v ) {
+
+						if( v )
+						{
+							if( v?.desc )
+							{
+								blocked_friendly_name.push( v.desc );
+							}
+							else
+							{
+								blocked_friendly_name.push( v );
+							}
+
+						}
+					});
+				}
+
+				var blocked_friendly_name_unique = blocked_friendly_name.filter((v, i, a) => a.indexOf(v) === i);
+
+				that.blocked_friendly_name_string = blocked_friendly_name_unique.join( ', ' );
+
+				//check if to show
+				if( blocked_friendly_name_unique.length &&
+					( !that.bar_open || that.settings.show_ntf_bar_on_not_yet_consent_choice ) )
+				{
+					if( that.blocked_content_notification && that.blocked_content_notification )
+					{
+						if( that.blocked_friendly_name_string )
+						{
+							that.map_blocked_elems_desc.innerHTML = that.blocked_friendly_name_string;
+						}
+						else
+						{
+							that.map_blocked_elems_desc.style.opacity = 0;
+							that.map_blocked_elems_desc.style.display = 'block';
+
+							anime( {
+								targets: that.map_blocked_elems_desc,
+								easing: 'easeInOutQuad',
+								duration: 150,
+								opacity: 1,
+								complete: function(anim) {
+								}
+							} );
+
+						}
+
+						that.blocked_content_notification_shown = true;
+
+						var blocked_content_notify_auto_shutdown_time = 3000;
+
+						if( that.settings.blocked_content_notify_auto_shutdown_time )
+						{
+							blocked_content_notify_auto_shutdown_time = that.settings.blocked_content_notify_auto_shutdown_time;
+						}
+
+						setTimeout( function() {
+
+							try {
+
+								that.blocked_content_notification.style.opacity = 0;
+								that.blocked_content_notification.style.display = 'block';
+
+								anime( {
+									targets: that.blocked_content_notification,
+									easing: 'easeInOutQuad',
+									duration: 150,
+									opacity: 1,
+									complete: function(anim) {
+									}
+								} );
+
+								if( that.blocked_content_notification.classList.contains( 'autoShutDown' ) )
+								{
+									setTimeout( function() {
+
+
+										setTimeout( function() {
+											that.blocked_content_notification.style.display = 'none';
+										}, 150 );
+
+										anime( {
+											targets: that.blocked_content_notification,
+											easing: 'easeInOutQuad',
+											duration: 150,
+											opacity: 0,
+											complete: function(anim) {
+												that.blocked_content_notification.style.display = 'none';
+											}
+										} );
+
+									}, blocked_content_notify_auto_shutdown_time );
+								}
+							}
+							catch( error )
+							{
+								console.error( error );
+							}
+
+						}, 1000 );
+					}
+				}
+			}
+			else
+			{
+				if( that.blocked_content_notification )
+				{
+
+					setTimeout( function() {
+						that.blocked_content_notification.style.display = 'none';
+					}, 150 );
+
+					anime( {
+						targets: that.blocked_content_notification,
+						easing: 'easeInOutQuad',
+						duration: 150,
+						opacity: 0,
+						complete: function(anim) {
+							that.blocked_content_notification.style.display = 'none';
+						}
+					} );
+				}
+			}
+
+			this.administratorNotices();
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	displayBar: function()
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function displayBar' );
+
+			//for preserving scope
+			var that = this;
+
+			//animation
+			var that_animation = that.bar_elm.getAttribute( 'data-animation' );
+
+			var that_id_selector = '#' + that.bar_elm.getAttribute( 'id' );
+
+			var animation_params = {
+				targets: that_id_selector,
+				easing: 'easeInOutQuad',
+				duration: 1000
+			};
+
+			var y_value = '0vh';
+			var x_value = '0vw';
+
+			if( that.bar_elm.classList.contains( 'map_floating_banner' ) )
+			{
+				y_value = '3vh';
+				x_value = '3vw';
+			}
+
+			var element = document.querySelector( that_id_selector );
+
+			switch( that_animation )
+			{
+				case 'slide':
+
+					if( element.className.includes( 'mapPositionBottom' ) )
+					{
+						element.style.bottom = '-100vh';
+						animation_params['bottom'] = y_value;
+					}
+					else if( element.className.includes( 'mapPositionTop' ) )
+					{
+						element.style.top = '-100vh';
+						animation_params['top'] = y_value;
+					}
+					else if( element.className.includes( 'mapPositionCenterLeft' ) )
+					{
+						element.style.left = '-100vw';
+						animation_params['left'] = x_value;
+					}
+					else if( element.className.includes( 'mapPositionCenterCenter' ) )
+					{
+						element.style.top = '-100%';
+						animation_params['top'] = '50%';
+					}
+					else if( element.className.includes( 'mapPositionCenterRight' ) )
+					{
+						element.style.right = '-100vw';
+						animation_params['right'] = x_value;
+					}
+
+					element.style.display = 'block';
+
+					anime( animation_params );
+					break;
+
+				case 'fade':
+					element.style.opacity = '0';
+
+					element.style.display = 'block';
+
+					animation_params['opacity'] = '1';
+					animation_params['duration'] = '500';
+
+					anime( animation_params );
+
+					break;
+
+				case 'zoom':
+					element.style.transform = 'scale(0)';
+
+					element.style.display = 'block';
+
+					animation_params['scale'] = '1';
+					anime( animation_params );
+
+					break;
+
+				default: // no animation -> value = "none"
+					element.style.display = 'block';
+
+					break;
+			}
+
+			setTimeout( function() {
+				that.showagain_elm.style.display = 'none';
+			}, 150 );
+
+			anime( {
+				targets: that.showagain_elm,
+				easing: 'easeInOutQuad',
+				duration: 150,
+				opacity: 0,
+				complete: function( anim ) {
+					that.showagain_elm.style.display = 'none';
+				}
+			} );
+
+			that.bar_open = true;
+			that.bar_elm.focus();
+
+			that.optimizeMobile();
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	hideBar: function()
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function hideBar' );
+
+			//for preserving scope
+			var that = this;
+
+			var this_showagain_tab = Boolean( this.settings.showagain_tab );
+
+			if( !this_showagain_tab &&
+				!document.querySelector( '.showConsentAgain:not(.map_custom_notify):not(.map_inline_notify)' ) )
+			{
+				this_showagain_tab = true;
+			}
+
+			if( this_showagain_tab )
+			{
+				//show
+				that.showagain_elm.style.opacity = 0;
+				that.showagain_elm.style.display = 'block';
+
+				anime( {
+					targets: this.showagain_elm,
+					easing: 'easeInOutQuad',
+					duration: 150,
+					opacity: 1,
+					complete: function(anim) {
+					}
+				} );
+			}
+			else
+			{
+				setTimeout( function() {
+					that.showagain_elm.style.display = 'none';
+				}, 150 );
+
+				//hide
+				anime( {
+					targets: this.showagain_elm,
+					easing: 'easeInOutQuad',
+					duration: 150,
+					opacity: 0,
+					complete: function(anim) {
+						that.showagain_elm.style.display = 'none';
+					}
+				});
+			}
+
+			//hide
+			//animation
+			var that_animation = this.bar_elm.getAttribute( 'data-animation' );
+
+			var that_id_selector = '#' + this.bar_elm.getAttribute( 'id' );
+
+			setTimeout( function() {
+				MAP.bar_elm.style.display = 'none';
+			}, 150 );
+
+			var animation_params = {
+				targets: that_id_selector,
+				easing: 'easeInOutQuad',
+				duration: 700,
+				complete: function( anim ) {
+					MAP.bar_elm.style.display = 'none';
+				}
+			};
+
+			switch( that_animation )
+			{
+				case 'slide':
+
+					if( this.bar_elm.className.includes( 'mapPositionBottom' ) )
+					{
+						animation_params['bottom'] = '-100vh';
+					}
+					else if( this.bar_elm.className.includes( 'mapPositionTop' ) )
+					{
+						animation_params['top'] = '-100vh';
+					}
+					else if( this.bar_elm.className.includes( 'mapPositionCenterLeft' ) )
+					{
+						animation_params['left'] = '-100vw';
+					}
+					else if( this.bar_elm.className.includes( 'mapPositionCenterCenter' ) )
+					{
+						animation_params['top'] = '-100%';
+					}
+					else if( this.bar_elm.className.includes( 'mapPositionCenterRight' ) )
+					{
+						animation_params['right'] = '-100vw';
+					}
+
+					anime( animation_params );
+					break;
+
+				case 'fade':
+
+					animation_params['opacity'] = '0';
+					animation_params['duration'] = '500';
+
+					anime( animation_params );
+
+					break;
+
+				case 'zoom':
+
+					animation_params['scale'] = '0';
+					anime( animation_params );
+
+
+					break;
+
+				default: // no animation -> value = "none"
+					this.bar_elm.style.display = 'none';
+
+					break;
+			}
+
+			this.bar_open = false;
+
+			(async() => {
+
+				while( !MAP_SYS.map_document_load )
+				{
+					//MapLogger.log( 'not defined yet' );
+					await new Promise( resolve => setTimeout( resolve, 10 ) );
+				}
+
+				if( typeof window.MAPIABTCF_hideCMPUI === 'function' )
+				{
+					window.MAPIABTCF_hideCMPUI();
+				}
+
+			})();
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+
+	optimizeMobile: function()
+	{
+		//for preserving scope
+		var that = this;
+		var _optimize = function( relaunch ) {
+
+			try
+			{
+				if( that.bar_open )
+				{
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'optimizing for mobile view' );
+					var viewport_width  = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
+					var viewport_height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+					if( viewport_width <= 450 )
+					{
+						var internal_height = Math.floor( viewport_height * 0.30 );
+
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'map mobile optimizing: viewport_width=' + viewport_width + ', viewport_height=' + viewport_height + ', internal_height=' + internal_height );
+						that.map_notification_message.classList.add( 'extraNarrow' );
+						that.map_notification_message.style.maxHeight = internal_height + 'px';
+						that.map_notification_message.scrollTop = 0;
+
+						//map_flex and extraNarrow are tied attributes
+						if( !that.map_notification_message.classList.contains( 'map-iab-context' ) )
+						{
+							that.map_notification_message.classList.remove( 'map_flex' );
+						}
+					}
+					else
+					{
+						that.map_notification_message.classList.remove( 'extraNarrow' );
+
+						if( !that.map_notification_message.classList.contains( 'map-iab-context' ) )
+						{
+							that.map_notification_message.classList.add( 'map_flex' );
+						}
+
+						that.map_notification_message.style.maxHeight = '';
+					}
+				}
+				that.setOverflowMaxHeight();
+
+				//second-layer image fix (wprocket)
+				document.querySelectorAll( '.map-modal-body img' ).forEach( function( img ) {
+					img.style.width = "unset!important";
+					img.style.height = "unset!important";
+				});
+
+				if( relaunch )
+				{
+					setTimeout( function() { _optimize( false ); }, 500 );
+				}
+			}
+			catch( error )
+			{
+				console.error( error );
+			}
+		};
+		setTimeout( function() { _optimize( true ); }, 1 );
+	},
+
+	accept_close: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function accept_close' );
+
+			MAP_Cookie.set( MAP_ACCEPTED_ALL_COOKIE_NAME, '1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+			if( typeof window.CookieShield?.resetAcceptedAllCache === "function" )
+			{
+				window.CookieShield.resetAcceptedAllCache();
+			}
+
+			that.updateSomeConsentGivenStatus();
+
+			//animation
+			var that_animation = this.bar_elm.getAttribute( 'data-animation' );
+
+			var that_id_selector = '#' + this.bar_elm.getAttribute( 'id' );
+
+			var animation_params = {
+				targets: that_id_selector,
+				easing: 'easeInOutQuad',
+				duration: 700,
+				complete: function( anim ) {
+					MAP.bar_elm.style.display = 'none';
+
+				}
+			};
+
+			switch( that_animation )
+			{
+				case 'slide':
+					if( this.bar_elm.className.includes( 'mapPositionBottom' ) ) {
+						animation_params['bottom'] = '-100vh';
+					}
+					else if( this.bar_elm.className.includes( 'mapPositionTop' ) ) {
+						animation_params['top'] = '-100vh';
+					}
+					else if( this.bar_elm.className.includes( 'mapPositionCenterLeft' ) ) {
+						animation_params['left'] = '-100vw';
+					}
+					else if( this.bar_elm.className.includes( 'mapPositionCenterCenter' ) ) {
+						animation_params['top'] = '-100%';
+					}
+					else if( this.bar_elm.className.includes( 'mapPositionCenterRight' ) ) {
+						animation_params['right'] = '-100vw';
+					}
+
+					anime( animation_params );
+				break;
+
+				case 'fade':
+
+					animation_params['opacity'] = '0';
+					animation_params['duration'] = '500';
+
+					anime( animation_params );
+
+				break;
+
+				case 'zoom':
+
+					animation_params['scale'] = '0';
+					anime( animation_params );
+
+				break;
+
+				default: // no animation -> value = "none"
+					this.bar_elm.style.display = 'none';
+				break;
+			}
+
+			var this_showagain_tab = Boolean( that.settings.showagain_tab );
+
+			if( !this_showagain_tab &&
+				!document.querySelector( '.showConsentAgain:not(.map_custom_notify):not(.map_inline_notify)' ) )
+			{
+				this_showagain_tab = true;
+			}
+
+			if( this_showagain_tab )
+			{
+				that.showagain_elm.style.opacity = 0;
+				that.showagain_elm.style.display = 'block';
+
+				anime( {
+					targets: that.showagain_elm,
+					easing: 'easeInOutQuad',
+					duration: 150,
+					opacity: 1,
+					complete: function(anim) {
+					}
+				} );
+			}
+
+			that.tryToUnblockScripts( true, null );
+
+			(async() => {
+
+				while( !MAP_SYS.map_document_load )
+				{
+					//MapLogger.log( 'not defined yet' );
+					await new Promise( resolve => setTimeout( resolve, 10 ) );
+				}
+
+				if( typeof window.MAPIABTCF_hideCMPUI === 'function' )
+				{
+					window.MAPIABTCF_hideCMPUI();
+				}
+
+			})();
+
+			return false;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	reject_close: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function reject_close' );
+
+			MAP_Cookie.set( MAP_ACCEPTED_ALL_COOKIE_NAME, '-1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+			MAP_Cookie.set( MAP_ACCEPTED_SOMETHING_COOKIE_NAME, '-1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+			if( typeof window.CookieShield?.resetAcceptedAllCache === "function" )
+			{
+				window.CookieShield.resetAcceptedAllCache();
+			}
+
+			that.updateSomeConsentGivenStatus();
+
+			//animation
+			var that_animation = that.bar_elm.getAttribute( 'data-animation' );
+
+			var that_id_selector = '#' + that.bar_elm.getAttribute( 'id' );
+
+			var animation_params = {
+				targets: that_id_selector,
+				easing: 'easeInOutQuad',
+				duration: 700,
+				complete: function( anim ) {
+					MAP.bar_elm.style.display = 'none';
+				}
+			};
+
+			switch( that_animation )
+			{
+				case 'slide':
+
+					if( that.bar_elm.className.includes( 'mapPositionBottom' ) )
+					{
+						animation_params['bottom'] = '-100vh';
+					}
+					else if( that.bar_elm.className.includes( 'mapPositionTop' ) )
+					{
+						animation_params['top'] = '-100vh';
+					}
+					else if( that.bar_elm.className.includes( 'mapPositionCenterLeft' ) )
+					{
+						animation_params['left'] = '-100vw';
+					}
+					else if( that.bar_elm.className.includes( 'mapPositionCenterRight' ) )
+					{
+						animation_params['right'] = '-100vw';
+					}
+
+					anime( animation_params );
+					break;
+
+				case 'fade':
+
+					animation_params['opacity'] = '0';
+					animation_params['duration'] = '500';
+
+					anime( animation_params );
+
+					break;
+
+				case 'zoom':
+
+					animation_params['scale'] = '0';
+					anime( animation_params );
+
+
+					break;
+
+				default: // no animation -> value = "none"
+					that.bar_elm.style.display = 'none';
+
+					break;
+			}
+
+			that.bar_open = false;
+
+			var this_showagain_tab = Boolean( that.settings.showagain_tab );
+
+			if( !this_showagain_tab &&
+				!document.querySelector( '.showConsentAgain:not(.map_custom_notify):not(.map_inline_notify)' ) )
+			{
+				this_showagain_tab = true;
+			}
+
+			if( this_showagain_tab )
+			{
+				that.showagain_elm.style.opacity = 0;
+				that.showagain_elm.style.display = 'block';
+
+				anime( {
+					targets: that.showagain_elm,
+					easing: 'easeInOutQuad',
+					duration: 150,
+					opacity: 1,
+					complete: function(anim) {
+					}
+				} );
+			}
+
+			that.tryToUnblockScripts( true, null );
+
+			setTimeout( function() {
+				that.checkBlockedContent();
+			}, 200 );
+
+			(async() => {
+
+				while( !MAP_SYS.map_document_load )
+				{
+					//MapLogger.log( 'not defined yet' );
+					await new Promise( resolve => setTimeout( resolve, 10 ) );
+				}
+
+				if( typeof window.MAPIABTCF_hideCMPUI === 'function' )
+				{
+					window.MAPIABTCF_hideCMPUI();
+				}
+
+			})();
+
+			return false;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	tryToUnblockScripts: function( from_user_interaction = false, cookieNameReference = null )
+	{
+		try {
+
+			let need_reload = false;
+			let do_calc_need_reload = false;
+
+			if( from_user_interaction )
+			{
+				do_calc_need_reload = true;
+			}
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + `tryToUnblockScripts from_user_interaction=${from_user_interaction}` );
+
+			//for preserving scope
+			var that = this;
+
+			var once_functions_to_execute = [];
+
+			var $map_cookie_description_wrapper = that.settingsModal.querySelectorAll( '.map_cookie_description_wrapper' );
+
+			$map_cookie_description_wrapper.forEach( function( $this ) {
+
+				var baseIndex = $this.getAttribute('data-cookie-baseindex');
+				var cookieName = 'map_cookie_' + baseIndex + MAP_POSTFIX;
+				var api_key = $this.getAttribute('data-cookie-api-key');
+
+				var cookieValue = MAP_Cookie.read( cookieName );
+
+				if( $this.classList &&
+					do_calc_need_reload &&
+					$this.classList.contains( 'map_page_reload_on_user_consent' ) &&
+					cookieName == cookieNameReference &&
+					MAP_Cookie.read( cookieName ) == '1' )
+				{
+					need_reload = true;
+				}
+
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'debug ' + api_key + ' ' + cookieName + ' ' + cookieValue );
+
+				var always_on = false;
+				var activate_anyway = false;
+
+				if( $this.classList.contains( '_always_on' ) )
+				{
+					always_on = true;
+				}
+
+				//advanced consent mode ga4
+				if( api_key == 'google_analytics' &&
+					typeof map_full_config !== 'undefined' &&
+					typeof map_full_config.cookie_api_key_not_to_block !== 'undefined'
+					&& map_full_config?.cookie_api_key_not_to_block?.includes( 'google_analytics' )
+				)
+				{
+					activate_anyway = true;
+				}
+
+				var accepted_all = false;
+
+				if( ( MAP_Cookie.exists( MAP_ACCEPTED_ALL_COOKIE_NAME ) && MAP_Cookie.read( cookieName ) == '1' ) )
+				{
+					accepted_all = true;
+				}
+
+				if( cookieValue == "1" ||
+					always_on ||
+					activate_anyway ||
+					accepted_all )
+				{
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + '-->activating api_key=' + api_key + ' cookieName=' + cookieName + ' cookieValue=' + cookieValue + ' always_on=' + always_on + ' accepted_all=' + accepted_all );
+
+					if( activate_anyway )
+					{
+						$this.classList.add( '_is_activated_anyway' );
+					}
+					else
+					{
+						$this.classList.add( '_is_activated' );
+					}
+
+					if( $this.classList.contains( '_with_code' ) )
+					{
+						var $the_script = document.querySelector( 'script.my_agile_privacy_activate._js_noscript_type_mode[data-cookie-baseindex="'+baseIndex+'"]' );
+
+						var $the_raw_script = document.querySelector( 'textarea.my_agile_privacy_activate._raw_type_mode[data-cookie-baseindex="'+baseIndex+'"]' );
+
+						if( $the_script )
+						{
+							if( !$the_script.classList.contains( '_is_activated' ) )
+							{
+								$the_script.classList.add( '_is_activated' );
+
+								var script = document.createElement( 'script' );
+								script.className = '_is_activated';
+								script.innerHTML = $the_script.innerHTML;
+
+								if( MAP_SYS?.map_debug ) MapLogger.debug( script.innerHTML );
+
+								document.head.appendChild( script );
+							}
+						}
+
+						if( $the_raw_script )
+						{
+							if( !$the_raw_script.classList.contains( '_is_activated' ) )
+							{
+								$the_raw_script.classList.add( '_is_activated' );
+
+								var the_raw_script = $the_raw_script.value;
+
+								if( MAP_SYS?.map_debug ) MapLogger.debug( the_raw_script );
+
+								var range = document.createRange();
+								range.selectNode( document.getElementsByTagName("body")[0] );
+								var documentFragment = range.createContextualFragment( the_raw_script );
+								document.body.appendChild( documentFragment );
+							}
+
+						}
+					}
+
+					if( !!api_key )
+					{
+						//bof custom notify
+						var $custom_ref = document.querySelectorAll( '.map_custom_notify.map_api_key_' + api_key );
+
+						$custom_ref.forEach( function( $_this ){
+
+							if( $_this )
+							{
+								var on_unblock_remove_class = $_this.getAttribute( 'data-on-unblock-remove-class' );
+
+								if( on_unblock_remove_class )
+								{
+									var $the_blocked_content = document.querySelectorAll( '.my_agile_privacy_activate[data-cookie-api-key="' + api_key + '"]' );
+
+									$the_blocked_content.forEach( $thisent => $thisent.classList.remove( on_unblock_remove_class ) );
+								}
+
+								$_this.remove();
+							}
+						});
+
+						//eof custom notify
+
+						var $map_src_script_blocked = document.querySelectorAll( 'script.my_agile_privacy_activate.autoscan_mode.map_src_script_blocked[data-cookie-api-key="'+api_key+'"]' );
+
+						var $map_inline_script_blocked = document.querySelectorAll( 'script.my_agile_privacy_activate.autoscan_mode.map_inline_script_blocked[data-cookie-api-key="'+api_key+'"]' );
+
+						var $iframe_src_blocked = document.querySelectorAll( 'iframe.my_agile_privacy_activate.autoscan_mode.iframe_src_blocked[data-cookie-api-key="'+api_key+'"]' );
+
+						var $css_href_blocked = document.querySelectorAll( 'link.my_agile_privacy_activate.autoscan_mode.css_href_blocked[data-cookie-api-key="'+api_key+'"]' );
+
+						var $img_src_blocked = document.querySelectorAll( 'img.my_agile_privacy_activate.autoscan_mode.img_src_blocked[data-cookie-api-key="'+api_key+'"]' );
+
+						var do_trigger_dom_content_loaded_event = false;
+
+						if( !!$map_src_script_blocked && $map_src_script_blocked?.length )
+						{
+							$map_src_script_blocked.forEach( function( $_this ) {
+
+								let old_script_type = $_this.getAttribute( 'type' );
+								let new_script_type = 'text/javascript';
+
+								if( typeof old_script_type !== 'undefined' &&
+									old_script_type &&
+									old_script_type == 'module' )
+								{
+									new_script_type = 'module';
+								}
+
+								if( !$_this.classList.contains( '_is_activated' ) )
+								{
+									if( !$_this.classList.contains( 'mapWait' ) )
+									{
+										$_this.classList.add( '_is_activated' );
+									}
+
+									if( $_this.classList.contains( 'custom_patch_apply' ) )
+									{
+										var classes = $_this.className.split(' ');
+
+										classes.forEach( function(v) {
+											if(v && v != '' && v.startsWith('map_trigger_custom_patch_') && typeof window[v] === 'function') {
+												setTimeout( function() {
+													window[v]();
+												}, 4000 );
+											}
+										});
+									}
+
+									if( $_this.classList.contains( 'once_custom_patch_apply' ) )
+									{
+										var classes = $_this.className.split(' ');
+
+										classes.forEach( function(v) {
+											if(v && v != '' && v.startsWith('map_trigger_custom_patch_') && typeof window[v] === 'function') {
+												if( !once_functions_to_execute.includes( v )) {
+													once_functions_to_execute.push( v );
+												}
+											}
+										});
+									}
+
+									if( $_this.classList.contains( 'mapWait' ) )
+									{
+										do_trigger_dom_content_loaded_event = true;
+
+										setTimeout( function() {
+
+											//prevent block using createElementBackup
+											var script = document.createElementBackup( 'script' );
+											script.className = '_is_activated';
+											script.setAttribute( 'type',new_script_type );
+
+											script = cloneNodeAttributeToAnother( $_this, script );
+
+											var blocked_src = $_this.getAttribute( 'unblocked_src' );
+
+											if( blocked_src )
+											{
+												script.src = blocked_src;
+											}
+
+											$_this.insertAdjacentElement( 'afterend', script );
+
+											$_this.classList.add( '_is_activated' );
+
+										}, 1000);
+									}
+									else
+									{
+										//prevent block using createElementBackup
+										var script = document.createElementBackup( 'script' );
+										script.className = '_is_activated';
+										script.setAttribute( 'type',new_script_type );
+
+										script = cloneNodeAttributeToAnother( $_this, script );
+
+										var blocked_src = $_this.getAttribute( 'unblocked_src' );
+
+										if( blocked_src )
+										{
+											script.src = blocked_src;
+										}
+
+										$_this.insertAdjacentElement( 'afterend', script );
+									}
+								}
+
+							});
+
+						}
+
+						if( !!$map_inline_script_blocked && $map_inline_script_blocked?.length )
+						{
+							$map_inline_script_blocked.forEach( function( $_this ) {
+
+								if( !$_this.classList.contains( '_is_activated' ) )
+								{
+									if( !$_this.classList.contains('mapWait') )
+									{
+										$_this.classList.add( '_is_activated' );
+									}
+
+									if( $_this.classList.contains( 'custom_patch_apply' ) )
+									{
+										var classes = $_this.className.split(' ');
+
+										classes.forEach( function(v) {
+											if( v && v != '' && v.startsWith('map_trigger_custom_patch_') && typeof window[v] === 'function' )
+											{
+												setTimeout( function() {
+													window[v]();
+												}, 2200);
+											}
+										});
+									}
+
+									if( $_this.classList.contains( 'once_custom_patch_apply' ) )
+									{
+										var classes = $_this.className.split(' ');
+
+										classes.forEach( function(v) {
+											if( v && v != '' && v.startsWith('map_trigger_custom_patch_') && typeof window[v] === 'function' )
+											{
+												if(!once_functions_to_execute.includes( v )) {
+													once_functions_to_execute.push( v );
+												}
+											}
+										});
+									}
+
+									if( $_this.classList.contains( 'mapWait' ) )
+									{
+										do_trigger_dom_content_loaded_event = true;
+
+										setTimeout( function() {
+											var script = document.createElement( 'script' );
+											script.className = '_is_activated';
+											script.innerHTML = $_this.innerHTML;
+
+											if( MAP_SYS?.map_debug ) MapLogger.debug( script.innerHTML );
+
+											document.head.appendChild( script );
+
+											$_this.classList.add( '_is_activated' );
+
+										}, 1000);
+									}
+									else
+									{
+										var script = document.createElement( 'script' );
+										script.className = '_is_activated';
+										script.innerHTML = $_this.innerHTML;
+
+										if( MAP_SYS?.map_debug ) MapLogger.debug( script.innerHTML );
+
+										document.head.appendChild( script );
+									}
+								}
+
+							});
+
+						}
+
+						if( !!$iframe_src_blocked && $iframe_src_blocked?.length )
+						{
+							$iframe_src_blocked.forEach( function( $_this ) {
+
+								if( !$_this.classList.contains( '_is_activated' ) )
+								{
+									$_this.classList.add( '_is_activated' );
+
+									$_this.setAttribute( 'src', $_this.getAttribute( 'unblocked_src' ) );
+
+									$_this.style.display = 'block';
+
+									var $ref = document.querySelectorAll( '.map_inline_notify[data-cookie-api-key="' + api_key + '"]');
+
+									if( !!$ref && $ref?.length )
+									{
+										$ref.forEach( function( $_ref ) {
+											$_ref.remove();
+										});
+									}
+								}
+							});
+						}
+
+						if( !!$css_href_blocked && $css_href_blocked?.length )
+						{
+							$css_href_blocked.forEach( function( $_this ) {
+
+								if( !$_this.classList.contains( '_is_activated' ) )
+								{
+									$_this.classList.add( '_is_activated' );
+
+									$_this.setAttribute( 'href', $_this.getAttribute( 'unblocked_href' ) );
+								}
+							});
+						}
+
+						if( !!$img_src_blocked && $img_src_blocked?.length )
+						{
+							$img_src_blocked.forEach( function( $_this ) {
+
+								if( !$_this.classList.contains( '_is_activated' ) )
+								{
+									$_this.classList.add( '_is_activated' );
+
+									$_this.setAttribute( 'src', $_this.getAttribute( 'unblocked_src' ) );
+								}
+							});
+						}
+
+						if( do_trigger_dom_content_loaded_event )
+						{
+							if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggering do_trigger_dom_content_loaded_event' );
+
+							var count = 0;
+
+							var timerId = setInterval(function () {
+							  document.dispatchEvent( new Event( 'DOMContentLoaded' ) );
+
+							  count++;
+							  if( count >= 3 )
+							  {
+							    clearInterval( timerId );
+							  }
+							}, 1100);
+						}
+					}
+				}
+				else
+				{
+					$this.classList.remove( '_is_activated' );
+				}
+
+			});
+
+			if( need_reload )
+			{
+				window.location.reload();
+			}
+
+			//execution of once custom patch functions
+			once_functions_to_execute.forEach( function(v) {
+				setTimeout( function() {
+					window[v]();
+				}, 1000 );
+			});
+
+			setTimeout( function() {
+				that.checkBlockedContent();
+			}, 500 );
+
+			setTimeout( function() {
+				var event = new Event('MAP_PRIVACY_CHANGE');
+				document.body.dispatchEvent(event);
+			}, 100 );
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//init user preferences and bind events
+	//with only_init_status==true events are not binded
+	userPreferenceInit: function( only_init_status = false )
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'userPreferenceInit only_init_status='+only_init_status );
+
+			//for preserving scope
+			var that = this;
+
+			//init part (cookie consent)
+			that.settingsModal.querySelectorAll( '.map-user-preference-checkbox' ).forEach( function( $this ) {
+
+				var cookieName = 'map_cookie_' + $this.getAttribute('data-cookie-baseindex') + MAP_POSTFIX;
+
+				var cookieValue = MAP_Cookie.read( cookieName );
+				if( cookieValue == null )
+				{
+					if( $this.checked )
+					{
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting 1 to cookieName=' + cookieName );
+
+						MAP_Cookie.set( cookieName, '1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+					}
+					else
+					{
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting -1 to cookieName' + cookieName );
+
+						MAP_Cookie.set( cookieName, '-1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+					}
+				}
+				else
+				{
+					if( cookieValue == "1" )
+					{
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting checked for cookieName' + cookieName );
+
+						$this.checked = true;
+					}
+					else
+					{
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting unchecked for cookieName' + cookieName );
+
+						$this.checked = false;
+					}
+				}
+			});
+
+			//click event
+			if( only_init_status == false )
+			{
+				that.settingsModal.querySelectorAll( '.map-user-preference-checkbox' ).forEach(function( $this ) {
+					$this.addEventListener( 'click', function( e ) {
+
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-user-preference-checkbox click' );
+
+						e.stopImmediatePropagation();
+
+						that.updateLastConsentRecords();
+
+						var cookieName = 'map_cookie_' + $this.getAttribute('data-cookie-baseindex') + MAP_POSTFIX;
+
+						var currentToggleElm = that.settingsModal.querySelectorAll( '.map-user-preference-checkbox[data-cookie-baseindex="'+$this.getAttribute('data-cookie-baseindex')+'"]' );
+
+						if( $this.checked )
+						{
+							if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting 1 to cookieName=' + cookieName );
+
+							MAP_Cookie.set( cookieName, '1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+							currentToggleElm.forEach( elm => elm.checked = true );
+
+							that.dispatchConsentEvents( 'myagileprivacy_single_cookie_accept' );
+						}
+						else
+						{
+							if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'setting -1 to cookieName' + cookieName );
+
+							MAP_Cookie.set( cookieName, '-1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+							currentToggleElm.forEach( elm => elm.checked = false );
+
+							that.dispatchConsentEvents( 'myagileprivacy_single_cookie_reject' );
+						}
+
+						MAP_Cookie.set( MAP_ACCEPTED_SOMETHING_COOKIE_NAME, '1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+						MAP_Cookie.set( MAP_ACCEPTED_ALL_COOKIE_NAME, '-1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+						if( typeof window.CookieShield?.resetAcceptedAllCache === "function" )
+						{
+							window.CookieShield.resetAcceptedAllCache();
+						}
+
+						that.updateSomeConsentGivenStatus();
+
+						that.tryToUnblockScripts( true, cookieName );
+
+					});
+				});
+			}
+
+			//bof init part ( consent mode)
+			that.settingsModal.querySelectorAll( '.map-consent-mode-preference-checkbox' ).forEach( function( elem ) {
+
+				var consent_key = elem.getAttribute( 'data-consent-key' );
+
+				var consentStatus = null;
+				let consentVendor = '';
+
+
+				if( elem.classList.contains( 'map-consent-clarity' ) )
+				{
+					consentStatus = that.getClarityConsentStatus( consent_key );
+					consentVendor = '(Clarity)';
+				}
+
+				if( elem.classList.contains( 'map-consent-microsoft' ) )
+				{
+					consentStatus = that.getMicrosoftConsentStatus( consent_key );
+					consentVendor = '(Microsoft)';
+				}
+
+				if( elem.classList.contains( 'map-consent-google' ) )
+				{
+					consentStatus = that.getGoogleConsentStatus( consent_key );
+					consentVendor = '(Google)';
+				}
+
+				if( consentStatus === 'granted' )
+				{
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + `setting checked for consent_key=${consent_key} ${consentVendor}` );
+
+					elem.checked = true;
+				}
+				else if( consentStatus === 'denied' )
+				{
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + `setting unchecked for consent_key=${consent_key} ${consentVendor}` );
+
+					elem.checked = false;
+				}
+
+			});
+			//eof init part ( consent mode)
+
+			//bof consent mode - click event
+			if( only_init_status == false )
+			{
+				that.settingsModal.querySelectorAll( '.map-consent-mode-preference-checkbox' ).forEach(function( elem ) {
+					elem.addEventListener( 'click', function( e ) {
+
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-consent-mode-preference-checkbox click' );
+
+						e.stopImmediatePropagation();
+
+						var consent_key = elem.getAttribute( 'data-consent-key' );
+
+						var currentToggleElm = that.settingsModal.querySelectorAll( '.map-consent-mode-preference-checkbox[data-consent-key="' + consent_key + '"]' );
+
+						if( elem.checked )
+						{
+							let consentVendor = '';
+
+							if( elem.classList.contains( 'map-consent-clarity' ) )
+							{
+								consentVendor = '(Clarity)';
+								that.updateClarityConsent( consent_key, 'granted', true );
+							}
+
+							if( elem.classList.contains( 'map-consent-microsoft' ) )
+							{
+								consentVendor = '(Microsoft)';
+								that.updateMicrosoftConsent( consent_key, 'granted', true );
+							}
+
+							if( elem.classList.contains( 'map-consent-google' ) )
+							{
+								consentVendor = '(Google)';
+								that.updateGoogleConsentbyKeyValue( consent_key, 'granted', true );
+							}
+
+							if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + `setting granted to consent_key=${consent_key} ${consentVendor}` );
+
+							currentToggleElm.forEach( elm => elm.checked = true );
+
+						}
+						else
+						{
+							let consentVendor = '';
+
+							if( elem.classList.contains( 'map-consent-clarity' ) )
+							{
+								consentVendor = '(Clarity)';
+								that.updateClarityConsent( consent_key, 'denied', true );
+							}
+
+							if( elem.classList.contains( 'map-consent-microsoft' ) )
+							{
+								consentVendor = '(Microsoft)';
+								that.updateMicrosoftConsent( consent_key, 'denied', true );
+							}
+
+							if( elem.classList.contains( 'map-consent-google' ) )
+							{
+								consentVendor = '(Google)';
+								that.updateGoogleConsentbyKeyValue( consent_key, 'denied', true );
+							}
+
+							if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + `setting denied to consent_key=${consent_key} ${consentVendor}` );
+
+							currentToggleElm.forEach( elm => elm.checked = false );
+						}
+
+						MAP_Cookie.set( MAP_ACCEPTED_SOMETHING_COOKIE_NAME, '1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+						MAP_Cookie.set( MAP_ACCEPTED_ALL_COOKIE_NAME, '-1', MAP_SYS.map_cookie_expire, MAP_SYS?.cookie_domain_path );
+
+						if( typeof window.CookieShield?.resetAcceptedAllCache === "function" )
+						{
+							window.CookieShield.resetAcceptedAllCache();
+						}
+
+						that.updateSomeConsentGivenStatus();
+
+					});
+				});
+			}
+			//eof consent mode - click event
+
+			if( only_init_status == false )
+			{
+				//bof iab part - click event
+				that.settingsModal.addEventListener( 'click', function( e ) {
+
+					var $this = e.target;
+
+					if( $this.matches( '.map-user-iab-preference-checkbox' ) )
+					{
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-user-iab-preference-checkbox click' );
+
+						e.stopImmediatePropagation();
+
+						that.updateLastConsentRecords();
+
+						var iab_category = $this.getAttribute( 'data-iab-category' );
+						var iab_key = $this.getAttribute( 'data-iab-key' );
+
+						if( $this.checked )
+						{
+							if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + `setting 1 to iab_category=${iab_category} , iab_key=${iab_key}` );
+
+							that.dispatchConsentEvents( 'myagileprivacy_iab_item_accept' );
+
+							(async() => {
+								while (!MAP_SYS.map_document_load) {
+									// MapLogger.log( 'not defined yet' );
+									await new Promise(resolve => setTimeout(resolve, 10));
+								}
+
+								if( typeof window.MAPIABTCF_updateConsent === 'function' )
+								{
+									let updateHtml = false;
+									if( iab_category === 'googleVendors' ) updateHtml = true;
+
+									window.MAPIABTCF_doSetUserInteraction();
+									window.MAPIABTCF_updateConsent( iab_category, parseInt( iab_key ), true, true, updateHtml );
+
+									that.updateSomeConsentGivenStatus();
+								}
+
+							})();
+						}
+						else
+						{
+							if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + `setting 0 to iab_category=${iab_category} , iab_key=${iab_key}` );
+
+							that.dispatchConsentEvents( 'myagileprivacy_iab_item_reject' );
+
+							(async() => {
+								while (!MAP_SYS.map_document_load) {
+									// MapLogger.log( 'not defined yet' );
+									await new Promise(resolve => setTimeout(resolve, 10));
+								}
+
+								if( typeof window.MAPIABTCF_updateConsent === 'function' )
+								{
+									let updateHtml = false;
+									if( iab_category === 'googleVendors' ) updateHtml = true;
+
+									window.MAPIABTCF_doSetUserInteraction();
+									window.MAPIABTCF_updateConsent( iab_category, parseInt( iab_key ), false, true, updateHtml );
+
+									that.updateSomeConsentGivenStatus();
+								}
+
+							})();
+						}
+
+						/**/
+					}
+
+				});
+				//eof iab part - click event
+
+				//bof iab part - deny all / accept all event
+				that.settingsModal.addEventListener( 'click', function( e ) {
+					var target = e.target;
+					if( target.matches( '.map-privacy-iab-tcf-accept-all-button' ) )
+					{
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-privacy-iab-tcf-accept-all-button click' );
+
+						e.preventDefault();
+						e.stopImmediatePropagation();
+
+						that.updateLastConsentRecords();
+
+						that.settingsModal.querySelectorAll( '.map-user-iab-preference-checkbox ').forEach(function( $_this ) {
+							$_this.checked = true;
+						});
+
+						(async() => {
+							while (!MAP_SYS.map_document_load) {
+								// MapLogger.log( 'not defined yet' );
+								await new Promise(resolve => setTimeout( resolve, 10 ));
+							}
+
+							if( typeof window.MAPIABTCF_acceptAllConsent === 'function' )
+							{
+								window.MAPIABTCF_doSetUserInteraction();
+								window.MAPIABTCF_acceptAllConsent( true );
+
+								that.updateSomeConsentGivenStatus();
+							}
+
+						})();
+					}
+				});
+
+				that.settingsModal.addEventListener( 'click', function( e ) {
+					var target = e.target;
+					if( target.matches( '.map-privacy-iab-tcf-deny-all-button' ) ) {
+						if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map-privacy-iab-tcf-deny-all-button' );
+
+						e.preventDefault();
+						e.stopImmediatePropagation();
+
+						that.updateLastConsentRecords();
+
+						that.settingsModal.querySelectorAll( '.map-user-iab-preference-checkbox' ).forEach( function( $elem ) {
+							$elem.checked = false;
+						});
+
+						(async() => {
+							while (!MAP_SYS.map_document_load) {
+								// MapLogger.log( 'not defined yet' );
+								await new Promise(resolve => setTimeout(resolve, 10));
+							}
+
+							if( typeof window.MAPIABTCF_denyAllConsent === 'function' )
+							{
+								window.MAPIABTCF_doSetUserInteraction();
+								window.MAPIABTCF_denyAllConsent( true );
+
+								that.updateSomeConsentGivenStatus();
+							}
+
+						})();
+					}
+				});
+				//eof iab part - deny all / accept all event
+			}
+
+			if( only_init_status == false )
+			{
+				that.tryToUnblockScripts( false, null );
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	showNotificationBar: function( message = null, success = null )
+	{
+		try {
+
+			var body = document.querySelector( 'body' );
+			var bar = document.querySelector( '#mapx_notification_bar' );
+
+			var prev_message = "<span class='mapx_close_notification_bar'>Close</span>";
+
+			if( bar )
+			{
+				prev_message = bar.innerHTML + "<br>";
+			}
+			else
+			{
+				bar = document.createElement( 'div' );
+				bar.setAttribute( 'id','mapx_notification_bar' );
+				body.append( bar );
+
+
+				document.addEventListener( 'click', function (event) {
+					if(!event.target.matches( '.mapx_close_notification_bar' )) return;
+
+					event.preventDefault();
+
+					bar.parentNode.removeChild( bar );
+
+				}, false);
+			}
+
+			var final_message = prev_message + '<b>[MyAgilePrivacy admin-only notification]</b> ' + message;
+
+			if( success == 1 )
+			{
+				final_message = final_message + '&nbsp;<span class="mapx_proxification_success_true">OK!</span>';
+			}
+
+			if( success == 2 )
+			{
+				final_message = final_message + '&nbsp;<span class="mapx_proxification_success_false">ERROR!</span>';
+			}
+
+			if( success == null )
+			{
+				final_message = final_message;
+			}
+
+			bar.innerHTML = final_message;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	administratorNotices: function()
+	{
+		try {
+
+			if( typeof MAP.settings !== 'undefined' &&
+				MAP.settings.internal_debug
+				)
+			{
+				if( !!MAP?.settings.scan_mode &&
+					MAP.settings.scan_mode == 'learning_mode' )
+				{
+					const this_blocked_friendly_name = [];
+
+					if( map_full_config?.cookie_api_key_remote_id_map_active &&
+						typeof map_full_config.cookie_api_key_remote_id_map_active === 'object')
+					{
+						Object.entries( map_full_config.cookie_api_key_remote_id_map_active).
+						forEach( ([key, value] ) => {
+
+							const friendlyName = map_full_config?.cookie_api_key_friendly_name_map?.[key];
+
+							if( friendlyName?.desc )
+							{
+								this_blocked_friendly_name.push( friendlyName?.desc );
+							}
+						});
+					}
+
+					const this_blocked_friendly_name_unique = this_blocked_friendly_name.filter((v, i, a) => a.indexOf(v) === i);
+
+					if( this_blocked_friendly_name_unique.length )
+					{
+						this.showNotificationBar( 'The Cookie Shield has detected the following cookies so far: ' +this_blocked_friendly_name_unique.join( ', ' ) + '.', null );
+					}
+					else
+					{
+						this.showNotificationBar( 'The Cookie Shield has not detected any cookies.', null );
+					}
+				}
+
+				if( !!MAP?.settings.scan_mode &&
+					MAP.settings.scan_mode == 'turned_off' )
+				{
+					this.showNotificationBar( 'Cookie Shield is turned off. Enable it in order to block cookies.', null );
+				}
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//slideUp equivalent function (hide)
+	slideUp: function( target, duration=500, callback=null )
+	{
+		try {
+
+			target.style.transitionProperty = 'height, margin, padding';
+			target.style.transitionDuration = duration + 'ms';
+			target.style.boxSizing = 'border-box';
+			target.style.height = target.scrollHeight + 'px';
+			target.offsetHeight;
+			target.style.overflow = 'hidden';
+			target.style.height = 0;
+			target.style.paddingTop = 0;
+			target.style.paddingBottom = 0;
+			target.style.marginTop = 0;
+			target.style.marginBottom = 0;
+
+			window.setTimeout( () => {
+
+				try {
+
+					target.style.display = 'none';
+					target.style.removeProperty('height');
+					target.style.removeProperty('padding-top');
+					target.style.removeProperty('padding-bottom');
+					target.style.removeProperty('margin-top');
+					target.style.removeProperty('margin-bottom');
+					target.style.removeProperty('overflow');
+					target.style.removeProperty('transition-duration');
+					target.style.removeProperty('transition-property');
+
+				}
+				catch( error )
+				{
+					console.error( error );
+				}
+
+			}, duration);
+
+			if( callback )
+			{
+
+			}
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	 },
+
+	//slideDown equivalent function (show)
+	slideDown: function( target, duration=500, callback=null )
+	{
+		try {
+
+			target.style.removeProperty('display');
+			let display = window.getComputedStyle(target).display;
+
+			if( display === 'none' )
+			{
+				display = 'block';
+			}
+
+			target.style.display = display;
+			let height = target.scrollHeight;
+
+			target.style.overflow = 'hidden';
+			target.style.height = 0;
+			target.style.paddingTop = 0;
+			target.style.paddingBottom = 0;
+			target.style.marginTop = 0;
+			target.style.marginBottom = 0;
+			target.offsetHeight;
+			target.style.boxSizing = 'border-box';
+			target.style.transitionProperty = "height, margin, padding";
+			target.style.transitionDuration = duration + 'ms';
+			target.style.height = height + 'px';
+			target.style.removeProperty('padding-top');
+			target.style.removeProperty('padding-bottom');
+			target.style.removeProperty('margin-top');
+			target.style.removeProperty('margin-bottom');
+
+			window.setTimeout( () => {
+
+				try {
+
+					target.style.removeProperty('height');
+					target.style.removeProperty('overflow');
+					target.style.removeProperty('transition-duration');
+					target.style.removeProperty('transition-property');
+
+				}
+				catch( error )
+				{
+					console.error( error );
+				}
+
+			}, duration);
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//set overflow height
+	setOverflowMaxHeight: function()
+	{
+		var that = this;
+
+		try {
+
+			var $overflow_container = document.querySelector( '.map-cookielist-overflow-container' );
+
+			if( $overflow_container )
+			{
+				let $map_tab_container = $overflow_container.parentNode;
+				let parentHeight = $map_tab_container.offsetHeight;
+
+				let cookie_list_height = 0;
+
+				Array.from( $overflow_container?.children ).forEach( child => {
+
+					var style = window.getComputedStyle( child );
+					var marginTop = parseInt( style.marginTop, 10 );
+					var marginBottom = parseInt( style.marginBottom, 10 );
+					cookie_list_height += child.offsetHeight + marginTop + marginBottom;
+
+				});
+
+				//add the minimum height of one expanded item
+				cookie_list_height += 150;
+
+				let siblingsHeight = 0;
+
+				Array.from( $map_tab_container?.children ).forEach( child => {
+
+					if( child !== $overflow_container )
+					{
+						var style = window.getComputedStyle( child );
+						var marginTop = parseInt( style.marginTop, 10 );
+						var marginBottom = parseInt( style.marginBottom, 10 );
+						siblingsHeight += child.offsetHeight + marginTop + marginBottom;
+					}
+
+				});
+
+				if( parentHeight > cookie_list_height )
+				{
+					// parent height is too high --> recalculate
+					$map_tab_container.style.height = siblingsHeight + cookie_list_height + 'px';
+				}
+				else
+				{
+					// need overflow and cookie list height recalculate
+
+					// set calculated max-height to .overflow-cookielist-container
+					let maxHeight = parentHeight - siblingsHeight;
+
+					$overflow_container.style.maxHeight = maxHeight + 'px';
+				}
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	setupAccordion: function()
+	{
+		//for preserving scope
+		var that = this;
+
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function setupAccordion' );
+
+			that.setOverflowMaxHeight();
+
+			that.settingsModal.addEventListener ('click', function( e ) {
+				var $this = e.target;
+				if( $this.matches( '.map_expandItem' ) )
+				{
+					var $parent = $this.parentElement;
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'triggered map_expandItem click' );
+
+					e.preventDefault();
+					e.stopImmediatePropagation();
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + '.map-tab-header click' );
+
+					var $content = $parent.nextElementSibling;
+
+					if( $parent.classList.contains( 'map-tab-active' ) )
+					{
+						$parent.classList.remove( 'map-tab-active' );
+						that.slideUp( $content, 500 );
+					}
+					else
+					{
+						if( !$this.classList.contains( 'map-contextual-expansion' ) )
+						{
+							document.querySelectorAll( '.map-tab-header' ).forEach( function( $_this ) {
+
+								$_this.classList.remove( 'map-tab-active' );
+							});
+
+							document.querySelectorAll( '.map-tab-content' ).forEach( function( $_this ) {
+								if( $_this !== $content )
+								{
+									that.slideUp( $_this, 500 );
+								}
+							});
+						}
+
+						$parent.classList.add( 'map-tab-active' );
+						that.slideDown( $content, 500 );
+					}
+				}
+			});
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	closeSettingsPopup: function()
+	{
+		try {
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'internal function closeSettingsPopup' );
+
+			this.settingsModal.classList.remove( 'map-show' );
+			this.settingsModal.classList.add( 'map-out' );
+			document.body.classList.remove( 'map-modal-open' );
+			document.querySelectorAll( '.map-settings-overlay' ).forEach(function( $_this ) {
+				$_this.classList.remove( 'map-show' );
+			});
+
+			(async() => {
+
+				while( !MAP_SYS.map_document_load )
+				{
+					//MapLogger.log( 'not defined yet' );
+					await new Promise( resolve => setTimeout( resolve, 10 ) );
+				}
+
+				if( typeof window.MAPIABTCF_hideCMPUI === 'function' )
+				{
+					window.MAPIABTCF_hideCMPUI();
+				}
+
+			})();
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	checkJsShield: function( send_due_to_error = false )
+	{
+		try {
+
+			if( !( typeof map_ajax !== 'undefined' && map_ajax?.ajax_url && MAP?.settings ) )
+			{
+				MapLogger.error( MAP_SYS.maplog + 'Error: missing map_ajax variable running checkJsShield function' );
+				return;
+			}
+
+			if( typeof CookieShield === 'undefined' ||
+				(
+					typeof cookie_api_key_remote_id_map_active === 'undefined' ||
+					typeof map_full_config?.cookie_api_key_remote_id_map_active === 'undefined' )
+			)
+			{
+				var data = {
+					action: 'map_missing_cookie_shield',
+					detected: 0,
+				};
+
+				MAP_SYS.map_missing_cookie_shield = 1;
+			}
+			else
+			{
+				var data = {
+					action: 'map_missing_cookie_shield',
+					detected: 1,
+				};
+
+				MAP_SYS.map_missing_cookie_shield = 0;
+			}
+
+			if( send_due_to_error )
+			{
+				data['missing_api_support'] = 1;
+			}
+
+			fetch( map_ajax.ajax_url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: new URLSearchParams( data )
+			})
+			.then( response => response.text() )
+			.then( responseText => {
+				MapLogger.debug( MAP_SYS.maplog, responseText );
+			})
+			.catch( error => console.error( 'Error sending data running checkJsShield function:', error ) );
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//f. for checking Google Consent Mode
+	checkConsentModeStatus: function()
+	{
+		try {
+
+			if( !( typeof map_ajax !== 'undefined' && map_ajax?.ajax_url && MAP?.settings ) )
+			{
+				console.error( MAP_SYS.maplog + 'Error: missing map_ajax variable running checkConsentModeStatus function' );
+				return;
+			}
+
+			const googleTagRegex = /^(G-|UA-|AW-)/;
+			let is_consent_valid = false;
+			let has_valid_google_tag = false;
+			let error_motivation = '';
+			let error_code = null;
+
+			// Check if Consent Mode is enabled
+			if( !MAP_SYS?.cmode_v2 )
+			{
+				error_motivation = 'Consent Mode V2 not enabled';
+				error_code = 10;
+			}
+			// Check if dataLayer is defined and not null
+			else if( typeof dataLayer === 'undefined' || dataLayer === null )
+			{
+				error_motivation = 'missing dataLayer';
+				error_code = 20;
+			}
+			else
+			{
+				for( let i = 0; i < dataLayer.length; i++ )
+				{
+					const item = dataLayer[i];
+
+					if( item && ( Array.isArray( item ) || typeof item === 'object' ) )
+					{
+						const firstArg = item[0];
+						const secondArg = item[1];
+
+						// Check for consent set
+						if( firstArg === 'consent' && secondArg === 'default' )
+						{
+							is_consent_valid = true;
+						}
+
+						// Check for Google Tag config
+						if( firstArg === 'config' && googleTagRegex.test( secondArg ) )
+						{
+							has_valid_google_tag = true;
+						}
+
+						// Validate that Google Tag configs aren't set before consent
+						if( !is_consent_valid )
+						{
+							if( ( firstArg === 'config' && googleTagRegex.test( secondArg ) ) || firstArg === 'event' )
+							{
+								error_motivation = `Consent is set after Google tag ${secondArg} `;
+								error_code = 30;
+								break;
+							}
+						}
+					}
+				}
+
+				// Check if consent was never set
+				if( !is_consent_valid && error_code === null && MAP_SYS?.cmode_v2_implementation_type != 'gtm' )
+				{
+					error_motivation = 'No consent set before Google tags';
+					error_code = 40;
+				}
+
+				// Check if no Google Tag was validated
+				if( !has_valid_google_tag && MAP_SYS?.cmode_v2_implementation_type != 'gtm' )
+				{
+					error_motivation = 'A valid Google Tag seems missing';
+					error_code = 50;
+				}
+			}
+
+			const result = {
+				isValid: ( error_code === null ) ? true : false,
+				reason: error_motivation,
+				code: error_code
+			};
+
+			if( result.isValid )
+			{
+				let the_message = 'The Consent Mode V2 is set up correctly.';
+
+				MapLogger.log( MAP_SYS.maplog + the_message );
+
+				//this.showNotificationBar( the_message, 1 );
+			}
+			else
+			{
+				let the_message = 'The sending of consent is not set up correctly - ' + result.reason + '.';
+
+				MapLogger.log( MAP_SYS.maplog + the_message );
+
+				//this.showNotificationBar( the_message, 2 );
+			}
+
+			// Prepare data to be sent to the server
+			const data = {
+				action: 'map_check_consent_mode_status',
+				is_consent_valid: ( result.isValid ) ? 1 : 0,
+				error_motivation: result.reason,
+				error_code: result.code
+			};
+
+			// Logic for sending data based on the conditions
+			if( ( MAP_SYS.cmode_v2_js_on_error === true && result.isValid ) ||
+				( MAP_SYS.cmode_v2_js_on_error === false && !result.isValid )
+			)
+			{
+				fetch( map_ajax.ajax_url, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						},
+						body: new URLSearchParams(data)
+					})
+					.then(response => response.text())
+					.then(responseText => {
+						MapLogger.debug( MAP_SYS.maplog, responseText );
+					})
+					.catch( error => console.error( 'Error sending data running checkConsentModeStatus function:', error ) );
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	sendDetectedKeys: function( key )
+	{
+		try {
+
+			if( !( typeof map_ajax !== 'undefined' && map_ajax?.ajax_url && MAP?.settings ) )
+			{
+				console.error( MAP_SYS.maplog + 'Error: missing map_ajax variable running sendDetectedKeys function' );
+				return;
+			}
+
+			if( typeof CookieShield !== 'undefined' &&
+				CookieShield )
+			{
+				var detectableKeys = CookieShield.getDetectableKeys();
+				var detectedKeys = CookieShield.getDetectedKeys();
+
+				MAP_SYS.map_detectableKeys = detectableKeys;
+				MAP_SYS.map_detectedKeys = detectedKeys;
+
+				if( map_ajax )
+				{
+					var detectableKeys_to_send = null;
+
+					if( detectableKeys && detectableKeys.length > 0 )
+					{
+						detectableKeys_to_send = detectableKeys.join( ',' );
+					}
+
+					var detectedKeys_to_send = null;
+
+					if( detectedKeys && detectedKeys.length > 0 )
+					{
+						detectedKeys_to_send = detectedKeys.join( ',' );
+					}
+
+					if( key )
+					{
+						var data = {
+							action: 'map_remote_save_detected_keys',
+							key : key,
+							detectableKeys: detectableKeys_to_send,
+							detectedKeys: detectedKeys_to_send
+						};
+					}
+					else
+					{
+						var data = {
+							action: 'map_save_detected_keys',
+							detectableKeys: detectableKeys_to_send,
+							detectedKeys: detectedKeys_to_send
+						};
+					}
+
+					fetch(map_ajax.ajax_url, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						},
+						body: new URLSearchParams( data )
+					})
+					.then( response => response.text() )
+					.then( responseText => {
+						MapLogger.groupCollapsed( MAP_SYS.maplog + 'sendDetectedKeys detectableKeys=' + detectableKeys_to_send + ' , detectedKeys=' + detectedKeys_to_send + ' with response :' );
+						MapLogger.debug( MAP_SYS.maplog, responseText );
+						MapLogger.groupEnd();
+					});
+				}
+			}
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	sendDiagnosticData: function()
+	{
+	    try
+	    {
+	        if( !( typeof map_ajax !== 'undefined' && map_ajax?.api_url && MAP?.settings ) )
+	        {
+	            console.error( MAP_SYS.maplog + 'Error: missing map_ajax variable running sendDiagnosticData function' );
+	            return Promise.reject( 'missing map_ajax' );
+	        }
+
+	        // --- 1. DETECTED KEYS (only learning mode) ---
+	        var detectableKeys_to_send = null;
+	        var detectedKeys_to_send   = null;
+	        var send_detected_keys     = 0;
+
+	        if(
+	            MAP.settings &&
+	            (
+	                ( MAP.settings.scan_mode && MAP.settings.scan_mode == 'learning_mode' ) ||
+	                ( map_ajax.force_js_learning_mode == 1 )
+	            )
+	        )
+	        {
+	            send_detected_keys = 1;
+
+	            if( typeof CookieShield !== 'undefined' && CookieShield )
+	            {
+	                var detectableKeys = CookieShield.getDetectableKeys();
+	                var detectedKeys   = CookieShield.getDetectedKeys();
+
+	                MAP_SYS.map_detectableKeys = detectableKeys;
+	                MAP_SYS.map_detectedKeys   = detectedKeys;
+
+	                if( detectableKeys && detectableKeys.length > 0 )
+	                    detectableKeys_to_send = detectableKeys.join(',');
+
+	                if( detectedKeys && detectedKeys.length > 0 )
+	                    detectedKeys_to_send = detectedKeys.join(',');
+	            }
+	        }
+
+	        // --- 2. JS SHIELD ---
+	        var cookie_shield_detected = 0;
+
+	        if(
+	            typeof CookieShield !== 'undefined' &&
+	            CookieShield &&
+	            typeof map_full_config?.cookie_api_key_remote_id_map_active !== 'undefined'
+	        )
+	        {
+	            cookie_shield_detected            = 1;
+	            MAP_SYS.map_missing_cookie_shield = 0;
+	        }
+	        else
+	        {
+	            MAP_SYS.map_missing_cookie_shield = 1;
+	        }
+
+	        // --- 3. CONSENT MODE ---
+	        const googleTagRegex = /^(G-|UA-|AW-)/;
+	        var is_consent_valid     = false;
+	        var has_valid_google_tag = false;
+	        var error_motivation     = '';
+	        var error_code           = null;
+
+	        if( !MAP_SYS?.cmode_v2 )
+	        {
+	            error_motivation = 'Consent Mode V2 not enabled';
+	            error_code = 10;
+	        }
+	        else if( typeof dataLayer === 'undefined' || dataLayer === null )
+	        {
+	            error_motivation = 'missing dataLayer';
+	            error_code = 20;
+	        }
+	        else
+	        {
+	            for( var i = 0; i < dataLayer.length; i++ )
+	            {
+	                var item = dataLayer[i];
+
+	                if( item && ( Array.isArray( item ) || typeof item === 'object' ) )
+	                {
+	                    var firstArg  = item[0];
+	                    var secondArg = item[1];
+
+	                    if( firstArg === 'consent' && secondArg === 'default' )
+	                        is_consent_valid = true;
+
+	                    if( firstArg === 'config' && googleTagRegex.test( secondArg ) )
+	                        has_valid_google_tag = true;
+
+	                    if( !is_consent_valid )
+	                    {
+	                        if( ( firstArg === 'config' && googleTagRegex.test( secondArg ) ) || firstArg === 'event' )
+	                        {
+	                            error_motivation = 'Consent is set after Google tag ' + secondArg;
+	                            error_code = 30;
+	                            break;
+	                        }
+	                    }
+	                }
+	            }
+
+	            if( !is_consent_valid && error_code === null && MAP_SYS?.cmode_v2_implementation_type != 'gtm' )
+	            {
+	                error_motivation = 'No consent set before Google tags';
+	                error_code = 40;
+	            }
+
+	            if( !has_valid_google_tag && MAP_SYS?.cmode_v2_implementation_type != 'gtm' )
+	            {
+	                error_motivation = 'A valid Google Tag seems missing';
+	                error_code = 50;
+	            }
+	        }
+
+	        var consent_is_valid_int = ( error_code === null ) ? 1 : 0;
+
+	        if( consent_is_valid_int )
+	            MapLogger.log( MAP_SYS.maplog + 'The Consent Mode V2 is set up correctly.' );
+	        else
+	            MapLogger.log( MAP_SYS.maplog + 'The sending of consent is not set up correctly - ' + error_motivation + '.' );
+
+	        // --- 4. PAYLOAD ---
+	        var data = {
+	            action             : 'map_diagnostic_data',
+	            send_detected_keys : send_detected_keys,
+	            detectableKeys     : detectableKeys_to_send,
+	            detectedKeys       : detectedKeys_to_send,
+	            cookie_shield_detected : cookie_shield_detected,
+	            is_consent_valid   : consent_is_valid_int,
+	            error_motivation   : error_motivation,
+	            error_code         : error_code !== null ? error_code : ''
+	        };
+
+	        return fetch( map_ajax.api_url, {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/x-www-form-urlencoded'
+	            },
+	            body: new URLSearchParams( data )
+	        })
+	        .then( response => {
+	            if( !response.ok )
+	            {
+	                throw new Error( 'HTTP error ' + response.status );
+	            }
+	            return response.text();
+	        })
+	        .then( responseText => {
+	            MapLogger.groupCollapsed( MAP_SYS.maplog + 'sendDiagnosticData response:' );
+	            MapLogger.debug( MAP_SYS.maplog, responseText );
+	            MapLogger.groupEnd();
+	        });
+
+	    }
+	    catch( error )
+	    {
+	        console.error( error );
+	        return Promise.reject( error );
+	    }
+	},
+
+	//inspect cookie script configuration
+	debugCookieScripts: function()
+	{
+		try {
+
+			var list = [];
+
+			var $scripts = document.querySelectorAll( 'script.my_agile_privacy_activate._js_noscript_type_mode, textarea.my_agile_privacy_activate._raw_type_mode');
+
+			$scripts.forEach(function($this) {
+
+				var cookie_name = $this.getAttribute( 'data-cookie-name' );
+				var cookie_api_key = $this.getAttribute( 'data-cookie-api-key' );
+
+				var code = null;
+				var mode = null;
+
+				if( $this.classList.contains( '_js_noscript_type_mode' ) ) {
+					mode = 'js_noscript';
+					code = $this.innerHTML;
+				}
+
+				if( $this.classList.contains( '_raw_type_mode' ) ) {
+					mode = 'raw';
+					code = $this.firstChild.nodeValue;
+				}
+
+				var object = {
+					'cookie_name': cookie_name,
+					'cookie_api_key': cookie_api_key,
+					'mode': mode,
+					'code': code
+				};
+
+				list.push( object );
+
+			});
+
+			return list;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//get list of available cookies
+	getAvailableCookieList: function()
+	{
+		try {
+
+			var list = [];
+
+			var $my_agile_privacy_activated = document.querySelectorAll( '.map_cookie_description_wrapper' );
+
+			$my_agile_privacy_activated.forEach( function( $this ) {
+
+				var cookie_name = $this.getAttribute( 'data-cookie-name' );
+				var cookie_api_key = $this.getAttribute( 'data-cookie-api-key' );
+
+				if( cookie_api_key )
+				{
+					list.push( cookie_api_key );
+				}
+				else
+				{
+					list.push( cookie_name );
+				}
+
+			});
+
+			return list;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//get list of activated cookies
+	getActivatedCookiesList: function()
+	{
+		try {
+
+			var list = [];
+
+			var $my_agile_privacy_activated = document.querySelectorAll( '.map_cookie_description_wrapper._is_activated' );
+
+			$my_agile_privacy_activated.forEach(function( $this ) {
+
+				var cookie_name = $this.getAttribute( 'data-cookie-name' );
+				var cookie_api_key = $this.getAttribute( 'data-cookie-api-key' );
+
+				if( cookie_api_key )
+				{
+					list.push( cookie_api_key );
+				}
+				else
+				{
+					list.push( cookie_name );
+				}
+
+			});
+
+			return list;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	},
+
+	//get list of disactivated cookies
+	getDisactivatedCookiesList: function()
+	{
+		try {
+
+			var list = [];
+
+			var $my_agile_privacy_activated = document.querySelectorAll( '.map_cookie_description_wrapper:not(._is_activated)' );
+
+			$my_agile_privacy_activated.forEach( function( $this ) {
+
+				var cookie_name = $this.getAttribute( 'data-cookie-name' );
+				var cookie_api_key = $this.getAttribute( 'data-cookie-api-key' );
+
+				if( cookie_api_key )
+				{
+					list.push( cookie_api_key );
+				}
+				else
+				{
+					list.push( cookie_name );
+				}
+
+			});
+
+			return list;
+
+		}
+		catch( error )
+		{
+			console.error( error );
+		}
+	}
+}
+
+document.addEventListener( 'DOMContentLoaded', function() {
+
+	try {
+
+		if( typeof map_cookiebar_settings !== 'undefined' )
+		{
+			MAP_SYS.map_initted = true;
+
+			if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'initting' );
+
+			MAP.set({
+				settings : map_cookiebar_settings
+			});
+		}
+
+		setTimeout( function() {
+
+			if( !MAP_SYS.map_initted &&
+				typeof map_cookiebar_settings !== 'undefined' )
+			{
+				try {
+
+					if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'initting' );
+
+					MAP.set({
+						settings : map_cookiebar_settings
+					});
+
+					MAP_SYS.map_initted = true;
+
+				}
+				catch( error )
+				{
+					console.error( error );
+				}
+			}
+
+		}, 3000 );
+
+		setTimeout( function() {
+
+			MAP_SYS.map_document_load = true;
+
+		}, 5000 );
+
+	}
+	catch( error )
+	{
+		console.error( error );
+	}
+
+});
+
+//triggered on document load
+function map_on_document_load_event()
+{
+	try {
+
+		MAP_SYS.map_document_load = true;
+
+		if( !MAP_SYS.map_initted &&
+				typeof map_cookiebar_settings !== 'undefined' )
+		{
+			try {
+
+				if( MAP_SYS?.map_debug ) MapLogger.debug( MAP_SYS.maplog + 'initting' );
+
+				MAP.set({
+					settings : map_cookiebar_settings
+				});
+
+				MAP_SYS.map_initted = true;
+
+			}
+			catch( error )
+			{
+				console.error( error );
+			}
+		}
+
+		if(
+			map_ajax &&
+			MAP.settings
+		)
+		{
+			if( MAP_SYS?.allow_js_fast_callback )
+			{
+			    setTimeout( function() {
+
+			        MAP.sendDiagnosticData()
+			            .catch( function() {
+
+			                // Fallback: send data the old way
+			                if(
+			                    (
+			                        MAP?.settings?.scan_mode &&
+			                        MAP?.settings?.scan_mode == 'learning_mode'
+			                    ) ||
+			                    (
+			                        map_ajax?.force_js_learning_mode == 1
+			                    )
+			                )
+			                {
+			                    MAP.sendDetectedKeys();
+			                }
+
+			                MAP.checkJsShield( true );
+			                MAP.checkConsentModeStatus();
+			            });
+
+			    }, 500 );
+			}
+			else
+			{
+				if(
+					(
+					 MAP?.settings?.scan_mode &&
+					 MAP?.settings?.scan_mode == 'learning_mode'
+					) ||
+					(
+						map_ajax?.force_js_learning_mode == 1
+					)
+				)
+				{
+					MAP.sendDetectedKeys();
+				}
+
+				setTimeout( function() {
+					MAP.checkJsShield( false );
+					MAP.checkConsentModeStatus();
+				}, 800 );
+			}
+		}
+
+		if( typeof CookieShield !== 'undefined' &&
+			CookieShield &&
+			MAP &&
+			typeof URLSearchParams !== 'undefined' &&
+			URLSearchParams )
+		{
+			var queryString = window.location.search;
+
+			if( queryString )
+			{
+				var urlParams = new URLSearchParams( queryString );
+
+				var auto_activate_cookies_with_key = urlParams.get( 'auto_activate_cookies_with_key' )
+				if( auto_activate_cookies_with_key )
+				{
+					MAP.sendDetectedKeys( auto_activate_cookies_with_key );
+				}
+			}
+		}
+	}
+	catch( error )
+	{
+		console.error( error );
+	}
+}
+
+window.addEventListener( 'load', function() {
+	if( typeof window.map_on_document_load_event === 'function' )
+	{
+	    window.map_on_document_load_event();
+	}
+});
+
+//f. for cloning node attribute to another (only valid attributes)
+function cloneNodeAttributeToAnother( $source, dest )
+{
+	//MapLogger.log( $source );
+	//MapLogger.log( dest );
+
+	var exclusion_list = [
+		'type',
+		'src',
+		'unblocked_src',
+		'class',
+		'data-cookie-api-key',
+		'data-friendly_name'
+	];
+
+	for( var att, i = 0, atts = $source.attributes, n = atts.length; i < n; i++ )
+	{
+		att = atts[i];
+
+		if( typeof att.nodeName !== 'undefined' && !exclusion_list.includes( att.nodeName ) )
+		{
+			dest.setAttribute( att.nodeName, att.nodeValue );
+		}
+	}
+
+	return dest;
+}
+
+//f. for dom element recreating and previous event removal
+function internalRecreateNode( el, withChildren ){
+	try {
+
+		if(withChildren) {
+			el.parentNode.replaceChild(el.cloneNode(true), el);
+		}
+		else
+		{
+			var newEl = el.cloneNode(false);
+			while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
+			el.parentNode.replaceChild(newEl, el);
+		}
+	} catch( e )
+	{
+		console.debug( e );
+	}
+}
+
+//wpcf7
+function map_trigger_custom_patch_1()
+{
+	MapLogger.debug( MAP_SYS.maplog + 'map_trigger_custom_patch_1' );
+
+	try {
+		internalRecreateNode( document.querySelector( 'form.wpcf7-form' ), true );
+	}
+	catch ( e ) {
+		console.debug( e );
+	}
+
+	const c = new CustomEvent("DOMContentLoaded", {
+	});
+	document.dispatchEvent(c);
+
+	try {
+		wpcf7.submit = null;
+	} catch ( e ) {
+		console.debug( e );
+	}
+}
+
+//avia maps
+function map_trigger_custom_patch_2()
+{
+	MapLogger.debug( MAP_SYS.maplog + 'map_trigger_custom_patch_2' );
+
+	document.querySelectorAll( '.av_gmaps_confirm_link.av_text_confirm_link.av_text_confirm_link_visible' ).forEach( function( element ) {
+		element.click();
+	});
+
+}
+
+//octorate
+function map_trigger_custom_patch_3()
+{
+	try {
+		octorate.octobook.Widget.show();
+	} catch ( e ) {
+		setTimeout( map_trigger_custom_patch_3, 100 );
+		console.debug( e );
+	}
+}
+
+//paypal
+function map_trigger_custom_patch_4()
+{
+	try {
+		setInterval(function() {
+			document.querySelectorAll( '.blockUI.blockOverlay' ).forEach(function( el ) {
+				el.remove();
+			});
+		}, 500);
+
+	} catch ( e ) {
+		setTimeout( map_trigger_custom_patch_4, 100 );
+		console.debug( e );
+	}
+}
+
+//Google consent mode early as possible initialization
+if( typeof MAP !== 'undefined' && typeof MAP.setupConsentModeV2 !== 'undefined' )
+{
+	MAP.setupConsentModeV2();
+}
+
+//Microsoft consent mode early as possible initialization
+if( typeof MAP !== 'undefined' && typeof MAP.setupMicrosoftConsentMode !== 'undefined' )
+{
+	MAP.setupMicrosoftConsentMode();
+}
+
+//Clarity consent mode early as possible initialization
+if( typeof MAP !== 'undefined' && typeof MAP.setupClarityConsentMode !== 'undefined' )
+{
+	MAP.setupClarityConsentMode();
+}

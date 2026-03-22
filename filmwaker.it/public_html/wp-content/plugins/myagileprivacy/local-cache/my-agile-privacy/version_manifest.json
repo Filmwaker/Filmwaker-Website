@@ -1,0 +1,137 @@
+{
+  "manifest_version_file": 2,
+  "files": {
+    "MyAgilePrivacyIabTCF/purposes-lv.json": { "version": "1.1.02","iab": true }
+,
+    "cookie-shield.js": { "version": "1.4.07","iab": false }
+,
+    "MyAgilePrivacyIabTCF/purposes-sr.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-nl.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-tr.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-no.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-de.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-cs.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-sq.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-hr.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-bg.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-bs.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-sl.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-el.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-sv.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-ca.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-mk.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-ro.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-uk.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-sl.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-da.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-es.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-et.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-no.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-it.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-da.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-es.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-hu.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-pl.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-el.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/MyAgilePrivacyIabTCF.js": { "version": "1.1.02","iab": false }
+,
+    "MyAgilePrivacyIabTCF/common-nl.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-fi.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-en.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-pt.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-fi.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-sr.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-et.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-pl.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-sq.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-cs.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-pt.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-hu.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-lv.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/vendor-list.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-ro.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-sk.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-tr.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-bs.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-bg.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-hr.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-sv.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/googleVendors.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-uk.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-ru.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-lt.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-lt.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-ru.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-en.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-ca.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-mk.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-de.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-fr.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/common-fr.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-sk.json": { "version": "1.1.02","iab": true }
+,
+    "MyAgilePrivacyIabTCF/purposes-it.json": { "version": "1.1.02","iab": true }
+
+  }
+}

@@ -373,3 +373,59 @@
   .ac-course-btns { flex-direction: column; }
   .ac-course-btns a { text-align: center; }
 }
+
+/* ── Fix responsive aggiuntivo mobile ── */
+@media (max-width: 768px) {
+
+    /* Academy hero */
+    .ac-hero { padding: 120px 4% 0; }
+    .ac-hero-inner h1 { font-size: 1.9rem; }
+    .ac-hero-inner p  { font-size: 0.95rem; }
+    .ac-hero-cta { font-size: 0.95rem; padding: 0.85rem 1.8rem; }
+
+    /* Stats bar */
+    .ac-stats-bar {
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.2rem 1rem;
+        margin-top: 2.5rem;
+    }
+    .ac-stat-sep { display: none; }
+    .ac-stat { min-width: 45%; text-align: center; }
+    .ac-stat-n { font-size: 1.5rem; }
+
+    /* Why grid */
+    .ac-why { padding: 4rem 4%; }
+    .ac-why-grid { grid-template-columns: 1fr; gap: 1rem; }
+
+    /* Course rows */
+    .ac-courses { padding: 4rem 4%; }
+    .ac-course-row, .ac-course-row-rev {
+        grid-template-columns: 1fr;
+        direction: ltr;
+        gap: 1.5rem;
+        margin-bottom: 3.5rem;
+    }
+    .ac-course-info h3 { font-size: 1.5rem; }
+    .ac-course-meta { gap: 0.6rem; font-size: 0.8rem; }
+    .ac-price { margin-left: 0; font-size: 1rem; }
+    .ac-course-btns { flex-direction: column; }
+    .ac-course-btns a { text-align: center; }
+
+    /* Included */
+    .ac-included { padding: 4rem 4%; }
+    .ac-included-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* Testimonials */
+    .ac-testimonials { padding: 4rem 4%; }
+    .ac-testi-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+
+    /* Final CTA */
+    .ac-final-cta { padding: 4rem 4%; }
+    .ac-final-cta h2 { font-size: 1.8rem; }
+}
+
+@media (max-width: 480px) {
+    .ac-included-grid { grid-template-columns: 1fr; }
+    .ac-stat { min-width: 100%; }
+}
