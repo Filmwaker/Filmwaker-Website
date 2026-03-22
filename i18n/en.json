@@ -56,11 +56,11 @@
     "edo_bio": "Tech Artist and Unreal Engine Specialist blending creativity and technical precision. Focused on virtual production, real-time environments and high-impact digital visuals.",
     "gio_bio": "A VFX Supervisor & Compositor with a sharp eye for detail and visual coherence. Experienced in crafting seamless effects, supervising pipelines, and elevating shots through advanced compositing.",
     "amati_role": "Filmmaker & Director",
-    "amati_bio": "Filmmaker and director with a diploma in directing, editing and cinematography. He brings a solid cinematic vision to set, built across short films, commercials and distinctive video productions.",
+    "amati_bio": "Filmmaker and director with a diploma in directing, editing and cinematography. He brings a sharp cinematic eye to every set, developed across short films, commercials and character-driven video productions.",
     "chad_role": "Social Media Manager",
-    "chad_bio": "Manages Filmwaker's digital presence across social platforms, handling content, editorial strategy and community. Turns every production into storytelling built for digital channels.",
+    "chad_bio": "Manages Filmwaker's digital presence across social platforms — content creation, editorial strategy and community. He turns every production into social-first storytelling that resonates with audiences.",
     "pasini_role": "Programmer & Instructor",
-    "pasini_bio": "Software developer with experience in programming and technical teaching. Instructor at Filmwaker Academy courses, guiding students through coding, logic and development tools applied to creative production."
+    "pasini_bio": "Software developer and technical instructor with hands-on experience in programming and teaching. At Filmwaker Academy he guides students through coding, logic and development tools applied to creative production."
   },
   "portfolio": {
     "title": "Our Latest Works",
@@ -89,7 +89,7 @@
     "p3_p1": "The goal was to create a product reveal video where traditional cinematography couldn't reach. We needed to show internal details and mechanical movements that would be impossible to film in real life.",
     "p3_h3b": "What We Did",
     "p3_p2": "We built photorealistic models and textures for all key components. We animated mechanical parts in sync with the music and simulated virtual studio lighting to highlight shapes and metallic surfaces."
-  }
+  },
   "academy": {
     "badge": "FILMWAKER ACADEMY",
     "hero_title": "Learn from professionals.\nCreate at the highest level.",
