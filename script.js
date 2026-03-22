@@ -216,36 +216,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const carouselTrack = document.getElementById('carouselTrack');
-    
-    const brandPath = (typeof FILMWAKER_THEME_URL !== 'undefined'
-    ? FILMWAKER_THEME_URL + '/brandimages/'
-    : 'brandimages/');
-    const brandCount = 8; // Change this to match your number of brand images
-    let brands = [];
-    
-    // Load brand images
-    function loadBrands() {
-        for (let i = 1; i <= brandCount; i++) {
-            const num = String(i).padStart(2, '0');
-            brands.push(`${brandPath}brand${num}.webp`);
-        }
-        renderCarousel();
-    }
-    
-    // Render carousel items - duplicated for infinite scroll
-    function renderCarousel() {
-        carouselTrack.innerHTML = '';
-        
-        // Add items twice for seamless infinite loop
-        [...brands, ...brands].forEach((brand, index) => {
-            const item = document.createElement('div');
-            item.className = 'carousel-item';
-            item.innerHTML = `<img src="${brand}" alt="Brand ${(index % brands.length) + 1}" onerror="this.style.display='none'">`;
-            carouselTrack.appendChild(item);
-        });
-    }
-    
-    loadBrands();
+    if (!carouselTrack) return;
+
+    const brands = [
+        { file: 'doom.webp',             name: 'DOOM',              url: 'https://www.doom.com' },
+        { file: 'flixbus.webp',          name: 'FlixBus',           url: 'https://www.flixbus.it' },
+        { file: 'ivgo.webp',             name: 'IVGO',              url: 'https://www.ivgo.it' },
+        { file: 'LOGO ITALPOL.webp',     name: 'Italpol',           url: 'https://www.italpol.it' },
+        { file: 'medical.webp',          name: 'Medical',           url: '#' },
+        { file: 'muschioselvaggio.webp', name: 'Muschio Selvaggio',  url: 'https://www.youtube.com/@MuschioSelvaggio' },
+        { file: 'pulppodcast.webp',      name: 'Pulp Podcast',      url: 'https://www.youtube.com/@PulpPodcast' },
+        { file: 'ringo.webp',            name: 'Ringo',             url: 'https://www.ringo.it' },
+        { file: 'streamicon.webp',       name: 'Streamicon',        url: '#' },
+        { file: 'webstarchannel.webp',   name: 'WebStar Channel',   url: 'https://www.youtube.com/@webstarchannel' },
+    ];
+
+    const basePath = 'brandimages/';
+
+    // Duplica per loop infinito
+    [...brands, ...brands].forEach(brand => {
+        const item = document.createElement('div');
+        item.className = 'carousel-item';
+        item.innerHTML = `
+            <a href="${brand.url}" target="_blank" rel="noopener noreferrer" title="${brand.name}">
+                <img src="${basePath}${brand.file}" alt="${brand.name}" onerror="this.parentElement.parentElement.style.display='none'">
+            </a>`;
+        carouselTrack.appendChild(item);
+    });
 });
 
 document.addEventListener('DOMContentLoaded', function() {
