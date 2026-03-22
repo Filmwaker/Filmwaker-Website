@@ -54,7 +54,11 @@
     "hero_p": "Siamo artisti, tecnici e storyteller. Uniamo creatività e tecnologia per plasmare il futuro della produzione digitale.",
     "ale_bio": "Artista 3D e Animatore dedicato a trasformare idee in storie visive potenti. Specializzato in CGI, motion e storytelling digitale, con passione per la creazione di mondi cinematografici.",
     "edo_bio": "Tech Artist e Unreal Engine Specialist che unisce creatività e precisione tecnica. Focalizzato su virtual production, ambienti real-time e visual di alto impatto.",
-    "gio_bio": "VFX Supervisor e Compositor con occhio preciso per dettaglio e coerenza visiva. Esperto nella creazione di effetti seamless, supervisione di pipeline e compositing avanzato."
+    "gio_bio": "VFX Supervisor e Compositor con occhio preciso per dettaglio e coerenza visiva. Esperto nella creazione di effetti seamless, supervisione di pipeline e compositing avanzato.",
+    "amati_role": "Filmmaker & Director",
+    "amati_bio": "Filmmaker e regista con forte visione narrativa. Specializzato nella direzione creativa di produzioni video e nella gestione del set.",
+    "chad_role": "Motion Designer & Editor",
+    "chad_bio": "Motion Designer ed Editor con passione per la post-produzione creativa. Esperto in motion graphics, editing cinematografico e visual storytelling."
   },
   "portfolio": {
     "title": "Le Nostre Ultime Opere",
@@ -100,8 +104,8 @@
     "why_2_p": "Lezioni on-demand disponibili 24/7. Rivedile quante volte vuoi, dal dispositivo che preferisci.",
     "why_3_title": "Supporto diretto",
     "why_3_p": "Ogni docente è raggiungibile per domande, anche dopo la fine del corso. Non sei mai solo.",
-    "why_4_title": "Attestato riconosciuto",
-    "why_4_p": "Ogni corso rilascia un attestato di completamento spendibile su LinkedIn e nel tuo curriculum.",
+    "why_4_title": "Attestato di completamento",
+    "why_4_p": "Ogni corso rilascia un attestato di completamento che potrai aggiungere al tuo curriculum e al profilo LinkedIn.",
     "courses_title": "I Nostri Corsi",
     "free_preview": "Guarda le lezioni gratuite",
     "enroll_cta": "Inizia ora",
@@ -123,7 +127,7 @@
   },
   "courses": {
     "hero_title": "Formazione per tutti i livelli",
-    "hero_sub": "I nostri corsi sono guidati da professionisti del settore che ti accompagnano passo dopo passo verso competenze concrete e spendibili.",
+    "hero_sub": "I nostri corsi sono guidati da professionisti del settore che ti accompagnano passo dopo passo verso competenze concrete e pratiche.",
     "badge_base": "Base",
     "badge_mid": "Intermedio",
     "badge_adv": "Avanzato",
@@ -131,8 +135,8 @@
     "curriculum_title": "Programma del corso",
     "included_title": "Cosa è incluso",
     "instructor_title": "Il Tuo Docente",
-    "inc_cert": "Attestato finale",
-    "inc_cert_p": "Richiedibile su LinkedIn o nel tuo CV.",
+    "inc_cert": "Attestato di completamento",
+    "inc_cert_p": "Al termine del corso ricevi un attestato che puoi aggiungere al tuo curriculum.",
     "inc_pace": "Studia ai tuoi ritmi",
     "inc_pace_p": "Lezioni on-demand, visibili quando vuoi.",
     "inc_support": "Supporto del docente",
