@@ -80,7 +80,13 @@ const FW_I18N = (() => {
         hero_p:"Siamo artisti, tecnici e storyteller. Uniamo creatività e tecnologia per plasmare il futuro della produzione digitale.",
         ale_bio:"Artista 3D e Animatore dedicato a trasformare idee in storie visive potenti. Specializzato in CGI, motion e storytelling digitale, con passione per la creazione di mondi cinematografici.",
         edo_bio:"Tech Artist e Unreal Engine Specialist che unisce creatività e precisione tecnica. Focalizzato su virtual production, ambienti real-time e visual di alto impatto.",
-        gio_bio:"VFX Supervisor e Compositor con occhio preciso per dettaglio e coerenza visiva. Esperto nella creazione di effetti seamless, supervisione di pipeline e compositing avanzato."
+        gio_bio:"VFX Supervisor e Compositor con occhio preciso per dettaglio e coerenza visiva. Esperto nella creazione di effetti seamless, supervisione di pipeline e compositing avanzato.",
+        amati_role:"Filmmaker & Director",
+        amati_bio:"Filmmaker e regista diplomato in regia, montaggio e direzione della fotografia. Porta sul set una visione cinematografica solida, costruita tra cortometraggi, spot e produzioni video di carattere.",
+        chad_role:"Social Media Manager",
+        chad_bio:"Gestisce la presenza digital di Filmwaker sui social, curando contenuti, strategia editoriale e community. Trasforma ogni produzione in storytelling pensato per i canali digitali.",
+        pasini_role:"Programmatore & Docente",
+        pasini_bio:"Programmatore con esperienza nello sviluppo software e nella didattica tecnica. Docente nei corsi Filmwaker Academy, guida gli studenti attraverso programmazione, logica e strumenti di sviluppo applicati alla produzione creativa."
       },
       academy: {
         badge:"FILMWAKER ACADEMY",
@@ -234,7 +240,13 @@ const FW_I18N = (() => {
         hero_p:"We are artists, technicians and storytellers. We combine creativity and technology to shape the future of digital production.",
         ale_bio:"A 3D Artist and Animator dedicated to transforming ideas into powerful visual stories. Skilled in CGI, motion, and digital storytelling, with a passion for creating cinematic worlds.",
         edo_bio:"Tech Artist and Unreal Engine Specialist blending creativity and technical precision. Focused on virtual production, real-time environments and high-impact digital visuals.",
-        gio_bio:"A VFX Supervisor & Compositor with a sharp eye for detail and visual coherence. Experienced in crafting seamless effects, supervising pipelines, and elevating shots through advanced compositing."
+        gio_bio:"A VFX Supervisor & Compositor with a sharp eye for detail and visual coherence. Experienced in crafting seamless effects, supervising pipelines, and elevating shots through advanced compositing.",
+        amati_role:"Filmmaker & Director",
+        amati_bio:"Filmmaker and director with a diploma in directing, editing and cinematography. He brings a sharp cinematic eye to every set, built across short films, commercials and character-driven video productions.",
+        chad_role:"Social Media Manager",
+        chad_bio:"Manages Filmwaker's digital presence across social platforms, handling content, editorial strategy and community. He turns every production into social-first storytelling that connects with audiences.",
+        pasini_role:"Programmer & Instructor",
+        pasini_bio:"Software developer and technical instructor with hands-on experience in programming and teaching. At Filmwaker Academy he guides students through coding, logic and development tools applied to creative production."
       },
       academy: {
         badge:"FILMWAKER ACADEMY",
