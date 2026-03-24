@@ -47,7 +47,12 @@ const FW_I18N = (() => {
         p3_h3a:"Il Progetto",
         p3_p1:"Un documentario dietro le quinte che racconta dall'interno il processo creativo e tecnico dietro la realizzazione del remake di <strong>Metal Gear Solid 2: Opening Remake</strong>. Ideato e realizzato da <a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a>, questo video nasce dalla volont\u00e0 di aprire le porte dello studio e mostrare con trasparenza cosa significa costruire una produzione di questo livello con strumenti accessibili, competenza tecnica e una visione artistica precisa.",
         p3_h3b:"Cosa Abbiamo Fatto",
-        p3_p2:"<a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a> ha curato interamente l'ideazione, la struttura narrativa e la realizzazione del documentario, guidando lo spettatore attraverso ogni fase del processo: dalla costruzione del <strong>Metahuman di Snake</strong>, alla ricostruzione dell'ambiente della <strong>USS Discovery</strong>, fino alle complessit\u00e0 del lighting in tempo reale e del compositing finale."
+        p3_p2:"<a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a> ha curato interamente l'ideazione, la struttura narrativa e la realizzazione del documentario, guidando lo spettatore attraverso ogni fase del processo: dalla costruzione del <strong>Metahuman di Snake</strong>, alla ricostruzione dell'ambiente della <strong>USS Discovery</strong>, fino alle complessit\u00e0 del lighting in tempo reale e del compositing finale.",
+        p4_tag:"Documentary & BTS", p4_h2:"Hideo Kojima Reagisce ad un Nostro Video",
+        p4_h3a:"Il Progetto",
+        p4_p1:"Un documentario che racconta come un corto ispirato a <strong>Death Stranding</strong> sia arrivato fino a <a href='https://www.instagram.com/hidekojima_en/' target='_blank' rel='noopener noreferrer'><strong>Hideo Kojima</strong></a> durante il <strong>Lucca Comics 2025</strong>. Un progetto nato dalla passione, cresciuto attraverso CGI, VFX e cosplay, e culminato in un momento straordinario: il creatore stesso che vede e reagisce al nostro lavoro.",
+        p4_h3b:"Cosa Abbiamo Fatto",
+        p4_p2:"Il documentario ripercorre tutto il processo dall'idea iniziale alla produzione del video, passando per le sfide tecniche di <strong>CGI e VFX</strong>, la creazione del <strong>cosplay</strong> e la logistica per raggiungere Kojima al Lucca Comics. Una storia vera fatta di <strong>connessioni, coincidenze e passione</strong> \u2014 raccontata con la stessa cura e dedizione che mettiamo in ogni produzione."
       },
       mission: {
         title:"La Nostra Missione",
@@ -197,7 +202,12 @@ const FW_I18N = (() => {
         p3_h3a:"The Project",
         p3_p1:"A behind-the-scenes documentary inside the creative and technical process behind <strong>Metal Gear Solid 2: Opening Remake</strong>. Conceived and directed by <a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a>, this film opens the studio doors to show what it really takes to build a production of this calibre.",
         p3_h3b:"What We Did",
-        p3_p2:"<a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a> took complete ownership of the concept, narrative and production, guiding the viewer through every phase: the <strong>Snake Metahuman</strong>, the <strong>USS Discovery</strong> environment, real-time lighting and final compositing."
+        p3_p2:"<a href='https://www.youtube.com/@JacktheLightning' target='_blank' rel='noopener noreferrer'><strong>JackTheLightning</strong></a> took complete ownership of the concept, narrative and production, guiding the viewer through every phase: the <strong>Snake Metahuman</strong>, the <strong>USS Discovery</strong> environment, real-time lighting and final compositing.",
+        p4_tag:"Documentary & BTS", p4_h2:"Hideo Kojima Reacts to Our Video",
+        p4_h3a:"The Project",
+        p4_p1:"A documentary about how a short film inspired by <strong>Death Stranding</strong> made its way to <a href='https://www.instagram.com/hidekojima_en/' target='_blank' rel='noopener noreferrer'><strong>Hideo Kojima</strong></a> at <strong>Lucca Comics 2025</strong>. A project born from passion, built through CGI, VFX and cosplay, and culminating in an extraordinary moment: the creator himself watching and reacting to our work.",
+        p4_h3b:"What We Did",
+        p4_p2:"The documentary traces the entire process from the initial idea to the finished video, covering the technical challenges of <strong>CGI and VFX</strong>, the creation of the <strong>cosplay</strong> and the logistics of reaching Kojima at Lucca Comics. A true story built on <strong>connections, coincidences and passion</strong> \u2014 told with the same care and dedication we put into every production."
       },
       mission: {
         title:"Our Mission",
